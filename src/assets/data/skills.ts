@@ -9,10 +9,7 @@ export  default{
 				name: "React",
 				alternativeTitle: "The wonder of modularity",
 			},
-			{
-				name: "JavaScript",
-				alternativeTitle: "The web's core language",
-			},
+			
 			{
 				name: "TypeScript",
 				alternativeTitle: "JavaScript with types",
@@ -21,14 +18,7 @@ export  default{
 				name: "Tailwind",
 				alternativeTitle: "Utility-first CSS",
 			},
-			{
-				name: "HTML",
-				alternativeTitle: "draw",
-			},
-			{
-				name: "CSS",
-				alternativeTitle: "draw",
-			},
+		
 		],
 		BACKEND: [
 			{
@@ -42,6 +32,13 @@ export  default{
 			{
 				name: "Drizzle",
 				alternativeTitle: "Type-safe ORM for databases",
+			},
+			{
+				name: "Node JS",
+				alternativeTitle: "JavaScript runtime built on Chrome's V8 engine",
+			},{
+				name: "Nginx",
+				alternativeTitle: "High-performance web server",
 			},
 		],
 		LANGUAGES: [

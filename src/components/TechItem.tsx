@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+
 export default function TechItem({
 	name,
 	image,
@@ -16,10 +17,10 @@ export default function TechItem({
 			viewport={{ amount: "some", once: true }}
 			className='flex flex-col'
 		>
-			<div className='sketch-border w-min relative z-20 '>
+			<div className='sketch-border dark:sketch-border-dark dark:bg-jet w-min relative z-20 '>
 				<div className='px-2 w-12 sm:w-max py-0.5 flex items-center md:gap-3 group'>
 					<img
-						className=' group-hover:scale-105'
+						className='h-6 w-6 group-hover:scale-105'
 						src={image}
 						alt={`${name} icon`}
 					/>

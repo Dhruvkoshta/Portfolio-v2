@@ -22,7 +22,7 @@ export default function Projects() {
 	return (
 		<>
 			<section id='projects' className='sm:px-16 px-6'>
-				<h2>Projetos</h2>
+				<h2>Projects</h2>
 				<div id='' className='flex flex-wrap gap-12 py-3 px-2 justify-center'>
 					{projectsData.map((project) => (
 						<ProjetoItem

@@ -1,5 +1,5 @@
 {
-  "homepage": "https://artttur.com",
+  "homepage": "https://dhruvkoshta.dev",
   "name": "portifolio",
   "private": true,
   "version": "0.0.0",
@@ -13,6 +13,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "cobe": "^0.6.4",
     "framer-motion": "^11.18.2",
     "portifolio": "file:",
     "react": "^18.3.1",
@@ -30,7 +31,6 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.20",
-    "gh-pages": "^6.3.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2",
     "vite": "^5.4.19"

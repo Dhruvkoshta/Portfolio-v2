@@ -38,7 +38,7 @@ export default function Navbar({
 			<div className=' px-6 flex justify-between'>
 				<div className=' overflow-hidden  align-middle max-md:hidden flex '>
 					<ul className='flex  text-center items-center gap-1 '>
-						<li className=' transition-opacity animate-bounce px-3 text-[1.2rem] group hover:bg-jet dark:bg-platinum'>
+						<li className=' transition-opacity animate-bounce px-3 text-[1.2rem] group hover:bg-jet dark:hover:bg-platinum '>
 							<HashLink
 								className='pointer dark:text-platinum text-jet group-hover:text-platinum dark:group-hover:text-jet '
 								to='/blog'
