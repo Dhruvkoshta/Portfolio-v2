@@ -37,7 +37,7 @@ export default function BusinessCard({
 				<div className='flex justify-around flex-wrap gap-4'>
 					<div className='space-y-1'>
 						<h2 className='max-sm:text-center'>Artur Marcos </h2>
-						<p className='max-sm:text-center'>Front-End Developer</p>
+						<p className='max-sm:text-center'>Full-Stack Developer</p>
 						<h3 className='font-bold text-lg'>Technologies: </h3>
 						<div className='flex gap-1 flex-wrap w-64'>
 							<ContentTag text={"JavaScript"} />

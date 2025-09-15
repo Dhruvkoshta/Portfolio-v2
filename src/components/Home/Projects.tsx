@@ -3,25 +3,26 @@ import Button from "../Button.js";
 
 import projectsData from "../../assets/data/projectData";
 
-import minimiza from "../../assets/projects/minimizeai.webp";
-import minimiza1 from "../../assets/projects/minimizeai1.webp";
-
-import puclove from "../../assets/projects/puclove.webp";
-import puclove1 from "../../assets/projects/puclove1.webp";
-import puclove2 from "../../assets/projects/puclove2.webp";
+import Anonymous1 from "../../assets/projects/Anonymous1.webp";
+import Anonymous2 from "../../assets/projects/Anonymous2.webp";
+import Anonymous3 from "../../assets/projects/Anonymous3.webp";
+import webserver from "../../assets/projects/webserver.webp";
+import vibelink from "../../assets/projects/VibeLink.webp";
+import VibeLink2 from "../../assets/projects/VibeLink2.webp";
 
 const projectImages: { [key: string]: string } = {
-	"minimizeai.webp": minimiza,
-	"minimizeai1.webp": minimiza1,
-	"puclove.webp": puclove,
-	"puclove1.webp": puclove1,
-	"puclove2.webp": puclove2,
+	"Anonymous1.webp": Anonymous1,
+	"Anonymous2.webp": Anonymous2,
+	"Anonymous3.webp": Anonymous3,
+	"webserver.webp": webserver,
+	"VibeLink.webp": vibelink,
+	"VibeLink2.webp": VibeLink2,
 };
 
 export default function Projects() {
 	return (
 		<>
-			<section id='projects' className='sm:px-16 px-6'>
+			<section id='projects' className='sm:px-16 px-6 '>
 				<h2>Projects</h2>
 				<div id='' className='flex flex-wrap gap-12 py-3 px-2 justify-center'>
 					{projectsData.map((project) => (

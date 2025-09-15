@@ -7,41 +7,41 @@ import { useEffect } from "react";
 import Introduction from "../components/Home/Introduction";
 
 export default function Home({
-	theme,
-	setTheme,
+  theme,
+  setTheme,
 }: {
-	theme: string;
-	setTheme: (theme: string) => void;
+  theme: string;
+  setTheme: (theme: string) => void;
 }) {
-	useEffect(() => {
-		console.log(
-			`
+  useEffect(() => {
+    console.log(
+      `
                    _..
   /}_{\\           /.-'
  ( a a )-.___...-'/
  ==._.==         ;
       \\ i _..._ /,
       {_;/   {_//  dkk
-`
-		);
-		console.log(
-			"%cwhat are u doing here? ( ͠° ͟ʖ ͡°) ",
-			"background: #722F37; font-size: 1.5rem"
-		);
-	}, []);
+`,
+    );
+    console.log(
+      "%cwhat are u doing here? ( ͠° ͟ʖ ͡°) ",
+      "background: #722F37; font-size: 1.5rem",
+    );
+  }, []);
 
-	return (
-		<div id='at' className={`${theme ?? "dark"}`}>
-			<div className='max-sm:w-screen flex justify-center bg-platinum dark:bg-jet custom-pattern2-background'>
-				<div className=' dark:text-platinum max-w-[1240px] max-sm:w-[100%] space-y-8 text-jet'>
-					<Navbar setTheme={setTheme} theme={theme} />
-					<Introduction theme={theme} />
-					<About />
-					<Skills />
-					<Projects />
-					<Footer />
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div id="at" className={`${theme ?? "dark"}`}>
+      <div className="max-sm:w-screen flex justify-center bg-platinum dark:bg-jet custom-pattern2-background">
+        <div className=" dark:text-platinum max-w-[1240px] max-sm:w-[100%] space-y-8 text-jet">
+          <Navbar setTheme={setTheme} theme={theme} />
+          <Introduction theme={theme} />
+          <About />
+          <Skills />
+          <Projects />
+          <Footer />
+        </div>
+      </div>
+    </div>
+  );
 }
