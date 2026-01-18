@@ -9,6 +9,9 @@ import Anonymous3 from "../../assets/projects/Anonymous3.webp";
 import webserver from "../../assets/projects/webserver.webp";
 import vibelink from "../../assets/projects/VibeLink.webp";
 import VibeLink2 from "../../assets/projects/VibeLink2.webp";
+import Rayfall1 from "../../assets/projects/Rayfall1.png";
+import iot from "../../assets/projects/iot.webp";
+import ProctoAI1 from "../../assets/projects/ProctoAI1.png";
 
 const projectImages: { [key: string]: string } = {
 	"Anonymous1.webp": Anonymous1,
@@ -17,6 +20,9 @@ const projectImages: { [key: string]: string } = {
 	"webserver.webp": webserver,
 	"VibeLink.webp": vibelink,
 	"VibeLink2.webp": VibeLink2,
+	"Rayfall1.png": Rayfall1,
+	"iot.jpg": iot,
+	"ProctoAI1.png": ProctoAI1,
 };
 
 export default function Projects() {
