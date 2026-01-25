@@ -12,6 +12,7 @@ import VibeLink2 from "../../assets/projects/VibeLink2.webp";
 import Rayfall1 from "../../assets/projects/Rayfall1.png";
 import iot from "../../assets/projects/iot.webp";
 import ProctoAI1 from "../../assets/projects/ProctoAI1.png";
+import CartoNoir from "../../assets/projects/map.webp";
 
 const projectImages: { [key: string]: string } = {
 	"Anonymous1.webp": Anonymous1,
@@ -23,6 +24,7 @@ const projectImages: { [key: string]: string } = {
 	"Rayfall1.png": Rayfall1,
 	"iot.jpg": iot,
 	"ProctoAI1.png": ProctoAI1,
+	"map.webp": CartoNoir,
 };
 
 export default function Projects() {
@@ -40,7 +42,7 @@ export default function Projects() {
 							websiteURL={project.websiteURL}
 							initialImage={projectImages[project.initialImageName]}
 							images={project.imageNames.map(
-								(imageName) => projectImages[imageName]
+								(imageName) => projectImages[imageName],
 							)}
 							devProgress={project.devProgress}
 							tags={project.tags}

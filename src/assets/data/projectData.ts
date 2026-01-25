@@ -1,5 +1,14 @@
 export default [
   {
+  "title": "CartoNoir",
+  "text": "Full-stack web application that generates beautiful, minimalist map posters for any city in the world. Choose from 18 unique artistic themes and create stunning print-ready artwork in minutes.",
+  "githubURL": "[https://github.com/Dhruvkoshta/CartoNoir](https://github.com/Dhruvkoshta/CartoNoir)",
+  "initialImageName": "map.webp",
+  "imageNames": [""],
+  "devProgress": "done",
+  "tags": ["React", "Docker", "Node.js", "Express", "AWS S3", "Python"]
+  },
+  {
   "title": "IoT Hazard Monitoring System",
   "text": "A comprehensive IoT platform designed to detect fire, floods, and earthquakes using ESP32 and LoRa. It features a Node.js backend for data logging and a React dashboard with Web Serial support.",
   "githubURL": "[https://github.com/Dhruvkoshta/Monitoring-System](https://github.com/Dhruvkoshta/Monitoring-System)",
@@ -8,6 +17,7 @@ export default [
   "devProgress": "done",
   "tags": ["ESP32", "LoRa", "Node.js", "React", "SQLite", "Socket.io", "Drizzle", "MUI"]
   },
+  
 {
 "title": "Rayfall",
 "text": "Rayfall is a 2D arcade shooter game developed in C++ using the raylib library and GLSL for shading. It features core gameplay mechanics including collision detection and an in-game upgrade shop.",
