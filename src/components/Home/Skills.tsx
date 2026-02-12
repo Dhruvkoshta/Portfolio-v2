@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import TechItem from "../TechItem";
 import skillsData from "../../assets/data/skills";
@@ -39,7 +40,7 @@ const skillImages: Record<string, string> = {
 	Nginx: Nginx,
 };
 
-export default function Skills() {
+function Skills() {
 	return (
 		<section id='knowledge' className='sm:px-16 px-6 '>
 			<h2>Knowledge & Skills</h2>
@@ -67,7 +68,7 @@ export default function Skills() {
 										alternativeTitle={skill.alternativeTitle}
 										image={skillImages[skill.name]}
 									/>
-								)
+								),
 							)}
 						</div>
 					</motion.div>
@@ -76,3 +77,5 @@ export default function Skills() {
 		</section>
 	);
 }
+
+export default memo(Skills);

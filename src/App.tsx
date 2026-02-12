@@ -1,30 +1,33 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import Home from "./pages/Home";
-import Blog from "./pages/Blog";
-import NotFound from "./pages/NotFound";
+const Home = lazy(() => import("./pages/Home"));
+const Blog = lazy(() => import("./pages/Blog"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 export default function App() {
-  const initialTheme = localStorage.getItem("theme");
+	const [theme, setTheme] = useState(() =>
+		localStorage.getItem("theme") !== "dark" ? "light" : "dark",
+	);
 
-  const [theme, setTheme] = useState(initialTheme != "dark" ? "light" : "dark");
-
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Home theme={theme} setTheme={setTheme} />,
-    },
-    {
-      path: "/blog",
-      element: <Blog theme={theme} setTheme={setTheme} />,
-    },
-    {
-      path: "*",
-      element: <NotFound theme={theme} setTheme={setTheme} />,
-    },
-  ]);
-
-  return <RouterProvider router={router} />;
+	return (
+		<BrowserRouter>
+			<Suspense fallback={<div className='min-h-screen' />}>
+				<Routes>
+					<Route
+						path='/'
+						element={<Home theme={theme} setTheme={setTheme} />}
+					/>
+					<Route
+						path='/blog'
+						element={<Blog theme={theme} setTheme={setTheme} />}
+					/>
+					<Route
+						path='*'
+						element={<NotFound theme={theme} setTheme={setTheme} />}
+					/>
+				</Routes>
+			</Suspense>
+		</BrowserRouter>
+	);
 }

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import ProjetoItem from "./ProjectItem";
 import Button from "../Button.js";
 
@@ -27,7 +28,7 @@ const projectImages: { [key: string]: string } = {
 	"map.webp": CartoNoir,
 };
 
-export default function Projects() {
+function Projects() {
 	return (
 		<>
 			<section id='projects' className='sm:px-16 px-6 '>
@@ -59,3 +60,5 @@ export default function Projects() {
 		</>
 	);
 }
+
+export default memo(Projects);

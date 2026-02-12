@@ -1,46 +1,50 @@
 import { motion } from "framer-motion";
 import CustomToolTip from "../CustomToolTip";
-import { useEffect, useRef, useState } from "react";
-import createGlobe from "cobe";
+import { memo, useEffect, useRef, useState } from "react";
 
-export default function About() {
+function About() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const globeRef = useRef<any>(null);
 	const [userLocation, setUserLocation] = useState<[number, number] | null>(
-		null
+		null,
 	);
 
 	useEffect(() => {
 		let phi = 0;
+		let isUnmounted = false;
 
 		if (!canvasRef.current) return;
-		const globe = createGlobe(canvasRef.current, {
-			devicePixelRatio: 2,
-			width: 400 * 2,
-			height: 400 * 2,
-			phi: 0,
-			theta: 0,
-			dark: 1,
-			diffuse: 1.2,
-			mapSamples: 16000,
-			mapBrightness: 8,
-			baseColor: [0.3, 0.3, 0.3],
-			markerColor: [0.1, 0.8, 1],
-			glowColor: [1, 1, 1],
-			opacity: 0.75,
-			markers: [],
-			onRender: (state) => {
-				// Called on every animation frame.
-				// `state` will be an empty object, return updated params.
-				state.phi = phi;
-				phi += 0.01;
-			},
+
+		import("cobe").then(({ default: createGlobe }) => {
+			if (!canvasRef.current || isUnmounted) return;
+
+			const globe = createGlobe(canvasRef.current, {
+				devicePixelRatio: 2,
+				width: 400 * 2,
+				height: 400 * 2,
+				phi: 0,
+				theta: 0,
+				dark: 1,
+				diffuse: 1.2,
+				mapSamples: 16000,
+				mapBrightness: 8,
+				baseColor: [0.3, 0.3, 0.3],
+				markerColor: [0.1, 0.8, 1],
+				glowColor: [1, 1, 1],
+				opacity: 0.75,
+				markers: [],
+				onRender: (state) => {
+					state.phi = phi;
+					phi += 0.01;
+				},
+			});
+
+			globeRef.current = globe;
 		});
 
-		globeRef.current = globe;
-
 		return () => {
-			globe.destroy();
+			isUnmounted = true;
+			globeRef.current?.destroy();
 		};
 	}, []);
 
@@ -124,3 +128,5 @@ export default function About() {
 		</div>
 	);
 }
+
+export default memo(About);
