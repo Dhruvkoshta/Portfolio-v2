@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Menu from "../assets/icons/buttons/MenuIcon";
 import Switch from "../assets/icons/buttons/SwitchIcon";
-import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 
 export default function Navbar({

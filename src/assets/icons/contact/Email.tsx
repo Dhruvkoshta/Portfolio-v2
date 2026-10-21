@@ -2,14 +2,8 @@ import * as React from "react"
 export default function Email ({theme, action}) {
 
   
-  let corPrimaria = "#2F2F2F";
-  let corSecundaria = "#E5E5E5";
-
-    if(theme==='dark') {
-      let temp = corPrimaria;
-      corPrimaria = corSecundaria;
-      corSecundaria = temp;
-    }
+  const corPrimaria = theme === 'dark' ? "#E5E5E5" : "#2F2F2F";
+  const corSecundaria = theme === 'dark' ? "#2F2F2F" : "#E5E5E5";
 
     return (
       <svg

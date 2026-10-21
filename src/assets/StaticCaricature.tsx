@@ -1,10 +1,8 @@
 import * as React from "react"
-import { motion } from "framer-motion"
 import { useEffect, useState } from "react";
-import {  } from 'react';
 
 export default function CaricaturaEstatica ({theme}) {
-  const [isVisible, setIsVisible] = useState(1);
+  const [, setIsVisible] = useState(1);
   const [corPrimaria, setCorPrimaria] = useState(theme=='light'?'#2F2F2F':'#E5E5E5');
 
     useEffect(() => {

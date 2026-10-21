@@ -1,14 +1,7 @@
 import * as React from "react"
 export default function QRcode ({theme, action}) {
 
-  let corPrimaria = "#2F2F2F";
-  let corSecundaria = "#E5E5E5";
-
-    if(theme==='dark') {
-      let temp = corPrimaria;
-      corPrimaria = corSecundaria;
-      corSecundaria = temp;
-    }
+  const corPrimaria = theme === 'dark' ? "#E5E5E5" : "#2F2F2F";
 
     return (
   <svg

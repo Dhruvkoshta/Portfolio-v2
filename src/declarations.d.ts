@@ -1,8 +1,9 @@
+declare module '*.css';
 declare module '*.png';
 declare module '*.webp';
 declare module '*.svg?react' {
-    import React = require('react');
-    const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
+    import type { FC, SVGProps } from 'react';
+    const ReactComponent: FC<SVGProps<SVGSVGElement>>;
     export default ReactComponent;
 }
 declare module '*.svg' {

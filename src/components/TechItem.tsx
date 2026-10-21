@@ -16,6 +16,7 @@ export default function TechItem({
 			transition={{ duration: 0.5, delay: 0.25 }}
 			viewport={{ amount: "some", once: true }}
 			className='flex flex-col'
+			title={alternativeTitle}
 		>
 			<div className='sketch-border dark:sketch-border-dark dark:bg-jet w-min relative z-20 '>
 				<div className='px-2 w-12 sm:w-max py-0.5 flex items-center md:gap-3 group'>

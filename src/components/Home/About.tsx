@@ -1,13 +1,16 @@
 import { motion } from "framer-motion";
 import CustomToolTip from "../CustomToolTip";
 import { memo, useEffect, useRef, useState } from "react";
+import type { COBEOptions, Globe } from "cobe";
+
+type GlobeOptions = COBEOptions & {
+	onRender?: (state: { phi: number }) => void;
+};
 
 function About() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-	const globeRef = useRef<any>(null);
-	const [userLocation, setUserLocation] = useState<[number, number] | null>(
-		null,
-	);
+	const globeRef = useRef<Globe | null>(null);
+	const [userLocation] = useState<[number, number] | null>(null);
 
 	useEffect(() => {
 		let phi = 0;
@@ -37,7 +40,7 @@ function About() {
 					state.phi = phi;
 					phi += 0.01;
 				},
-			});
+			} as GlobeOptions);
 
 			globeRef.current = globe;
 		});
@@ -58,7 +61,7 @@ function About() {
 
 	function saveToClipboard(e: React.MouseEvent<HTMLSpanElement>) {
 		const target = e.target as HTMLSpanElement;
-		let contact = target.innerHTML;
+		const contact = target.innerHTML;
 
 		navigator.clipboard
 			.writeText(contact)
