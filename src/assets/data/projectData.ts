@@ -1,4 +1,16 @@
-export default [
+export type Project = {
+  title: string;
+  text: string;
+  githubURL?: string;
+  websiteURL?: string;
+  initialImageName: string;
+  imageNames: string[];
+  devProgress: "done" | "in-progress" | "planned";
+  tags: string[];
+  patentGranted?: boolean;
+};
+
+const projects: Project[] = [
   {
   "title": "CartoNoir",
   "text": "Full-stack web application that generates beautiful, minimalist map posters for any city in the world. Choose from 18 unique artistic themes and create stunning print-ready artwork in minutes.",
@@ -15,9 +27,10 @@ export default [
   "initialImageName": "iot.jpg",
   "imageNames": [""],
   "devProgress": "done",
+  "patentGranted": true,
   "tags": ["ESP32", "LoRa", "Node.js", "React", "SQLite", "Socket.io", "Drizzle", "MUI"]
   },
-  
+
 {
 "title": "Rayfall",
 "text": "Rayfall is a 2D arcade shooter game developed in C++ using the raylib library and GLSL for shading. It features core gameplay mechanics including collision detection and an in-game upgrade shop.",
@@ -66,4 +79,6 @@ export default [
 "devProgress": "done",
 "tags": ["Typescript", "express", "redis","postgreSQL","socket.io","tailwind","drizzle","cron"]
 }
-]
+];
+
+export default projects;

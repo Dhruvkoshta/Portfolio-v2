@@ -1,4 +1,5 @@
 import DevelopmentTag from "../DevelopmentTag";
+import PatentTag from "../PatentTag";
 import ContentTag from "../ContentTag";
 import ProjetoImage from "../ProjectImage";
 import WebsiteIcon from "../../assets/icons/contact/Website.jsx";
@@ -18,6 +19,7 @@ export default function ProjetoItem({
 	images,
 	devProgress,
 	tags,
+	patentGranted,
 }: {
 	title: string;
 	text: string;
@@ -26,8 +28,9 @@ export default function ProjetoItem({
 	figmaURL?: string;
 	initialImage: string;
 	images: string[];
-	devProgress: "done" | "inProgress" | "planned";
+	devProgress: "done" | "in-progress" | "planned";
 	tags?: string[];
+	patentGranted?: boolean;
 }) {
 	return (
 		<motion.div
@@ -64,10 +67,11 @@ export default function ProjetoItem({
 				</div>
 			</div>
 			<div className='lg:w-[50%]'>
-				<div className='flex gap-1 items-center'>
+				<div className='flex flex-wrap gap-1 items-center'>
 					<h5 className='text-[1.4rem]'>{title}</h5>
 					<h5 className='text-[1.4rem]'>-</h5>
 					<DevelopmentTag type={devProgress} />
+					{patentGranted && <PatentTag />}
 				</div>
 				<p className='sm:text-[1.1em] text-[0.9rem] text-left'>{text}</p>
 

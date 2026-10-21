@@ -47,6 +47,7 @@ function Projects() {
 							)}
 							devProgress={project.devProgress}
 							tags={project.tags}
+							patentGranted={project.patentGranted}
 						/>
 					))}
 				</div>
