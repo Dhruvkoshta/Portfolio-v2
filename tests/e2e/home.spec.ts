@@ -152,3 +152,25 @@ test("ambient radio player is accessible in the header and spotify section", asy
 	await expect(radioPlayer).toBeVisible();
 	await expect(radioPlayer.getByText("Electric — Lofi Stream")).toBeVisible();
 });
+
+test("thermal receipt form validates input and submits message", async ({ page }) => {
+	await gotoHome(page);
+
+	const msgInput = page.getByLabel("1 × Message");
+	const replyInput = page.getByLabel("1 × Reply-to");
+	const submitBtn = page.getByRole("button", { name: "Print & Send Message" });
+
+	await expect(msgInput).toBeVisible();
+	await expect(replyInput).toBeVisible();
+
+	// Fill message and replyTo
+	await msgInput.fill("Hello Dhruv! Great portfolio and engineering craftsmanship.");
+	await replyInput.fill("recruiter@example.com");
+
+	// Submit receipt
+	await submitBtn.click();
+
+	// Verify printed confirmation
+	await expect(page.getByText("Message Printed & Saved")).toBeVisible();
+	await expect(page.getByRole("button", { name: "Print Another Receipt" })).toBeVisible();
+});

@@ -1568,6 +1568,51 @@ kbd {
 	margin-top: 6px;
 }
 
+.receipt__success {
+	padding: 12px 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.receipt__success-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: #ecfdf5;
+	border: 1px dashed #10b981;
+	color: #065f46;
+	padding: 6px 10px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.receipt__success-msg {
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--ink);
+}
+
+.receipt__mailto-link {
+	font-size: 11px;
+	color: var(--ink-muted);
+	text-align: center;
+	text-decoration: underline;
+	display: block;
+	margin-top: 4px;
+}
+
+.receipt__error {
+	background: #fef2f2;
+	border: 1px dashed #ef4444;
+	color: #991b1b;
+	padding: 8px 10px;
+	border-radius: 3px;
+	font-size: 11px;
+	line-height: 1.4;
+}
+
 /* Traditional Footer (.ed3-footer) ---------------------------------------- */
 
 .ed3-footer {

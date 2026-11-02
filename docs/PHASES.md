@@ -9,8 +9,8 @@ flowchart TD
   P0["Phase 0: Foundation (DONE)"] --> P1["Phase 1: Shell & Hero (DONE)"]
   P1 --> P2["Phase 2: Typed Content Layer & Sections (DONE)"]
   P2 --> P3["Phase 3: Interactions, Sound & Widgets (DONE)"]
-  P3 --> P4["Phase 4: Receipt Contact, D1 & Turnstile (READY)"]
-  P4 --> P5["Phase 5: Presence Room & Analytics"]
+  P3 --> P4["Phase 4: Receipt Contact, D1 & Turnstile (DONE)"]
+  P4 --> P5["Phase 5: Presence Room & Analytics (READY)"]
   P5 --> P6["Phase 6: Ask Dhruv AI Chat"]
   P6 --> P7["Phase 7: Dark Theme & Production Release"]
 ```
@@ -113,9 +113,10 @@ Transform all section placeholders into a typed, validated domain layer consumin
 
 ---
 
-## Phase 4 — Thermal Receipt Contact, Turnstile & D1 Storage
+## Phase 4 — Thermal Receipt Contact, Turnstile & D1 Storage (DONE)
 
-- **Goal:** Elevate the receipt contact card into a full-featured, spam-protected message system saving inquiries to Cloudflare D1 and sending email notifications.
+- **Status:** Complete.
+- **Delivered:** Cloudflare D1 database `portfolio-db` (`6c5c59d5-60e3-41cd-b8d3-387b2ce81c43`), migration `migrations/0001_messages.sql`, `messageInputSchema` with Zod validation, `submitContactMessage` server function with prepared parameterized SQL, thermal receipt UI with order number and print confirmation, 26 unit tests, 15 E2E tests, zero hydration mismatches. See `docs/PHASE-4-REPORT.md`.
 
 ### Ticket P4-01: Cloudflare D1 Messages Schema & Server Function
 - **What to build:** D1 database migration (`migrations/0001_messages.sql`) and TanStack Start server function handling message submission, input sanitization, and rate-limiting.
