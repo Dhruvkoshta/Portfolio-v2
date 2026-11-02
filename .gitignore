@@ -12,6 +12,13 @@ dist
 dist-ssr
 .vite
 .wrangler
+.output
+.tanstack
+playwright-report
+test-results
+.dev.vars
+.env
+.env.*
 *.local
 
 # Editor directories and files
