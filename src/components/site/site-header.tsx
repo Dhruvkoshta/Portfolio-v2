@@ -44,6 +44,12 @@ const socialLinks: readonly {
 	},
 	{ label: "X", href: site.socials.x, icon: XIcon, external: true },
 	{
+		label: "Resume (PDF)",
+		href: site.resumeUrl,
+		icon: NotebookPenIcon,
+		external: true,
+	},
+	{
 		label: "Notes",
 		href: site.socials.notes,
 		icon: NotebookPenIcon,

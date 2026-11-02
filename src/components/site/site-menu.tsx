@@ -99,6 +99,22 @@ export function SiteMenuDialog({ open, onClose }: DialogProps) {
 					))}
 					<a
 						className="menu-row"
+						href={site.resumeUrl}
+						onClick={onClose}
+						rel="noreferrer"
+						target="_blank"
+					>
+						<span className="menu-row__index">↗</span>
+						<span className="menu-row__label">Resume (PDF)</span>
+						<ArrowUpRightIcon
+							aria-hidden="true"
+							className="menu-row__arrow"
+							size={12}
+							strokeWidth={1.75}
+						/>
+					</a>
+					<a
+						className="menu-row"
 						href={site.socials.notes}
 						onClick={onClose}
 						rel="noreferrer"

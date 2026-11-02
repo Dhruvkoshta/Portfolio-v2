@@ -1,14 +1,17 @@
 export const site = {
 	name: "Dhruv Koshta",
-	role: "Software Engineer",
-	location: "India",
+	fullName: "Dhruv Kumar Koshta",
+	role: "Full-Stack & Systems Engineer",
+	location: "Bengaluru, Karnataka, India",
 	url: "https://dhruvkoshta.me",
 	email: "dhruvkoshta@gmail.com",
+	phone: "+91 8871339300",
+	resumeUrl: "/Dhruv_Koshta_Resume.pdf",
 	description:
-		"Dhruv Koshta is a full-stack software engineer from India. Projects, experiments, and notes on building for the web.",
+		"Dhruv Kumar Koshta is a Full-Stack & Systems Engineer based in Bengaluru, India. Software intern at Dell Technologies, patent holder for an IoT hazard telemetry platform, and 5-star rated freelancer.",
 	socials: {
-		github: "https://github.com/Dhruvkoshta",
-		linkedin: "https://www.linkedin.com/in/dhruv-koshta-15252b296/",
+		github: "https://github.com/DhruvKoshta",
+		linkedin: "https://www.linkedin.com/in/dhruvkoshta",
 		x: "https://x.com/dhruvkoshta04",
 		notes: "https://notes.dhruvkoshta.me",
 	},

@@ -75,68 +75,91 @@ export function ExperienceSection() {
 	return (
 		<div className="idx">
 			<ul aria-label="Experience history" className="idx__list">
+				{/* 1. Dell Technologies */}
 				<AccordionRow
 					defaultOpen
-					flair="Founder / Lead"
-					meta="2023 — present"
-					subtitle="Independent Software & Systems Engineer"
-					title="Full-Stack & Systems Engineering"
+					flair="Software Intern"
+					meta="Jun 26 — Aug 26"
+					subtitle="Bengaluru, India"
+					title="Dell Technologies"
 				>
 					<div className="idx__panel-inner">
 						<p className="idx__body">
-							Architected and shipped production web applications, high-throughput
-							proxy services, and developer tooling. Built CartoNoir (minimalist
-							vector map generation across 18 artistic themes), VibeLink
-							(real-time chat with Redis and Socket.io), and Anonymus.
+							Contributed to enterprise software infrastructure, focusing on
+							low-level performance analysis, system integrations, and
+							software reliability. Assisted in streamlining core tooling and
+							infrastructure workflows, working directly with software
+							infrastructure stacks.
 						</p>
 						<div className="idx__tags">
-							<span className="idx__tag">Next.js</span>
-							<span className="idx__tag">TypeScript</span>
-							<span className="idx__tag">React</span>
-							<span className="idx__tag">Node.js</span>
-							<span className="idx__tag">Express</span>
-							<span className="idx__tag">PostgreSQL</span>
-							<span className="idx__tag">Drizzle ORM</span>
-							<span className="idx__tag">Docker</span>
-							<span className="idx__tag">Redis</span>
-						</div>
-						<div className="idx__foot">
-							<a
-								className="idx__link"
-								href={site.socials.github}
-								rel="noreferrer"
-								target="_blank"
-							>
-								GitHub Profile
-								<ArrowUpRightIcon size={12} />
-							</a>
+							<span className="idx__tag">Enterprise Infrastructure</span>
+							<span className="idx__tag">Low-Level Performance</span>
+							<span className="idx__tag">System Integrations</span>
+							<span className="idx__tag">Software Reliability</span>
+							<span className="idx__tag">Core Tooling</span>
+							<span className="idx__tag">Linux Systems</span>
 						</div>
 					</div>
 				</AccordionRow>
 
+				{/* 2. Freelance */}
 				<AccordionRow
 					defaultOpen
-					flair="Patent Granted ✦"
-					meta="2023 — 2024"
-					subtitle="Lead Researcher & Hardware Architect"
-					title="IoT Hazard Monitoring Platform"
+					flair="Level 1, 5★ Rated"
+					meta="2023 — present"
+					subtitle="Full-Stack & Systems Engineer (Fiverr & Remote)"
+					title="Freelance (Self-Employed)"
 				>
 					<div className="idx__panel-inner">
 						<p className="idx__body">
-							Designed and patented an end-to-end multi-hazard monitoring system
-							detecting fire, flood levels, and seismic activity. Integrated
-							ESP32 microcontrollers with long-range LoRa wireless mesh, local
-							SQLite buffering, and an interactive React web dashboard with Web
-							Serial hardware telemetry.
+							Earned Level 1, 5-star rated freelancer status by building and
+							deploying 50+ full-stack web applications for international
+							clients. Designed end-to-end architectures using Next.js, React,
+							Node.js, Express, Python, and SQL databases. Containerized client
+							applications with Docker and configured Nginx reverse proxies for
+							deployment, caching, and traffic handling.
 						</p>
 						<div className="idx__tags">
-							<span className="idx__tag">Patent Granted</span>
-							<span className="idx__tag">ESP32</span>
-							<span className="idx__tag">LoRa</span>
+							<span className="idx__tag">50+ Apps Deployed</span>
+							<span className="idx__tag">Next.js</span>
 							<span className="idx__tag">React</span>
-							<span className="idx__tag">Web Serial</span>
-							<span className="idx__tag">Socket.io</span>
 							<span className="idx__tag">Node.js</span>
+							<span className="idx__tag">Express</span>
+							<span className="idx__tag">Python</span>
+							<span className="idx__tag">SQL Databases</span>
+							<span className="idx__tag">Docker</span>
+							<span className="idx__tag">Nginx Proxies</span>
+						</div>
+					</div>
+				</AccordionRow>
+
+				{/* 3. Patent & Publications */}
+				<AccordionRow
+					defaultOpen
+					flair="Patent Granted ✦"
+					meta="Patent 202441083752"
+					subtitle="Lead Researcher & Hardware Architect"
+					title="Multi-Hazard Detection and Alert System"
+				>
+					<div className="idx__panel-inner">
+						<p className="idx__body">
+							Published and granted national patent (Patent No. 202441083752).
+							Engineered an end-to-end multi-hazard telemetry pipeline with
+							wireless and serial transmission for fault-tolerant sensor streams
+							to a central gateway. Developed full-stack React + Node.js
+							dashboard ingesting real-time environmental telemetry with threat
+							thresholds and instant warning triggers.
+						</p>
+						<div className="idx__tags">
+							<span className="idx__tag">Patent No. 202441083752</span>
+							<span className="idx__tag">IoT Telemetry</span>
+							<span className="idx__tag">ESP32</span>
+							<span className="idx__tag">LoRa Wireless</span>
+							<span className="idx__tag">Serial Transmission</span>
+							<span className="idx__tag">React</span>
+							<span className="idx__tag">Node.js</span>
+							<span className="idx__tag">SQLite</span>
+							<span className="idx__tag">Sockets</span>
 						</div>
 						<div className="idx__foot">
 							<a
@@ -145,52 +168,32 @@ export function ExperienceSection() {
 								rel="noreferrer"
 								target="_blank"
 							>
-								Repository
+								Patent Implementation Repository
 								<ArrowUpRightIcon size={12} />
 							</a>
 						</div>
 					</div>
 				</AccordionRow>
 
+				{/* 4. Campus Leadership & Coordination */}
 				<AccordionRow
-					flair="Client Projects"
-					meta="2022 — 2024"
-					subtitle="Frontend & Full-Stack Developer"
-					title="Freelance Design & Web Engineering"
+					flair="Leadership"
+					meta="2023 — 2027"
+					subtitle="B.M.S. College of Engineering (Bengaluru)"
+					title="PhaseShift & Student Leadership"
 				>
 					<div className="idx__panel-inner">
 						<p className="idx__body">
-							Delivered performant client web solutions, custom dashboards, and
-							responsive product experiences. Focused on component modularity,
-							type safety, and crisp interaction design.
+							Senior Coordinator (Info Dev) for PhaseShift — BMSCE&apos;s
+							national annual tech symposium. Junior Coordinator for Utsav
+							2025 and Campus Ambassador, organizing technical events and
+							leading developer outreach.
 						</p>
 						<div className="idx__tags">
-							<span className="idx__tag">React</span>
-							<span className="idx__tag">Next.js</span>
-							<span className="idx__tag">Tailwind CSS</span>
-							<span className="idx__tag">REST APIs</span>
-						</div>
-					</div>
-				</AccordionRow>
-
-				<AccordionRow
-					flair="B.Tech"
-					meta="2022 — present"
-					subtitle="Electronics & Communication Engineering"
-					title="Engineering Degree Coursework"
-				>
-					<div className="idx__panel-inner">
-						<p className="idx__body">
-							Deepening understanding of low-level hardware-software boundaries:
-							computer architecture, microprocessors, signal processing,
-							networking fundamentals, and embedded C/C++ firmware.
-						</p>
-						<div className="idx__tags">
-							<span className="idx__tag">C</span>
-							<span className="idx__tag">C++</span>
-							<span className="idx__tag">Assembly</span>
-							<span className="idx__tag">Microcontrollers</span>
-							<span className="idx__tag">Networking</span>
+							<span className="idx__tag">Senior Coordinator</span>
+							<span className="idx__tag">PhaseShift (National Symposium)</span>
+							<span className="idx__tag">Junior Coordinator (Utsav 2025)</span>
+							<span className="idx__tag">Campus Ambassador</span>
 						</div>
 					</div>
 				</AccordionRow>
@@ -204,12 +207,41 @@ export function ExperienceSection() {
 ------------------------------------------------------------------------- */
 
 const stats = [
-	{ label: "Patent granted for IoT Hazard Monitoring System", value: "1", href: "#featured-projects" },
-	{ label: "Featured software and hardware projects shipped", value: "7", href: "#featured-projects" },
-	{ label: "Public open-source repositories on GitHub", value: "34", href: site.socials.github },
-	{ label: "Production languages and frameworks across stack", value: "10+", href: "#skills" },
-	{ label: "Artistic themes engineered for CartoNoir map generator", value: "18", href: "https://github.com/Dhruvkoshta/CartoNoir" },
-	{ label: "Lighthouse mobile audit score across all categories", value: "100%", href: "#" },
+	{
+		label: "Patent granted for Multi-Hazard Detection & Alert System (No. 202441083752)",
+		value: "1",
+		href: "#featured-projects",
+	},
+	{
+		label: "Full-stack web applications built & deployed for global clients (5★ rated)",
+		value: "50+",
+		href: "#experience",
+	},
+	{
+		label: "Cumulative Grade Point Average (CGPA) in B.E. ECE at B.M.S. College of Engg",
+		value: "8.8",
+		href: "#education",
+	},
+	{
+		label: "1st Place Winner at AI VERSE 2.0 Hackathon (Team Terminal Titans)",
+		value: "1st",
+		href: "#competitions",
+	},
+	{
+		label: "Public open-source repositories and system tools on GitHub",
+		value: "34",
+		href: site.socials.github,
+	},
+	{
+		label: "Artistic themes engineered for CartoNoir vector map generator",
+		value: "18",
+		href: "https://github.com/Dhruvkoshta/CartoNoir",
+	},
+	{
+		label: "Lighthouse mobile audit score across Performance, A11y, Best Practices & SEO",
+		value: "100%",
+		href: "#",
+	},
 ] as const;
 
 export function NumbersSection() {
@@ -254,9 +286,15 @@ const articles = [
 		url: site.socials.notes,
 	},
 	{
-		title: "Writing a Multi-Threaded HTTP Proxy Server in C from Scratch",
+		title: "Writing a Multi-Threaded HTTP Proxy Server in C with POSIX Sockets",
 		category: "Systems & C",
 		year: "2023",
+		url: site.socials.notes,
+	},
+	{
+		title: "Real-Time Proctoring Anomaly Detection Pipelines with AI Vision Models",
+		category: "AI & Systems",
+		year: "2024",
 		url: site.socials.notes,
 	},
 	{
@@ -319,6 +357,7 @@ export function BlogSection() {
 
 type FeaturedProject = {
 	title: string;
+	subtitle: string;
 	year: string;
 	desc: string;
 	tags: string[];
@@ -330,47 +369,52 @@ type FeaturedProject = {
 
 const featuredProjects: FeaturedProject[] = [
 	{
-		title: "CartoNoir: Minimalist City Map Poster Generator",
+		title: "ProctoAI",
+		subtitle: "AI-Powered Proctoring & Exam Integrity Platform",
 		year: "2024",
-		desc: "Full-stack web application that generates beautiful, minimalist map posters for any city in the world. Choose from 18 unique artistic themes and create stunning print-ready artwork in minutes.",
-		tags: ["React", "Docker", "Node.js", "Express", "AWS S3", "Python"],
-		image: "/media/polaroids/cartonoir-480.webp",
-		github: "https://github.com/Dhruvkoshta/CartoNoir",
-	},
-	{
-		title: "IoT Hazard Monitoring System",
-		year: "2024",
-		desc: "A comprehensive IoT platform designed to detect fire, floods, and earthquakes using ESP32 and LoRa. Features a Node.js backend for telemetry logging and an interactive React dashboard with Web Serial hardware support.",
-		tags: ["ESP32", "LoRa", "Node.js", "React", "SQLite", "Socket.io", "Drizzle"],
-		image: "/media/polaroids/hazard-480.webp",
-		patent: true,
-		github: "https://github.com/Dhruvkoshta/Monitoring-System",
-	},
-	{
-		title: "Rayfall: 2D Arcade Shooter in C++",
-		year: "2023",
-		desc: "Fast-paced 2D arcade shooter game developed in C++ using Raylib and GLSL shaders. Features custom collision detection, particle physics, and an in-game upgrade shop.",
-		tags: ["C++", "Raylib", "GLSL", "CMake"],
-		image: "/media/polaroids/rayfall-480.webp",
-		github: "https://github.com/Dhruvkoshta/Rayfall",
-	},
-	{
-		title: "ProctoAI: AI-Powered Academic Proctoring",
-		year: "2024",
-		desc: "An AI-powered proctoring platform ensuring academic integrity through real-time face recognition, room scanning, and browser locking, featuring a comprehensive instructor dashboard and coding environment.",
-		tags: ["Next.js", "TypeScript", "tRPC", "PostgreSQL", "Drizzle", "Tailwind CSS"],
+		desc: "Automated online examination proctoring platform monitoring candidate video feeds to detect unauthorized behavior. Implemented real-time anomaly detection pipelines with low latency and automated incident reporting.",
+		tags: ["Next.js", "Python", "OpenCV / AI Vision", "Node.js", "TypeScript", "Tailwind CSS"],
 		image: "/media/polaroids/proctoai-480.webp",
 		github: "https://github.com/Dhruvkoshta/TerminalTitans",
 		website: "https://terminal-titans-web.vercel.app/",
 	},
 	{
-		title: "VibeLink: Real-Time Community Chat",
+		title: "C-Powered Proxy Web Server",
+		subtitle: "Proxy & Traffic Management",
+		year: "2023",
+		desc: "Lightweight concurrent reverse proxy with dynamic request routing, in-memory caching, and load balancing. Native socket programming and POSIX threads minimize overhead and maximize throughput.",
+		tags: ["C", "POSIX Sockets", "HTTP", "Cache Architecture", "Pthreads", "Semaphores"],
+		image: "/media/polaroids/webserver-480.webp",
+		github: "https://github.com/Dhruvkoshta/Web-Server-in-C",
+	},
+	{
+		title: "Multi-Hazard Detection and Alert System",
+		subtitle: "Patent No. 202441083752",
 		year: "2024",
-		desc: "A modern, real-time chat platform connecting users through private and public channels. Features WebSocket streaming, Redis pub/sub messaging, and PostgreSQL database persistence.",
-		tags: ["TypeScript", "Express", "Redis", "PostgreSQL", "Socket.io", "Tailwind CSS"],
+		desc: "End-to-end multi-hazard telemetry pipeline with wireless and serial transmission for fault-tolerant sensor streams to a central gateway. Full-stack React + Node.js dashboard ingesting real-time environmental telemetry with threat thresholds and instant warning triggers.",
+		tags: ["Patent Granted", "ESP32", "LoRa Wireless", "Serial Protocol", "React", "Node.js", "SQLite"],
+		image: "/media/polaroids/hazard-480.webp",
+		patent: true,
+		github: "https://github.com/Dhruvkoshta/Monitoring-System",
+	},
+	{
+		title: "VibeLink",
+		subtitle: "Real-Time Chat Platform",
+		year: "2024",
+		desc: "Real-time messaging platform with instant bidirectional communication, public channels, and private rooms. Persistent message stores and WebSocket state management ensure synchronized statuses and low-latency delivery.",
+		tags: ["React", "Next.js", "Node.js", "WebSockets", "SQL", "Redis"],
 		image: "/media/polaroids/vibelink-480.webp",
 		github: "https://github.com/Dhruvkoshta/VibeLink",
 		website: "https://vibelink.dhruvkoshta.dev",
+	},
+	{
+		title: "CartoNoir",
+		subtitle: "Minimalist City Map Poster Generator",
+		year: "2024",
+		desc: "Full-stack web application that generates beautiful, minimalist map posters for any city in the world across 18 unique artistic themes, creating print-ready high-resolution artwork in minutes.",
+		tags: ["React", "Docker", "Node.js", "Express", "Python", "AWS S3"],
+		image: "/media/polaroids/cartonoir-480.webp",
+		github: "https://github.com/Dhruvkoshta/CartoNoir",
 	},
 ];
 
@@ -381,7 +425,7 @@ export function FeaturedProjectsSection() {
 				<article className="wk__card" key={project.title}>
 					<div className="wk__media">
 						<img
-							alt={project.title}
+							alt={`${project.title} - ${project.subtitle}`}
 							className="wk__img"
 							decoding="async"
 							loading="lazy"
@@ -399,7 +443,7 @@ export function FeaturedProjectsSection() {
 						<div className="wk__header">
 							<span className="wk__year">{project.year}</span>
 							<h3 className="wk__title">
-								{project.title}
+								{project.title}: {project.subtitle}
 								{project.patent ? (
 									<span className="wk__badge">Patent Granted</span>
 								) : null}
@@ -455,25 +499,27 @@ export function OtherProjectsSection() {
 	return (
 		<div className="idx">
 			<ul aria-label="Other projects list" className="idx__list">
+				{/* Anonymus */}
 				<AccordionRow
+					defaultOpen
 					flair="Live App"
 					meta="2024"
-					subtitle="Anonymous Messaging with AI Summaries"
+					subtitle="Secure Anonymous Messaging Platform"
 					title="Anonymus"
 				>
 					<div className="idx__panel-inner">
 						<p className="idx__body">
-							An anonymous feedback and messaging platform that allows users to
-							receive or send messages without revealing their identity or email.
-							Includes AI-powered message sentiment and summary features via
-							Gemini API.
+							Anonymous communication stripping metadata and identifiers to
+							preserve privacy. Features rate-limiting, secure query validation,
+							and input sanitization against malicious traffic and spoofing.
 						</p>
 						<div className="idx__tags">
 							<span className="idx__tag">Next.js</span>
-							<span className="idx__tag">TypeScript</span>
-							<span className="idx__tag">Gemini API</span>
-							<span className="idx__tag">Shadcn UI</span>
-							<span className="idx__tag">Tailwind CSS</span>
+							<span className="idx__tag">Node.js</span>
+							<span className="idx__tag">SQL</span>
+							<span className="idx__tag">Cryptographic Hashing</span>
+							<span className="idx__tag">Metadata Stripping</span>
+							<span className="idx__tag">Rate Limiting</span>
 						</div>
 						<div className="idx__foot">
 							<a
@@ -498,30 +544,29 @@ export function OtherProjectsSection() {
 					</div>
 				</AccordionRow>
 
+				{/* Rayfall */}
 				<AccordionRow
-					flair="Systems"
+					flair="Game Dev"
 					meta="2023"
-					subtitle="High-Performance Reverse Proxy & Caching"
-					title="C-Powered Proxy Web Server"
+					subtitle="Fast-Paced 2D Arcade Game in C++"
+					title="Rayfall"
 				>
 					<div className="idx__panel-inner">
 						<p className="idx__body">
-							A lightweight, multi-threaded reverse proxy and caching web server
-							written from scratch in C. Built using POSIX threads, semaphores,
-							and socket programming to route web traffic and handle concurrent
-							requests with high efficiency.
+							Fast-paced 2D arcade shooter game developed in C++ using Raylib
+							and custom GLSL shaders. Features custom collision detection,
+							particle physics, and an in-game upgrade shop.
 						</p>
 						<div className="idx__tags">
-							<span className="idx__tag">C</span>
-							<span className="idx__tag">Pthreads</span>
-							<span className="idx__tag">Semaphores</span>
-							<span className="idx__tag">Sockets</span>
-							<span className="idx__tag">HTTP Caching</span>
+							<span className="idx__tag">C++</span>
+							<span className="idx__tag">Raylib</span>
+							<span className="idx__tag">GLSL Shaders</span>
+							<span className="idx__tag">CMake</span>
 						</div>
 						<div className="idx__foot">
 							<a
 								className="idx__link"
-								href="https://github.com/Dhruvkoshta/Web-Server-in-C"
+								href="https://github.com/Dhruvkoshta/Rayfall"
 								rel="noreferrer"
 								target="_blank"
 							>
@@ -532,6 +577,7 @@ export function OtherProjectsSection() {
 					</div>
 				</AccordionRow>
 
+				{/* Portfolio Website v2 */}
 				<AccordionRow
 					flair="Portfolio"
 					meta="2023"
@@ -541,7 +587,7 @@ export function OtherProjectsSection() {
 					<div className="idx__panel-inner">
 						<p className="idx__body">
 							Second portfolio iteration built with Next.js, Framer Motion, and
-							a WebGL Cobe globe visualizing real-time viewer locations and
+							a WebGL globe visualizing real-time viewer locations and
 							interactive project cards.
 						</p>
 						<div className="idx__tags">
@@ -564,34 +610,88 @@ export function OtherProjectsSection() {
 export function EducationSection() {
 	return (
 		<div className="tkt">
+			{/* B.M.S. College of Engineering */}
 			<article className="tkt-card">
 				<div className="tkt-card__body">
 					<div className="tkt-card__head">
 						<div>
 							<h3 className="tkt-card__title">
-								B.Tech in Electronics & Communication Engineering
-								<span className="tkt-card__flag"> (🇮🇳)</span>
+								B.M.S. College of Engineering
+								<span className="tkt-card__flag"> (🇮🇳 Bengaluru)</span>
 							</h3>
 							<p className="tkt-card__degree">
-								Hardware-Software Systems & Computer Science Track
+								Bachelor of Engineering (B.E.) in Electronics and Communication
+								Engineering
 							</p>
-							<p className="tkt-card__period">2022 — present</p>
+							<p className="tkt-card__period">
+								2023 — 2027 (Expected Aug 2027) • <strong>CGPA 8.8 / 10.0</strong>
+							</p>
 						</div>
 					</div>
 
 					<div className="tkt-card__classes">
-						<p className="eyebrow" style={{ marginTop: "12px", marginBottom: "8px" }}>
-							Selected Coursework & Competencies
+						<p
+							className="eyebrow"
+							style={{ marginTop: "12px", marginBottom: "8px" }}
+						>
+							Leadership & Campus Roles
+						</p>
+						<ul className="tkt-card__list">
+							<li>
+								<strong>Senior Coordinator (Info Dev)</strong>, PhaseShift —
+								BMSCE national tech symposium
+							</li>
+							<li>
+								<strong>Junior Coordinator</strong>, Utsav 2025
+							</li>
+							<li>
+								<strong>Campus Ambassador</strong> representing student
+								engineering initiatives
+							</li>
+						</ul>
+
+						<p
+							className="eyebrow"
+							style={{ marginTop: "14px", marginBottom: "8px" }}
+						>
+							Core Curriculum & Systems Competencies
 						</p>
 						<ul className="tkt-card__list">
 							<li>Computer Architecture & Microprocessors (8085 / 8086 / ARM)</li>
 							<li>Data Structures & Algorithms in C / C++</li>
+							<li>Operating Systems, POSIX Threads, Sockets & Concurrency</li>
 							<li>Embedded Systems & Microcontroller Interfacing (ESP32 / AVR)</li>
-							<li>Wireless Communication Protocols & LoRa Telemetry</li>
-							<li>Operating Systems & Concurrency (Threads, Semaphores)</li>
-							<li>Database Management Systems & SQL</li>
-							<li>Digital Signal Processing & Fourier Analysis</li>
+							<li>Wireless Communication Protocols, Serial Data & LoRa Telemetry</li>
+							<li>Database Management Systems & Relational SQL</li>
+							<li>Digital Signal Processing & Signals and Systems</li>
 						</ul>
+					</div>
+				</div>
+			</article>
+
+			{/* Little Kingdom School */}
+			<article className="tkt-card" style={{ marginTop: "16px" }}>
+				<div className="tkt-card__body">
+					<div className="tkt-card__head">
+						<div>
+							<h3 className="tkt-card__title">
+								Little Kingdom School
+								<span className="tkt-card__flag"> (🇮🇳 Jabalpur)</span>
+							</h3>
+							<p className="tkt-card__degree">
+								Senior Secondary • High School Diploma
+							</p>
+							<p className="tkt-card__period">
+								Jabalpur, Madhya Pradesh, India • <strong>80%</strong>
+							</p>
+						</div>
+					</div>
+					<div className="tkt-card__classes">
+						<p className="idx__body" style={{ marginTop: "8px" }}>
+							Strong academic focus in Mathematics, Physics, and foundational
+							Computer Science. The playground where tinkering with radios and
+							circuits first sparked a passion for engineering.
+						</p>
 					</div>
 				</div>
 			</article>
@@ -605,20 +705,35 @@ export function EducationSection() {
 
 const skillCategories = [
 	{
-		label: "Frontend",
-		items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML5/CSS3"],
+		label: "Programming Languages",
+		items: ["C", "C++", "TypeScript", "JavaScript", "Python", "SQL", "Assembly"],
 	},
 	{
-		label: "Backend & Systems",
-		items: ["Node.js", "Express", "PostgreSQL", "Drizzle ORM", "Redis", "Socket.io", "Nginx"],
+		label: "Web & Frameworks",
+		items: ["Next.js", "React.js", "Node.js", "Express.js", "WebSockets", "Tailwind CSS"],
 	},
 	{
-		label: "Languages",
-		items: ["TypeScript", "JavaScript", "C", "C++", "Python", "Assembly (x86/ARM)"],
+		label: "Systems & DevOps",
+		items: [
+			"Docker",
+			"Kubernetes",
+			"Nginx",
+			"Arch Linux",
+			"Linux Kernel Tools",
+			"Neovim",
+			"Git",
+		],
 	},
 	{
-		label: "Tools, DevOps & Hardware",
-		items: ["Docker", "Linux / POSIX", "Git", "ESP32", "LoRa", "Neovim", "AWS S3"],
+		label: "Hardware & Protocols",
+		items: [
+			"IoT Telemetry",
+			"Serial Communication",
+			"Networking Protocols",
+			"Sockets",
+			"ESP32",
+			"LoRa",
+		],
 	},
 ];
 
@@ -629,51 +744,56 @@ export function SkillsSection() {
 				<li className="sk__row">
 					<div className="sk__label">
 						<span className="sk__no">001</span>
-						<h3 className="sk__name">Specialization</h3>
+						<h3 className="sk__name">Enterprise Infrastructure</h3>
 					</div>
 					<p className="sk__body">
-						Full-stack web engineering, real-time communications, and
-						hardware-to-cloud IoT architectures.
+						Experience at Dell Technologies contributing to enterprise software
+						infrastructure, low-level performance analysis, system integrations,
+						and reliability.
 					</p>
 				</li>
 				<li className="sk__row">
 					<div className="sk__label">
 						<span className="sk__no">002</span>
-						<h3 className="sk__name">Technology Stack</h3>
+						<h3 className="sk__name">Full-Stack Velocity</h3>
 					</div>
 					<p className="sk__body">
-						Comfortable across TypeScript, modern React, C, C++, Node.js, and
-						PostgreSQL with Drizzle ORM.
+						Level 1, 5-star rated freelancer with 50+ full-stack web applications
+						shipped for international clients using Next.js, React, Node.js,
+						Express, and SQL.
 					</p>
 				</li>
 				<li className="sk__row">
 					<div className="sk__label">
 						<span className="sk__no">003</span>
-						<h3 className="sk__name">Systems & Networking</h3>
+						<h3 className="sk__name">Systems & Socket Programming</h3>
 					</div>
 					<p className="sk__body">
-						Experience with socket programming, multi-threaded C proxies,
-						semaphores, and LoRa long-range wireless telemetry.
+						Lightweight concurrent reverse proxies in C using POSIX sockets,
+						pthreads, and HTTP cache architecture to minimize overhead and
+						maximize throughput.
 					</p>
 				</li>
 				<li className="sk__row">
 					<div className="sk__label">
 						<span className="sk__no">004</span>
-						<h3 className="sk__name">Hardware-Software Codesign</h3>
+						<h3 className="sk__name">Hardware-Software Co-Design</h3>
 					</div>
 					<p className="sk__body">
-						Granted patent for IoT hazard monitoring platform: combining sensors,
-						microcontrollers, and web dashboards.
+						Granted patent (No. 202441083752) for multi-hazard IoT telemetry
+						pipelines combining ESP32, LoRa wireless mesh, and real-time React
+						dashboards.
 					</p>
 				</li>
 				<li className="sk__row">
 					<div className="sk__label">
 						<span className="sk__no">005</span>
-						<h3 className="sk__name">0→1 Product Velocity</h3>
+						<h3 className="sk__name">DevOps & Containerization</h3>
 					</div>
 					<p className="sk__body">
-						Taking ideas from circuit prototypes and scratch repositories to
-						shipped web applications.
+						Containerizing client and internal applications with Docker,
+						configuring Nginx reverse proxies, caching, rate-limiting, and
+						traffic management.
 					</p>
 				</li>
 			</ul>
@@ -697,7 +817,7 @@ export function SkillsSection() {
 }
 
 /* -------------------------------------------------------------------------
-   08. Ethical Hacking Section
+   08. Ethical Hacking & Research Section
 ------------------------------------------------------------------------- */
 
 export function EthicalHackingSection() {
@@ -707,9 +827,9 @@ export function EthicalHackingSection() {
 				<div className="ed-callout__copy">
 					<p className="eyebrow">Responsible Research & Security</p>
 					<p>
-						Practical security research focusing on authentication hardening,
-						authorization boundary audits, and hardware security across
-						wireless sensor telemetry.
+						Practical security research focusing on cryptographic hashing,
+						metadata stripping, input sanitization, and wireless telemetry
+						fault-tolerance.
 					</p>
 				</div>
 				<span className="idx__flair">Responsible Disclosure</span>
@@ -719,12 +839,13 @@ export function EthicalHackingSection() {
 					<div className="idx__grid">
 						<span className="idx__details">
 							<span className="idx__title-text">
-								LoRa Wireless Mesh Telemetry Security & Integrity
+								Anonymous Communication: Metadata Stripping & Cryptographic Hashing
 							</span>
 						</span>
 						<span aria-hidden="true" className="idx__leader" />
 						<div className="idx__trail">
-							<span className="idx__meta">Hardware Security</span>
+							<span className="idx__flair">Privacy Research</span>
+							<span className="idx__meta">Application Security</span>
 						</div>
 					</div>
 				</li>
@@ -732,12 +853,27 @@ export function EthicalHackingSection() {
 					<div className="idx__grid">
 						<span className="idx__details">
 							<span className="idx__title-text">
-								Web Application Authorization & Rate Limiting Audits
+								Input Sanitization & Secure Query Validation Against Spoofing
 							</span>
 						</span>
 						<span aria-hidden="true" className="idx__leader" />
 						<div className="idx__trail">
-							<span className="idx__meta">Application Security</span>
+							<span className="idx__flair">Sanitization</span>
+							<span className="idx__meta">Web Security</span>
+						</div>
+					</div>
+				</li>
+				<li className="idx__row">
+					<div className="idx__grid">
+						<span className="idx__details">
+							<span className="idx__title-text">
+								Fault-Tolerant LoRa Mesh Telemetry & Serial Data Integrity (Patent)
+							</span>
+						</span>
+						<span aria-hidden="true" className="idx__leader" />
+						<div className="idx__trail">
+							<span className="idx__flair">Hardware Security</span>
+							<span className="idx__meta">IoT Protocol</span>
 						</div>
 					</div>
 				</li>
@@ -747,41 +883,56 @@ export function EthicalHackingSection() {
 }
 
 /* -------------------------------------------------------------------------
-   09. Competitions Section
+   09. Competitions & Hackathons Section
 ------------------------------------------------------------------------- */
 
 export function CompetitionsSection() {
 	return (
 		<div className="idx">
 			<ul aria-label="Competitions & Hackathons" className="idx__list">
+				{/* AI VERSE 2.0 Hackathon */}
 				<AccordionRow
 					defaultOpen
-					flair="Patent Granted"
-					meta="2024"
-					subtitle="National Intellectual Property Office"
-					title="IoT Hazard Monitoring System Patent"
+					flair="1st Place Winner 🏆"
+					meta="1st Place"
+					subtitle="Team Terminal Titans"
+					title="AI VERSE 2.0 Hackathon"
 				>
 					<div className="idx__panel-inner">
 						<p className="idx__body">
-							Filed and granted patent for multi-hazard monitoring combining
-							sensor fusion (flame, gas, flood, tremor) and decentralized LoRa
-							broadcast protocols with real-time web telemetry.
+							Led team Terminal Titans to first place and the top cash prize for
+							architecting an end-to-end AI application under competitive time
+							constraints. Designed the high-throughput backend, AI inference
+							pipeline, and real-time monitoring interface.
 						</p>
+						<div className="idx__tags">
+							<span className="idx__tag">1st Place Winner</span>
+							<span className="idx__tag">Team Terminal Titans</span>
+							<span className="idx__tag">Top Cash Prize</span>
+							<span className="idx__tag">AI Application Architecture</span>
+						</div>
 					</div>
 				</AccordionRow>
 
+				{/* Patent Grant */}
 				<AccordionRow
-					flair="36h Hackathon"
-					meta="2024"
-					subtitle="Terminal Titans"
-					title="ProctoAI — Academic Integrity Engine"
+					defaultOpen
+					flair="National Patent"
+					meta="Patent 202441083752"
+					subtitle="National Intellectual Property Office"
+					title="Multi-Hazard Detection and Alert System"
 				>
 					<div className="idx__panel-inner">
 						<p className="idx__body">
-							Engineered full-stack proctoring system with real-time biometric
-							verification, room environment auditing, and instructor
-							oversight dashboard under hackathon deadline.
+							Patent granted for multi-hazard monitoring combining wireless and
+							serial transmission for fault-tolerant sensor streams to a central
+							gateway, with real-time React environmental telemetry.
 						</p>
+						<div className="idx__tags">
+							<span className="idx__tag">Patent Granted</span>
+							<span className="idx__tag">Telemetry Pipeline</span>
+							<span className="idx__tag">Hardware-Software Codesign</span>
+						</div>
 					</div>
 				</AccordionRow>
 			</ul>
@@ -798,10 +949,10 @@ export function WhatOthersSaySection() {
 		<div className="testimonials">
 			<blockquote className="quote-card">
 				<p className="quote-card__text">
-					“Dhruv has a rare balance of deep curiosity for low-level systems and
-					fast velocity in shipping modern web applications. His dedication to
-					understanding how hardware and software integrate is evident in every
-					project he builds.”
+					“Dhruv combines rare low-level systems depth with remarkable
+					full-stack execution speed — whether analyzing enterprise software
+					infrastructure, engineering C socket proxies, or shipping 50+ web
+					applications for international clients.”
 				</p>
 				<footer className="quote-card__author">
 					— Engineering Peer & Collaborator
@@ -837,7 +988,10 @@ export function PortfolioEvolutionSection() {
 			</div>
 
 			<div className="evolution-card evolution-card--current">
-				<span className="eyebrow" style={{ color: "var(--accent-hover)", fontWeight: 600 }}>
+				<span
+					className="eyebrow"
+					style={{ color: "var(--accent-hover)", fontWeight: 600 }}
+				>
 					2026 (Current)
 				</span>
 				<h3 className="evolution-card__title">
@@ -874,7 +1028,11 @@ export function SpotifySection() {
 				<span className="idx__flair">Playlists</span>
 			</div>
 
-			<ul aria-label="Curated playlists" className="idx__list" style={{ marginTop: "16px" }}>
+			<ul
+				aria-label="Curated playlists"
+				className="idx__list"
+				style={{ marginTop: "16px" }}
+			>
 				{playlists.map((pl) => (
 					<li className="idx__row" key={pl.title}>
 						<div className="idx__grid">
@@ -912,8 +1070,9 @@ export function MiscSection() {
 					<div className="idx__panel-inner">
 						<p className="idx__body">
 							Operating System: Arch Linux / Debian. Editor: Neovim & VS Code.
-							Terminal: Alacritty / Ghostty with Tmux. Shell: Bash / Zsh.
-							Keyboard: Mechanical with tactile switches.
+							Terminal: Ghostty & Alacritty with Tmux. Shell: Bash / Zsh.
+							Hardware: ESP32 microcontrollers, LoRa transceivers, and mechanical
+							keyboards.
 						</p>
 					</div>
 				</AccordionRow>
@@ -926,8 +1085,9 @@ export function MiscSection() {
 				>
 					<div className="idx__panel-inner">
 						<p className="idx__body">
-							Cracked engineers, hardware tinkerers, and open-source builders
-							whose projects and portfolios are always worth the detour.
+							Engineers, hardware tinkerers, Terminal Titans teammates, and
+							open-source builders whose projects and portfolios inspire
+							continuous shipping.
 						</p>
 					</div>
 				</AccordionRow>
@@ -944,12 +1104,13 @@ export function AsAKidSection() {
 	return (
 		<div className="as-a-kid-block">
 			<p className="hero__intro" style={{ marginTop: 0 }}>
-				I spent my childhood taking apart toy gadgets, exploring broken radios,
-				and playing football and cricket outdoors. Long before writing my first
-				line of code, I had an insatiable obsession with understanding how
-				machines, circuits, and systems work from the inside out. That childhood
-				curiosity directly led me to electronics, microcontrollers, and software
-				engineering.
+				Growing up in Jabalpur, Madhya Pradesh, I spent my childhood taking apart
+				broken radios, exploring household circuits, and playing football and cricket.
+				Long before writing my first line of C or Python, I was obsessed with
+				understanding how electronic machines and physical systems function from
+				the inside out. That curiosity led directly to Little Kingdom School,
+				moving to Bengaluru for engineering at B.M.S. College of Engineering, and
+				building full-stack software and hardware platforms.
 			</p>
 		</div>
 	);
@@ -976,16 +1137,28 @@ export function ContactReceiptSection() {
 		<div className="receipt-container">
 			<div className="receipt">
 				<div className="receipt__head">
-					<p className="receipt__title">{site.name}</p>
-					<p className="receipt__subtitle">{site.url.replace("https://", "")}</p>
+					<p className="receipt__title">{site.fullName}</p>
+					<p className="receipt__subtitle">
+						{site.role} • {site.location}
+					</p>
 					<div className="receipt__divider" />
 					<div className="receipt__meta-row">
 						<span>ORDER #DK-2026</span>
-						<span>CLERK: Dhruv</span>
+						<span>CLERK: Dhruv Koshta</span>
+					</div>
+					<div className="receipt__meta-row">
+						<span>PHONE: {site.phone}</span>
+						<span>BENGALURU, KA</span>
 					</div>
 					<div className="receipt__meta-row">
 						<span>DATE: {new Date().toLocaleDateString("en-US")}</span>
-						<span>TIME: {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</span>
+						<span>
+							TIME:{" "}
+							{new Date().toLocaleTimeString("en-US", {
+								hour: "2-digit",
+								minute: "2-digit",
+							})}
+						</span>
 					</div>
 					<div className="receipt__divider" />
 				</div>
@@ -1001,7 +1174,7 @@ export function ContactReceiptSection() {
 							className="receipt__textarea"
 							maxLength={1000}
 							onChange={(e) => setMessage(e.target.value)}
-							placeholder="Write a message, project inquiry, or just say hello..."
+							placeholder="Write a message, project inquiry, opportunity, or just say hello..."
 							required
 							rows={4}
 							value={message}
@@ -1018,7 +1191,7 @@ export function ContactReceiptSection() {
 							className="receipt__input"
 							maxLength={100}
 							onChange={(e) => setReplyTo(e.target.value)}
-							placeholder="Your email or handle"
+							placeholder="Your email, phone, or handle"
 							type="text"
 							value={replyTo}
 						/>
@@ -1040,6 +1213,15 @@ export function ContactReceiptSection() {
 						Direct email:{" "}
 						<a className="text-link" href={`mailto:${site.email}`}>
 							{site.email}
+						</a>
+						{" • "}
+						<a
+							className="text-link"
+							href={site.resumeUrl}
+							rel="noreferrer"
+							target="_blank"
+						>
+							Download Resume (PDF)
 						</a>
 					</p>
 				</form>

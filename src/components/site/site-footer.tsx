@@ -4,6 +4,7 @@ import {
 	GitHubIcon,
 	LinkedInIcon,
 	MailIcon,
+	NotebookPenIcon,
 	XIcon,
 } from "./icons";
 import { site } from "~/lib/site";
@@ -32,8 +33,9 @@ export function SiteFooter() {
 						<div className="ed3-footer__objective">
 							<h3 className="ed3-footer__objective-tag">Recruiters</h3>
 							<p className="ed3-footer__objective-desc">
-								Open to full-stack, distributed systems, and product engineering
-								roles, or collaborating with cracked founders.
+								Software Intern at Dell Technologies • B.E. ECE at B.M.S. College
+								of Engineering (CGPA 8.8). Open to full-stack, distributed
+								systems, and software infrastructure roles.
 							</p>
 							<div className="ed3-footer__channels">
 								<a
@@ -51,8 +53,19 @@ export function SiteFooter() {
 									href={site.socials.linkedin}
 									rel="noreferrer"
 									target="_blank"
+									title="LinkedIn profile"
 								>
 									<LinkedInIcon size={15} />
+								</a>
+								<a
+									aria-label="Download Resume"
+									className="ed3-footer__channel"
+									href={site.resumeUrl}
+									rel="noreferrer"
+									target="_blank"
+									title="Download Official Resume (PDF)"
+								>
+									<NotebookPenIcon size={15} />
 								</a>
 							</div>
 						</div>
