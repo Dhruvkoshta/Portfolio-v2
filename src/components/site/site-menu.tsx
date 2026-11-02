@@ -174,6 +174,7 @@ const shortcuts = [
 	{ keys: ["M"], label: "Open the misc. menu" },
 	{ keys: ["G"], label: "Open Ask Dhruv" },
 	{ keys: ["C"], label: "Jump to contact" },
+	{ keys: ["U"], label: "Toggle interface sound" },
 	{ keys: ["?"], label: "Show this panel" },
 	{ keys: ["Esc"], label: "Close a panel or menu" },
 ];

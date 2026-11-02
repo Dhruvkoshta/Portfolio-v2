@@ -16,8 +16,12 @@ import {
 	MenuIcon,
 	NotebookPenIcon,
 	SparklesIcon,
+	SpeakerIcon,
+	SpeakerMuteIcon,
 	XIcon,
 } from "./icons";
+import { AmbientRadio } from "./ambient-radio";
+import { sound } from "~/lib/sound";
 import { primaryNav, site } from "~/lib/site";
 import { ShortcutsDialog, SiteMenuDialog } from "./site-menu";
 
@@ -91,10 +95,39 @@ export function SiteHeader() {
 	const [openPanel, setOpenPanel] = useState<Panel>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
+	const [soundActive, setSoundActive] = useState(false);
+	const [blrTime, setBlrTime] = useState("");
 	const panelRef = useRef<HTMLDivElement>(null);
 	const focusTriggerAfterClose = useRef<Panel>(null);
 
+	useEffect(() => {
+		setSoundActive(sound.isEnabled());
+
+		const updateTime = () => {
+			try {
+				const formatted = new Intl.DateTimeFormat("en-US", {
+					timeZone: "Asia/Kolkata",
+					hour: "2-digit",
+					minute: "2-digit",
+					hour12: true,
+				}).format(new Date());
+				setBlrTime(formatted);
+			} catch {
+				setBlrTime("");
+			}
+		};
+		updateTime();
+		const interval = setInterval(updateTime, 10000);
+		return () => clearInterval(interval);
+	}, []);
+
+	const handleToggleSound = useCallback(() => {
+		const next = sound.toggle();
+		setSoundActive(next);
+	}, []);
+
 	const togglePanel = useCallback((panel: Exclude<Panel, null>) => {
+		sound.play("click");
 		setOpenPanel((current) => {
 			if (current === panel) {
 				focusTriggerAfterClose.current = panel;
@@ -173,31 +206,42 @@ export function SiteHeader() {
 
 			if (key === "?") {
 				event.preventDefault();
+				sound.play("click");
 				setOpenPanel(null);
 				setShortcutsOpen(true);
 				return;
 			}
 
+			if (key === "u") {
+				event.preventDefault();
+				handleToggleSound();
+				return;
+			}
+
 			if (key === "h") {
 				event.preventDefault();
+				sound.play("click");
 				scrollToTop();
 				return;
 			}
 
 			if (key === "p") {
 				event.preventDefault();
+				sound.play("click");
 				scrollToId("featured-projects");
 				return;
 			}
 
 			if (key === "c") {
 				event.preventDefault();
+				sound.play("click");
 				scrollToId("contact");
 				return;
 			}
 
 			if (key === "n") {
 				event.preventDefault();
+				sound.play("click");
 				window.open(site.socials.notes, "_blank", "noopener,noreferrer");
 				return;
 			}
@@ -222,7 +266,7 @@ export function SiteHeader() {
 
 		window.addEventListener("keydown", handleShortcut);
 		return () => window.removeEventListener("keydown", handleShortcut);
-	}, [togglePanel]);
+	}, [togglePanel, handleToggleSound]);
 
 	return (
 		<>
@@ -473,6 +517,56 @@ export function SiteHeader() {
 								</div>
 							) : null}
 						</div>
+
+						<span aria-hidden="true" className="appbar__rule" />
+
+						{/* Sound Toggle Button */}
+						<button
+							aria-keyshortcuts="U"
+							aria-label={
+								soundActive
+									? "Mute interface sounds"
+									: "Enable interface sounds"
+							}
+							className={`appbar__link appbar__link--sound ${
+								soundActive ? "appbar__link--sound-active" : ""
+							}`}
+							onClick={handleToggleSound}
+							title={
+								soundActive
+									? "Sound ON (Press U to mute)"
+									: "Sound OFF (Press U to enable)"
+							}
+							type="button"
+						>
+							{soundActive ? (
+								<SpeakerIcon aria-hidden="true" size={13} strokeWidth={1.75} />
+							) : (
+								<SpeakerMuteIcon
+									aria-hidden="true"
+									size={13}
+									strokeWidth={1.75}
+								/>
+							)}
+							<kbd aria-hidden="true" className="appbar__kbd">
+								u
+							</kbd>
+						</button>
+
+						{/* Compact Ambient Radio */}
+						<AmbientRadio compact />
+
+						{/* Live Bengaluru Clock */}
+						{blrTime ? (
+							<div
+								className="appbar__clock"
+								title={`Bengaluru local time: ${blrTime}`}
+							>
+								<span aria-hidden="true" className="appbar__clock-dot" />
+								<span className="appbar__clock-city">BLR</span>
+								<span className="appbar__clock-time">{blrTime}</span>
+							</div>
+						) : null}
 					</nav>
 
 					<button
@@ -480,7 +574,10 @@ export function SiteHeader() {
 						aria-haspopup="dialog"
 						aria-label="Open menu"
 						className="appbar__mobile"
-						onClick={() => setMenuOpen(true)}
+						onClick={() => {
+							sound.play("click");
+							setMenuOpen(true);
+						}}
 						type="button"
 					>
 						<MenuIcon aria-hidden="true" size={16} strokeWidth={1.75} />
@@ -489,7 +586,10 @@ export function SiteHeader() {
 					<Link
 						aria-label="DK, Dhruv Koshta, home"
 						className="appbar__home-mark"
-						onClick={scrollToTop}
+						onClick={() => {
+							sound.play("click");
+							scrollToTop();
+						}}
 						to="/"
 					>
 						DK

@@ -112,3 +112,43 @@ test.describe("reduced motion", () => {
 		expect(styles.scrollBehavior).toBe("auto");
 	});
 });
+
+test("sound toggle button and shortcut 'u' toggle interface audio", async ({ page }) => {
+	await gotoHome(page);
+
+	const soundBtn = page.getByRole("button", { name: /interface sounds/i });
+	await expect(soundBtn).toBeVisible();
+	await expect(soundBtn).toHaveAttribute("aria-label", "Enable interface sounds");
+
+	// Click to enable
+	await soundBtn.click();
+	await expect(soundBtn).toHaveAttribute("aria-label", "Mute interface sounds");
+
+	// Press 'u' key shortcut to toggle back
+	await page.keyboard.press("u");
+	await expect(soundBtn).toHaveAttribute("aria-label", "Enable interface sounds");
+});
+
+test("pixel pet Byte is interactive and reacts to petting", async ({ page }) => {
+	await gotoHome(page);
+
+	const petBtn = page.getByRole("button", { name: /Pet Byte the cat/i });
+	await expect(petBtn).toBeVisible();
+	await expect(petBtn).toHaveAttribute("aria-label", /Current happiness: 0/);
+
+	// Pet Byte
+	await petBtn.click();
+	await expect(petBtn).toHaveAttribute("aria-label", /Current happiness: 1/);
+});
+
+test("ambient radio player is accessible in the header and spotify section", async ({ page }) => {
+	await gotoHome(page);
+
+	const headerRadioBtn = page.getByRole("button", { name: /^Radio: Play/i });
+	await expect(headerRadioBtn).toBeVisible();
+
+	// Full player in Spotify section
+	const radioPlayer = page.getByRole("region", { name: "Ambient Radio Player" });
+	await expect(radioPlayer).toBeVisible();
+	await expect(radioPlayer.getByText("Electric — Lofi Stream")).toBeVisible();
+});

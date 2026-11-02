@@ -1923,6 +1923,403 @@ kbd {
 	}
 }
 
+/* Phase 3: Clock, Sound, Radio & Pixel Pet --------------------------------- */
+
+/* Live Bengaluru Clock */
+.appbar__clock {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 0 8px;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: var(--ink-soft);
+	user-select: none;
+}
+
+.appbar__clock-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #10b981;
+	box-shadow: 0 0 6px #10b981;
+	animation: pulse-dot 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+	0%, 100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.45;
+		transform: scale(0.85);
+	}
+}
+
+.appbar__clock-city {
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	color: var(--ink);
+}
+
+.appbar__clock-time {
+	color: var(--ink-muted);
+}
+
+/* Sound Button */
+.appbar__link--sound {
+	padding: 0 8px;
+}
+
+.appbar__link--sound-active {
+	color: var(--accent);
+}
+
+.appbar__link--sound-active:hover {
+	color: var(--accent-hover);
+}
+
+/* Ambient Radio Player (Full & Compact) */
+.ambient-radio {
+	border: 1px solid var(--line);
+	background: #fff;
+	border-radius: 8px;
+	padding: 16px 20px;
+	margin-top: 16px;
+	display: grid;
+	gap: 14px;
+	box-shadow: 0 4px 16px color-mix(in srgb, #000 3%, transparent);
+	transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.ambient-radio--playing {
+	border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+
+.ambient-radio__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.ambient-radio__meta {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.ambient-radio__icon {
+	color: var(--accent);
+}
+
+.ambient-radio__info {
+	display: flex;
+	flex-direction: column;
+}
+
+.ambient-radio__title {
+	font-size: 13.5px;
+	font-weight: 500;
+	color: var(--ink);
+}
+
+.ambient-radio__artist {
+	font-size: 11px;
+	color: var(--ink-muted);
+}
+
+.ambient-radio__eq {
+	display: flex;
+	align-items: flex-end;
+	gap: 3px;
+	height: 16px;
+}
+
+.ambient-radio__bar {
+	width: 3px;
+	height: 4px;
+	background: var(--ink-muted);
+	border-radius: 1px;
+	transition: height var(--dur-fast);
+}
+
+.ambient-radio__eq--active .bar-1 {
+	animation: eq 0.8s ease-in-out infinite alternate;
+}
+.ambient-radio__eq--active .bar-2 {
+	animation: eq 0.6s ease-in-out infinite alternate 0.2s;
+}
+.ambient-radio__eq--active .bar-3 {
+	animation: eq 1s ease-in-out infinite alternate 0.1s;
+}
+.ambient-radio__eq--active .bar-4 {
+	animation: eq 0.7s ease-in-out infinite alternate 0.3s;
+}
+
+@keyframes eq {
+	0% {
+		height: 3px;
+		background: var(--ink-muted);
+	}
+	100% {
+		height: 16px;
+		background: var(--accent);
+	}
+}
+
+.ambient-radio__controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 14px;
+	border-top: 1px dashed var(--line);
+	padding-top: 12px;
+}
+
+.ambient-radio__play-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	border: 1px solid var(--ink);
+	background: var(--ink);
+	color: #fff;
+	padding: 6px 14px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.ambient-radio__play-btn:hover {
+	background: var(--accent);
+	border-color: var(--accent);
+}
+
+.ambient-radio__time {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: var(--ink-muted);
+}
+
+.ambient-radio__volume-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.ambient-radio__mute-btn {
+	background: none;
+	border: none;
+	padding: 4px;
+	color: var(--ink-soft);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.ambient-radio__mute-btn:hover {
+	color: var(--accent);
+}
+
+.ambient-radio__slider {
+	width: 72px;
+	height: 4px;
+	accent-color: var(--accent);
+	cursor: pointer;
+}
+
+/* Compact Radio Button in Appbar */
+.radio-compact {
+	display: inline-flex;
+	align-items: center;
+}
+
+.radio-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	background: none;
+	border: none;
+	color: var(--ink-soft);
+	font-size: 11px;
+	cursor: pointer;
+	padding: 4px 8px;
+	border-radius: 4px;
+	transition: color var(--dur-fast);
+}
+
+.radio-btn:hover {
+	color: var(--ink);
+}
+
+.radio-btn--playing {
+	color: var(--accent);
+	font-weight: 500;
+}
+
+/* Retro Pixel Pet --------------------------------------------------------- */
+.pixel-pet-container {
+	position: fixed;
+	bottom: 24px;
+	right: 24px;
+	z-index: 40;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	pointer-events: none;
+}
+
+.pixel-pet__bubble {
+	position: relative;
+	background: #fff;
+	border: 1px solid var(--ink);
+	box-shadow: 2px 2px 0 var(--ink);
+	padding: 6px 10px;
+	margin-bottom: 8px;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: var(--ink);
+	border-radius: 4px;
+	pointer-events: auto;
+	animation: pop-in 0.2s var(--ease-out);
+	white-space: nowrap;
+}
+
+.pixel-pet__bubble-arrow {
+	position: absolute;
+	bottom: -5px;
+	right: 18px;
+	width: 8px;
+	height: 8px;
+	background: #fff;
+	border-right: 1px solid var(--ink);
+	border-bottom: 1px solid var(--ink);
+	transform: rotate(45deg);
+}
+
+.pixel-pet__heart {
+	position: absolute;
+	bottom: 48px;
+	right: 20px;
+	color: var(--accent);
+	animation: float-heart 1.2s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+	pointer-events: none;
+}
+
+@keyframes float-heart {
+	0% {
+		opacity: 1;
+		transform: translateY(0) scale(0.6);
+	}
+	50% {
+		transform: translateY(-24px) scale(1.1);
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(-44px) scale(0.8);
+	}
+}
+
+.pixel-pet__wrap {
+	display: flex;
+	align-items: flex-end;
+	gap: 6px;
+	pointer-events: auto;
+}
+
+.pixel-pet {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	image-rendering: pixelated;
+	transition: transform var(--dur-fast);
+}
+
+.pixel-pet:hover {
+	transform: translateY(-3px) scale(1.05);
+}
+
+.pixel-pet--awake .pixel-pet__sprite {
+	animation: cat-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes cat-bob {
+	0%, 100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-2px);
+	}
+}
+
+.pixel-pet__actions {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.pixel-pet__tool-btn {
+	background: #fff;
+	border: 1px solid var(--line-strong);
+	border-radius: 4px;
+	width: 20px;
+	height: 20px;
+	font-size: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: var(--ink-soft);
+	padding: 0;
+	transition: background-color var(--dur-fast);
+}
+
+.pixel-pet__tool-btn:hover {
+	background: var(--bg-subtle);
+	color: var(--ink);
+}
+
+.pixel-pet-dock {
+	position: fixed;
+	bottom: 16px;
+	right: 16px;
+	z-index: 40;
+	background: #fff;
+	border: 1px solid var(--line);
+	box-shadow: var(--shadow-glass);
+	border-radius: 12px;
+	padding: 4px 10px;
+	cursor: pointer;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: var(--ink-soft);
+	transition: border-color var(--dur-fast);
+}
+
+.pixel-pet-dock:hover {
+	border-color: var(--accent);
+	color: var(--ink);
+}
+
+@keyframes pop-in {
+	0% {
+		opacity: 0;
+		transform: scale(0.9) translateY(4px);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;

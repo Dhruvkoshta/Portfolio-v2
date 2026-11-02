@@ -1,5 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { ArrowUpRightIcon, PrinterIcon } from "./icons";
+import { AmbientRadio } from "./ambient-radio";
+import { sound } from "~/lib/sound";
 import {
 	articles,
 	asAKidStory,
@@ -42,13 +44,18 @@ export function AccordionRow({
 }: AccordionRowProps) {
 	const [isOpen, setIsOpen] = useState(defaultOpen);
 
+	const toggleOpen = () => {
+		sound.play("switch");
+		setIsOpen((prev) => !prev);
+	};
+
 	return (
 		<li className="idx__row">
 			<div className="idx__grid">
 				<button
 					aria-expanded={isOpen}
 					className="idx__hit"
-					onClick={() => setIsOpen((prev) => !prev)}
+					onClick={toggleOpen}
 					type="button"
 				>
 					<span className="sr-only">Toggle details for {title}</span>
@@ -71,7 +78,7 @@ export function AccordionRow({
 				<button
 					aria-hidden="true"
 					className="idx__plus-btn"
-					onClick={() => setIsOpen((prev) => !prev)}
+					onClick={toggleOpen}
 					tabIndex={-1}
 					type="button"
 				>
@@ -601,6 +608,9 @@ export function SpotifySection() {
 				<span className="idx__flair">Playlists</span>
 			</div>
 
+			{/* Phase 3: Ambient Radio Player */}
+			<AmbientRadio />
+
 			<ul
 				aria-label="Curated playlists"
 				className="idx__list"
@@ -678,6 +688,8 @@ export function ContactReceiptSection() {
 	const handlePrint = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!message.trim()) return;
+		sound.play("paper");
+		setTimeout(() => sound.play("chime"), 350);
 		const mailtoUrl = `mailto:${site.email}?subject=Message from ${encodeURIComponent(replyTo || "Portfolio Visitor")}&body=${encodeURIComponent(message)}`;
 		window.location.href = mailtoUrl;
 		setSent(true);

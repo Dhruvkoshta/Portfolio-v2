@@ -7,9 +7,9 @@ At each seam, agents run `npm run typecheck`, run single test files with `npm ru
 ```mermaid
 flowchart TD
   P0["Phase 0: Foundation (DONE)"] --> P1["Phase 1: Shell & Hero (DONE)"]
-  P1 --> P2["Phase 2: Typed Content Layer & Sections (IN PROGRESS)"]
-  P2 --> P3["Phase 3: Interactions, Sound & Widgets"]
-  P3 --> P4["Phase 4: Receipt Contact, D1 & Turnstile"]
+  P1 --> P2["Phase 2: Typed Content Layer & Sections (DONE)"]
+  P2 --> P3["Phase 3: Interactions, Sound & Widgets (DONE)"]
+  P3 --> P4["Phase 4: Receipt Contact, D1 & Turnstile (READY)"]
   P4 --> P5["Phase 5: Presence Room & Analytics"]
   P5 --> P6["Phase 6: Ask Dhruv AI Chat"]
   P6 --> P7["Phase 7: Dark Theme & Production Release"]
@@ -31,7 +31,17 @@ flowchart TD
 
 ---
 
-## Phase 2 — Typed Content Layer & Sections (IN PROGRESS)
+## Phase 2 — Typed Content Layer & Sections (DONE)
+
+- **Status:** Complete.
+- **Delivered:** Structured content domain schema (`src/data/types.ts`), immutable validated datasets (`src/data/content.ts`), 15 rich domain sections matching `resume-sept26.pdf` and patent records, thermal receipt form, and 15 unit tests. See `docs/PHASE-2-REPORT.md`.
+
+---
+
+## Phase 3 — Micro-Interactions, Sound Engine, Pet & Radio (DONE)
+
+- **Status:** Complete.
+- **Delivered:** WebAudio synthesizer engine (`src/lib/sound.ts`), sound keyboard shortcut `u`, live BLR status indicator, magnetic cursor hook (`src/lib/use-magnetic.ts`), retro pixel pet "Byte" (`src/components/site/pixel-pet.tsx`), dual-mode ambient radio (`src/components/site/ambient-radio.tsx`), 20 unit tests, 14 E2E/a11y tests, zero WCAG AA violations. See `docs/PHASE-3-REPORT.md`.
 
 Transform all section placeholders into a typed, validated domain layer consuming Dhruv's verified resume (`resume-sept26.pdf`), patent records, and project data.
 

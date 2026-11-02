@@ -168,6 +168,82 @@ export function FlagIndia(props: IconProps) {
 	);
 }
 
+export function SpeakerIcon(props: IconProps) {
+	return (
+		<StrokeIcon {...props}>
+			<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+			<path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+			<path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+		</StrokeIcon>
+	);
+}
+
+export function SpeakerMuteIcon(props: IconProps) {
+	return (
+		<StrokeIcon {...props}>
+			<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+			<line x1="23" x2="17" y1="9" y2="15" />
+			<line x1="17" x2="23" y1="9" y2="15" />
+		</StrokeIcon>
+	);
+}
+
+export function PlayIcon(props: IconProps) {
+	return (
+		<svg
+			aria-hidden="true"
+			fill="currentColor"
+			height={props.size ?? 14}
+			viewBox="0 0 24 24"
+			width={props.size ?? 14}
+			{...props}
+		>
+			<polygon points="5 3 19 12 5 21 5 3" />
+		</svg>
+	);
+}
+
+export function PauseIcon(props: IconProps) {
+	return (
+		<svg
+			aria-hidden="true"
+			fill="currentColor"
+			height={props.size ?? 14}
+			viewBox="0 0 24 24"
+			width={props.size ?? 14}
+			{...props}
+		>
+			<rect height="16" width="4" x="6" y="4" />
+			<rect height="16" width="4" x="14" y="4" />
+		</svg>
+	);
+}
+
+export function RadioIcon(props: IconProps) {
+	return (
+		<StrokeIcon {...props}>
+			<circle cx="12" cy="12" r="2" />
+			<path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14" />
+		</StrokeIcon>
+	);
+}
+
+export function HeartIcon(props: IconProps) {
+	return (
+		<svg
+			aria-hidden="true"
+			fill="currentColor"
+			height={props.size ?? 14}
+			viewBox="0 0 24 24"
+			width={props.size ?? 14}
+			{...props}
+		>
+			<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+		</svg>
+	);
+}
+
+
 export function CheckIcon(props: IconProps) {
 	return (
 		<StrokeIcon {...props}>

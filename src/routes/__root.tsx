@@ -2,6 +2,7 @@
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { NotFound } from "~/components/site/not-found";
+import { PixelPet } from "~/components/site/pixel-pet";
 import { SiteFooter } from "~/components/site/site-footer";
 import { SiteHeader } from "~/components/site/site-header";
 import { site } from "~/lib/site";
@@ -80,6 +81,7 @@ function RootLayout() {
 				<Outlet />
 			</main>
 			<SiteFooter />
+			<PixelPet />
 		</>
 	);
 }
