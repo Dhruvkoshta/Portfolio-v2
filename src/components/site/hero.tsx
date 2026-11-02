@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { site } from "~/lib/site";
+import { heroFacts } from "~/data/content";
 import { useReducedMotion } from "~/lib/use-reduced-motion";
 import { FlagIndia } from "./icons";
 import { PolaroidCollage } from "./polaroid-collage";
@@ -54,39 +54,6 @@ function RoleLine() {
 		</span>
 	);
 }
-
-const facts = [
-	{
-		label: "Software Intern at Dell Technologies (Enterprise Software Infrastructure)",
-		href: "#experience",
-		external: false,
-	},
-	{
-		label: "Level 1, 5-Star Freelancer with 50+ full-stack web applications deployed",
-		href: "#experience",
-		external: false,
-	},
-	{
-		label: "Patent Granted (No. 202441083752) — Multi-Hazard Detection & Alert System",
-		href: "#featured-projects",
-		external: false,
-	},
-	{
-		label: "1st Place Winner at AI VERSE 2.0 Hackathon (Team Terminal Titans)",
-		href: "#competitions",
-		external: false,
-	},
-	{
-		label: "B.E. in Electronics & Communication at B.M.S. College of Engineering (CGPA 8.8)",
-		href: "#education",
-		external: false,
-	},
-	{
-		label: "Official Resume (Sept 2026 PDF)",
-		href: site.resumeUrl,
-		external: true,
-	},
-] as const;
 
 export function Hero() {
 	return (
@@ -156,7 +123,7 @@ export function Hero() {
 			</p>
 
 			<ul className="hero__facts">
-				{facts.map((fact) => (
+				{heroFacts.map((fact) => (
 					<li key={fact.label}>
 						<span aria-hidden="true" className="hero__fact-dot" />
 						<a
