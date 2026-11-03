@@ -10,7 +10,7 @@ Each point has a dedicated detailed specification in `docs/plans/`:
 | :---: | :--- | :--- | :---: |
 | **01** | Segmented Scroll Tracker / Progress Indicator | [01-scroll-progress-tracker.md](file:///home/dhruv/Projects/portfolio/client/docs/plans/01-scroll-progress-tracker.md) | **COMPLETED & DEPLOYED (AWAITING USER FEEDBACK)** |
 | **02** | Progressive Top Navbar Gradient Blur (Scrim) | [02-top-navbar-gradient-blur.md](file:///home/dhruv/Projects/portfolio/client/docs/plans/02-top-navbar-gradient-blur.md) | **COMPLETED & DEPLOYED (AWAITING USER FEEDBACK)** |
-| **03** | 3D Parallax Perspective Framer Motion Gallery | [03-framer-motion-3d-gallery.md](file:///home/dhruv/Projects/portfolio/client/docs/plans/03-framer-motion-3d-gallery.md) | **READY FOR REVIEW** |
+| **03** | 3D Parallax Perspective Framer Motion Gallery | [03-framer-motion-3d-gallery.md](file:///home/dhruv/Projects/portfolio/client/docs/plans/03-framer-motion-3d-gallery.md) | **COMPLETED & DEPLOYED (AWAITING USER FEEDBACK)** |
 | **04** | Navbar Expansion on Hover | [04-navbar-hover-expansion.md](file:///home/dhruv/Projects/portfolio/client/docs/plans/04-navbar-hover-expansion.md) | **READY FOR REVIEW** |
 | **05** | Navbar Pop-Up / Jump Micro-Interaction | [05-navbar-jump-microinteraction.md](file:///home/dhruv/Projects/portfolio/client/docs/plans/05-navbar-jump-microinteraction.md) | **READY FOR REVIEW** |
 | **06** | Experience Section Redesign (Dotted Leaders, Red Highlights) | [06-experience-section-redesign.md](file:///home/dhruv/Projects/portfolio/client/docs/plans/06-experience-section-redesign.md) | **READY FOR REVIEW** |
