@@ -2612,6 +2612,72 @@ kbd {
 	}
 }
 
+/* Progressive Gradient Blur / Scrim --------------------------------------- */
+
+:root {
+	--scroll-edge-blur-height: clamp(4.5rem, 8vw, 6rem);
+	--z-scroll-edge-blur-top: 55;
+}
+
+.scroll-edge-blur,
+.scroll-edge-blur * {
+	pointer-events: none !important;
+}
+
+.scroll-edge-blur {
+	position: fixed;
+	left: 0;
+	right: 0;
+	overflow: hidden;
+	height: var(--scroll-edge-blur-height);
+	pointer-events: none;
+}
+
+.scroll-edge-blur--top {
+	top: 0;
+	z-index: var(--z-scroll-edge-blur-top);
+}
+
+.scroll-edge-blur__safe {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	height: env(safe-area-inset-top, 0px);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	pointer-events: none;
+}
+
+.scroll-edge-blur__stack {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.scroll-edge-blur__layer {
+	position: absolute;
+	inset: 0;
+	backdrop-filter: blur(var(--blur));
+	-webkit-backdrop-filter: blur(var(--blur));
+	mask-image: var(--mask);
+	-webkit-mask-image: var(--mask);
+	pointer-events: none;
+}
+
+.scroll-edge-blur__tint {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		to bottom,
+		color-mix(in srgb, var(--bg) 88%, transparent) 0%,
+		color-mix(in srgb, var(--bg) 40%, transparent) 55%,
+		transparent 100%
+	);
+	pointer-events: none;
+}
+
 /* Segmented Scroll Tracker / Left Rail ------------------------------------- */
 
 .scroll-tracker {
