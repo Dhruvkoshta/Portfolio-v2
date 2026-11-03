@@ -141,11 +141,11 @@ test("pixel pet Byte is interactive and reacts to petting", async ({ page }) => 
 	await expect(petBtn).toHaveAttribute("aria-label", /Current happiness: 1/);
 });
 
-test("ambient radio player is accessible in the header and spotify section", async ({ page }) => {
+test("ambient radio player is accessible in the bottom dock and spotify section", async ({ page }) => {
 	await gotoHome(page);
 
-	const headerRadioBtn = page.getByRole("button", { name: /^Radio: Play/i });
-	await expect(headerRadioBtn).toBeVisible();
+	const bottomRadioBtn = page.getByRole("button", { name: /play ambient radio/i });
+	await expect(bottomRadioBtn).toBeVisible();
 
 	// Full player in Spotify section
 	const radioPlayer = page.getByRole("region", { name: "Ambient Radio Player" });

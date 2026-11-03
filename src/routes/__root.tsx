@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { BottomDock } from "~/components/site/bottom-dock";
 import { NotFound } from "~/components/site/not-found";
 import { PixelPet } from "~/components/site/pixel-pet";
 import { SiteFooter } from "~/components/site/site-footer";
@@ -83,6 +84,7 @@ function RootLayout() {
 				<Outlet />
 			</main>
 			<SiteFooter />
+			<BottomDock />
 			<PixelPet />
 		</>
 	);

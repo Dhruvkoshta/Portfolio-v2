@@ -20,7 +20,6 @@ import {
 	SpeakerMuteIcon,
 	XIcon,
 } from "./icons";
-import { AmbientRadio } from "./ambient-radio";
 import { sound } from "~/lib/sound";
 import { usePresence } from "~/lib/use-presence";
 import { primaryNav, site } from "~/lib/site";
@@ -101,6 +100,37 @@ export function SiteHeader() {
 	const { count: presenceCount } = usePresence();
 	const panelRef = useRef<HTMLDivElement>(null);
 	const focusTriggerAfterClose = useRef<Panel>(null);
+	const shellRef = useRef<HTMLDivElement>(null);
+	const leftRef = useRef<HTMLDivElement>(null);
+	const [dockTravel, setDockTravel] = useState(0);
+	const [scrollProgress, setScrollProgress] = useState(0);
+
+	useEffect(() => {
+		const updateTravel = () => {
+			if (shellRef.current && leftRef.current) {
+				const travel = Math.max(
+					0,
+					(shellRef.current.clientWidth - leftRef.current.clientWidth) / 2,
+				);
+				setDockTravel(travel);
+			}
+		};
+		updateTravel();
+		window.addEventListener("resize", updateTravel);
+
+		const handleScroll = () => {
+			const scrollY = window.scrollY || window.pageYOffset;
+			const progress = Math.min(1, Math.max(0, scrollY / 140));
+			setScrollProgress(progress);
+		};
+		handleScroll();
+		window.addEventListener("scroll", handleScroll, { passive: true });
+
+		return () => {
+			window.removeEventListener("resize", updateTravel);
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
 
 	useEffect(() => {
 		setSoundActive(sound.isEnabled());
@@ -281,8 +311,18 @@ export function SiteHeader() {
 			</div>
 
 			<header className="appbar-wrap">
-				<div className="appbar-shell">
-					<nav aria-label="Primary" className="appbar">
+				<div
+					className="appbar-shell"
+					ref={shellRef}
+					style={
+						{
+							"--ed3-dock-travel": `${dockTravel}px`,
+							"--dock-progress": scrollProgress,
+						} as React.CSSProperties
+					}
+				>
+					<div className="appbar-left" ref={leftRef}>
+						<nav aria-label="Primary" className="appbar">
 						{primaryNav.map((item) =>
 							item.external ? (
 								<a
@@ -554,34 +594,35 @@ export function SiteHeader() {
 								u
 							</kbd>
 						</button>
-
-						{/* Compact Ambient Radio */}
-						<AmbientRadio compact />
-
-						{/* Live Presence Room */}
-						<div
-							aria-label={`${presenceCount} live ${presenceCount === 1 ? "reader" : "readers"}`}
-							className="appbar__presence"
-							role="status"
-							title={`${presenceCount} ${presenceCount === 1 ? "reader" : "readers"} browsing dhruvkoshta.me right now`}
-						>
-							<span aria-hidden="true" className="appbar__presence-dot" />
-							<span className="appbar__presence-count">{presenceCount}</span>
-							<span className="appbar__presence-label">live</span>
-						</div>
-
-						{/* Live Bengaluru Clock */}
-						{blrTime ? (
-							<div
-								className="appbar__clock"
-								title={`Bengaluru local time: ${blrTime}`}
-							>
-								<span aria-hidden="true" className="appbar__clock-dot" />
-								<span className="appbar__clock-city">BLR</span>
-								<span className="appbar__clock-time">{blrTime}</span>
-							</div>
-						) : null}
 					</nav>
+				</div>
+
+				{/* Right status & presence capsule */}
+				<div className="appbar-right">
+					{/* Live Presence Room */}
+					<div
+						aria-label={`${presenceCount} live ${presenceCount === 1 ? "reader" : "readers"}`}
+						className="appbar__presence"
+						role="status"
+						title={`${presenceCount} ${presenceCount === 1 ? "reader" : "readers"} browsing dhruvkoshta.me right now`}
+					>
+						<span aria-hidden="true" className="appbar__presence-dot" />
+						<span className="appbar__presence-count">{presenceCount}</span>
+						<span className="appbar__presence-label">live</span>
+					</div>
+
+					{/* Live Bengaluru Clock */}
+					{blrTime ? (
+						<div
+							className="appbar__clock"
+							title={`Bengaluru local time: ${blrTime}`}
+						>
+							<span aria-hidden="true" className="appbar__clock-dot" />
+							<span className="appbar__clock-city">BLR</span>
+							<span className="appbar__clock-time">{blrTime}</span>
+						</div>
+					) : null}
+				</div>
 
 					<button
 						aria-expanded={menuOpen}
