@@ -3,7 +3,7 @@
   "name": "dhruvkoshta-me",
   "compatibility_date": "2026-11-02",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry",
+  "main": "./src/server.ts",
   "observability": {
     "enabled": true
   },
@@ -12,6 +12,20 @@
       "binding": "DB",
       "database_name": "portfolio-db",
       "database_id": "6c5c59d5-60e3-41cd-b8d3-387b2ce81c43"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PRESENCE_ROOM",
+        "class_name": "PresenceRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["PresenceRoom"]
     }
   ]
 }

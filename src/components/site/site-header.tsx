@@ -22,6 +22,7 @@ import {
 } from "./icons";
 import { AmbientRadio } from "./ambient-radio";
 import { sound } from "~/lib/sound";
+import { usePresence } from "~/lib/use-presence";
 import { primaryNav, site } from "~/lib/site";
 import { ShortcutsDialog, SiteMenuDialog } from "./site-menu";
 
@@ -97,6 +98,7 @@ export function SiteHeader() {
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
 	const [soundActive, setSoundActive] = useState(false);
 	const [blrTime, setBlrTime] = useState("");
+	const { count: presenceCount } = usePresence();
 	const panelRef = useRef<HTMLDivElement>(null);
 	const focusTriggerAfterClose = useRef<Panel>(null);
 
@@ -555,6 +557,18 @@ export function SiteHeader() {
 
 						{/* Compact Ambient Radio */}
 						<AmbientRadio compact />
+
+						{/* Live Presence Room */}
+						<div
+							aria-label={`${presenceCount} live ${presenceCount === 1 ? "reader" : "readers"}`}
+							className="appbar__presence"
+							role="status"
+							title={`${presenceCount} ${presenceCount === 1 ? "reader" : "readers"} browsing dhruvkoshta.me right now`}
+						>
+							<span aria-hidden="true" className="appbar__presence-dot" />
+							<span className="appbar__presence-count">{presenceCount}</span>
+							<span className="appbar__presence-label">live</span>
+						</div>
 
 						{/* Live Bengaluru Clock */}
 						{blrTime ? (

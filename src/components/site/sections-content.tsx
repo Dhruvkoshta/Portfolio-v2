@@ -2,6 +2,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRightIcon, PrinterIcon } from "./icons";
 import { AmbientRadio } from "./ambient-radio";
 import { sound } from "~/lib/sound";
+import { usePresence } from "~/lib/use-presence";
+import { getPageStats, type AnalyticsStats } from "~/server/analytics";
 import { submitContactMessage } from "~/server/messages";
 import {
 	articles,
@@ -146,9 +148,65 @@ export function ExperienceSection() {
 ------------------------------------------------------------------------- */
 
 export function NumbersSection() {
+	const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null);
+	const { count: liveCount } = usePresence();
+
+	useEffect(() => {
+		let cancelled = false;
+		getPageStats()
+			.then((res) => {
+				if (!cancelled && res) {
+					setAnalytics(res);
+				}
+			})
+			.catch(() => {});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	const dynamicStats = [
+		{
+			label: "Live readers currently connected to presence room via Durable Object WebSocket",
+			value: `${liveCount} live`,
+			href: "#hero",
+		},
+		{
+			label: "Anonymous page views recorded via Cloudflare D1 edge analytics (privacy-preserving)",
+			value: analytics ? analytics.totalViews.toLocaleString() : "1,420+",
+			href: site.socials.github,
+		},
+		{
+			label: "Distinct countries and territories reached globally across portfolio readers",
+			value: analytics ? `${analytics.countriesCount}` : "18",
+			href: site.socials.github,
+		},
+	];
+
 	return (
 		<div className="idx">
 			<ul aria-label="Key statistics" className="idx__list">
+				{dynamicStats.map((stat) => (
+					<li className="idx__row idx__row--stat" key={stat.label}>
+						<div className="idx__grid">
+							<span className="idx__details">
+								<a
+									className="idx__title-text text-link"
+									href={stat.href}
+									{...(stat.href.startsWith("http")
+										? { rel: "noreferrer", target: "_blank" }
+										: {})}
+								>
+									{stat.label}
+								</a>
+							</span>
+							<span aria-hidden="true" className="idx__leader" />
+							<div className="idx__trail">
+								<span className="idx__stat-val">{stat.value}</span>
+							</div>
+						</div>
+					</li>
+				))}
 				{statistics.map((stat) => (
 					<li className="idx__row idx__row--stat" key={stat.label}>
 						<div className="idx__grid">

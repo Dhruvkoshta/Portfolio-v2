@@ -2012,6 +2012,47 @@ kbd {
 	color: var(--ink-muted);
 }
 
+/* Live Presence Room */
+.appbar__presence {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 0 8px;
+	font-family: var(--font-mono);
+	font-size: 11px;
+	color: var(--ink-soft);
+	user-select: none;
+}
+
+.appbar__presence-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #3b82f6;
+	box-shadow: 0 0 6px #3b82f6;
+	animation: pulse-presence 2s ease-in-out infinite;
+}
+
+@keyframes pulse-presence {
+	0%, 100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.45;
+		transform: scale(0.85);
+	}
+}
+
+.appbar__presence-count {
+	font-weight: 600;
+	color: var(--ink);
+}
+
+.appbar__presence-label {
+	color: var(--ink-muted);
+}
+
 /* Sound Button */
 .appbar__link--sound {
 	padding: 0 8px;

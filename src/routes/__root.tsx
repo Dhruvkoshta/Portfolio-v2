@@ -5,6 +5,7 @@ import { NotFound } from "~/components/site/not-found";
 import { PixelPet } from "~/components/site/pixel-pet";
 import { SiteFooter } from "~/components/site/site-footer";
 import { SiteHeader } from "~/components/site/site-header";
+import { recordPageView } from "~/server/analytics";
 import { site } from "~/lib/site";
 import appCss from "~/styles/app.css?url";
 
@@ -72,6 +73,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 function RootLayout() {
 	useEffect(() => {
 		document.documentElement.dataset.hydrated = "true";
+		void recordPageView({ data: { path: window.location.pathname } });
 	}, []);
 
 	return (

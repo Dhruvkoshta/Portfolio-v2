@@ -10,8 +10,8 @@ flowchart TD
   P1 --> P2["Phase 2: Typed Content Layer & Sections (DONE)"]
   P2 --> P3["Phase 3: Interactions, Sound & Widgets (DONE)"]
   P3 --> P4["Phase 4: Receipt Contact, D1 & Turnstile (DONE)"]
-  P4 --> P5["Phase 5: Presence Room & Analytics (READY)"]
-  P5 --> P6["Phase 6: Ask Dhruv AI Chat"]
+  P4 --> P5["Phase 5: Presence Room & Analytics (DONE)"]
+  P5 --> P6["Phase 6: Ask Dhruv AI Chat (READY)"]
   P6 --> P7["Phase 7: Dark Theme & Production Release"]
 ```
 
@@ -138,26 +138,27 @@ Transform all section placeholders into a typed, validated domain layer consumin
 
 ---
 
-## Phase 5 — Live Presence Room & Privacy Analytics
+## Phase 5 — Live Presence Room & Privacy Analytics (DONE)
 
-- **Goal:** Real-time visitor presence with Durable Objects and anonymous page metrics with Cloudflare Analytics Engine.
+- **Status:** Complete. See [PHASE-5-REPORT.md](file:///home/dhruv/Projects/portfolio/client/docs/PHASE-5-REPORT.md).
+- **Goal:** Real-time visitor presence with Durable Objects and anonymous page metrics with Cloudflare D1.
 
 ### Ticket P5-01: Durable Object Presence Room & Facepile
 - **What to build:** Cloudflare Durable Object (`PresenceRoom`) handling WebSocket connections for live viewer counts and anonymous presence dots in the appbar.
 - **Blocked by:** Ticket P4-02.
 - **TDD Seams:** Vitest test suite with `@cloudflare/vitest-pool-workers` simulating multiple WebSocket clients.
 - **Acceptance Criteria:**
-  - [ ] Appbar displays real-time viewer count ("🟢 3 people looking right now").
-  - [ ] Clean disconnect handling when tabs close or hibernate.
-  - [ ] Zero personal data or persistent tracking collected.
+  - [x] Appbar displays real-time viewer count ("🟢 3 people looking right now" / live presence pill).
+  - [x] Clean disconnect handling when tabs close or hibernate.
+  - [x] Zero personal data or persistent tracking collected.
 
 ### Ticket P5-02: Privacy-First Analytics Engine Metrics
-- **What to build:** Route hook capturing anonymous page views, referral domains, and country code using Cloudflare Workers Analytics Engine.
+- **What to build:** Route hook capturing anonymous page views, referral domains, and country code using Cloudflare D1 edge analytics.
 - **Blocked by:** Ticket P5-01.
 - **TDD Seams:** Server function test verifying payload structure.
 - **Acceptance Criteria:**
-  - [ ] Zero third-party trackers or cookies used.
-  - [ ] Aggregated views surfaced on the By the Numbers section.
+  - [x] Zero third-party trackers or cookies used.
+  - [x] Aggregated views surfaced on the By the Numbers section.
 
 ---
 

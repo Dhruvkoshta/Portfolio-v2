@@ -174,3 +174,16 @@ test("thermal receipt form validates input and submits message", async ({ page }
 	await expect(page.getByText("Message Printed & Saved")).toBeVisible();
 	await expect(page.getByRole("button", { name: "Print Another Receipt" })).toBeVisible();
 });
+
+test("live presence room displays count in header and by-the-numbers section", async ({ page }) => {
+	await gotoHome(page);
+
+	const presenceBadge = page.locator(".appbar__presence");
+	await expect(presenceBadge).toBeVisible();
+	await expect(presenceBadge.locator(".appbar__presence-count")).toBeVisible();
+	await expect(presenceBadge.locator(".appbar__presence-label")).toHaveText("live");
+
+	const numbersSection = page.locator("#by-the-numbers");
+	await expect(numbersSection).toBeVisible();
+	await expect(numbersSection.getByText(/Live readers currently connected/i)).toBeVisible();
+});
