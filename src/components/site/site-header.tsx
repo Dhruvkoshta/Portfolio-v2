@@ -108,9 +108,13 @@ export function SiteHeader() {
 	useEffect(() => {
 		const updateTravel = () => {
 			if (shellRef.current && leftRef.current) {
+				const style = window.getComputedStyle(shellRef.current);
+				const padLeft = Number.parseFloat(style.paddingLeft) || 0;
+				const padRight = Number.parseFloat(style.paddingRight) || 0;
+				const available = shellRef.current.clientWidth - padLeft - padRight;
 				const travel = Math.max(
 					0,
-					(shellRef.current.clientWidth - leftRef.current.clientWidth) / 2,
+					(available - leftRef.current.clientWidth) / 2,
 				);
 				setDockTravel(travel);
 			}
