@@ -895,36 +895,54 @@ kbd {
 	-webkit-backface-visibility: hidden;
 }
 
+/* 3D Perspective Gallery (Inner Frame) ----------------------------------- */
+
+.perspective-gallery-inner-frame {
+	position: relative;
+	width: 100%;
+	max-width: var(--content-width);
+	height: clamp(380px, 48vw, 480px);
+	margin: 36px auto 0;
+	border-radius: 16px;
+	border: 1px solid var(--line-strong);
+	background: #09090b;
+	overflow: hidden;
+	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.perspective-gallery-scroll-wrapper {
+	position: absolute;
+	inset: 0;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+	touch-action: pan-y;
+	-webkit-overflow-scrolling: touch;
+}
+
+.perspective-gallery-scroll-wrapper::-webkit-scrollbar {
+	display: none;
+}
+
 .perspective-gallery-track {
 	position: relative;
-	width: 100vw;
-	margin: 56px calc(50% - 50vw) 0;
-	height: 300vh;
-	background: #050505;
-	color: #fff;
-	overflow: visible;
+	width: 100%;
+	height: 350%;
+	pointer-events: none;
 }
 
 .perspective-gallery-sticky {
 	position: sticky;
 	top: 0;
-	height: 100vh;
 	width: 100%;
+	height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	overflow: hidden;
-}
-
-.perspective-gallery-banner {
-	position: relative;
-	background: #000;
-	overflow: hidden;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	max-width: 1920px;
-	margin: 0 auto;
 }
 
 .perspective-gallery-stage {
@@ -944,44 +962,46 @@ kbd {
 }
 
 .perspective-gallery-vignette--vertical {
-	box-shadow: inset 0 100px 150px -50px rgba(0, 0, 0, 1),
-		inset 0 -100px 150px -50px rgba(0, 0, 0, 1);
+	box-shadow: inset 0 55px 70px -15px #09090b,
+		inset 0 -55px 70px -15px #09090b;
 }
 
 .perspective-gallery-vignette--horizontal {
-	box-shadow: inset 150px 0 150px -50px rgba(0, 0, 0, 1),
-		inset -150px 0 150px -50px rgba(0, 0, 0, 1);
+	box-shadow: inset 60px 0 70px -15px #09090b,
+		inset -60px 0 70px -15px #09090b;
 }
 
 .perspective-gallery-matrix {
 	display: flex;
-	gap: 16px;
+	gap: 14px;
 	justify-content: center;
 	align-items: center;
-	width: 120vw;
-	height: 150vh;
+	width: 860px;
+	height: 600px;
 	transform-origin: center center;
-	opacity: 1;
+	pointer-events: auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
 	.perspective-gallery-matrix {
-		gap: 24px;
+		gap: 18px;
+		width: 900px;
 	}
 }
 
 .perspective-gallery-col {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
-	width: 22vw;
-	min-width: 180px;
+	gap: 14px;
+	width: 180px;
+	flex-shrink: 0;
 	pointer-events: auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
 	.perspective-gallery-col {
-		gap: 24px;
+		gap: 18px;
+		width: 200px;
 	}
 }
 
@@ -989,53 +1009,84 @@ kbd {
 	width: 100%;
 	height: 220px;
 	flex-shrink: 0;
-	background: #111;
-	border-radius: 8px;
+	background: #18181b;
+	border-radius: 12px;
 	overflow: hidden;
-	cursor: pointer;
 	position: relative;
-	transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (min-width: 640px) {
-	.perspective-gallery__card {
-		height: 300px;
-	}
-}
-
-@media (min-width: 768px) {
-	.perspective-gallery__card {
-		height: 380px;
-	}
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+	transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 
 .perspective-gallery__card:hover {
-	transform: scale(1.03);
+	transform: scale(1.04);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 .perspective-gallery__image {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	opacity: 0.82;
-	transition: opacity 0.3s ease;
+	opacity: 0.88;
+	transition: opacity 0.25s ease;
 }
 
 .perspective-gallery__card:hover .perspective-gallery__image {
 	opacity: 1;
 }
 
+/* Interactive Hint Badge */
+.perspective-gallery-hint {
+	position: absolute;
+	bottom: 14px;
+	right: 14px;
+	z-index: 30;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 10px;
+	border-radius: 9999px;
+	background: rgba(18, 18, 20, 0.75);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	color: #e4e4e7;
+	font-size: 11px;
+	font-family: var(--font-sans);
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.perspective-gallery-hint__dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--accent, #fd010c);
+	animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+	0%, 100% {
+		opacity: 0.4;
+		transform: scale(0.9);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1.2);
+	}
+}
+
 /* Reduced motion / static fallback */
 .perspective-gallery-static {
 	width: 100%;
 	margin-top: 36px;
-	padding: 20px 0;
+	padding: 0;
 }
 
 .perspective-gallery-static__grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-	gap: 16px;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	gap: 14px;
 }
 
 /* Polaroids --------------------------------------------------------------- */

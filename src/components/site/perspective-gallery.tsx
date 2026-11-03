@@ -1,4 +1,4 @@
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "~/lib/use-reduced-motion";
 
@@ -28,8 +28,9 @@ const ImageCard = ({ src, onLoad }: ImageCardProps) => {
 	return (
 		<div className="perspective-gallery__card will-change-transform backface-hidden preserve-3d">
 			<img
-				alt="Gallery asset"
+				alt="Gallery visual"
 				className="perspective-gallery__image"
+				draggable={false}
 				loading="lazy"
 				onLoad={onLoad}
 				src={src}
@@ -39,11 +40,22 @@ const ImageCard = ({ src, onLoad }: ImageCardProps) => {
 };
 
 export function PerspectiveGallery() {
-	const containerRef = useRef<HTMLDivElement>(null);
+	const scrollWrapperRef = useRef<HTMLDivElement>(null);
 	const [isReady, setIsReady] = useState(false);
 	const [mounted, setMounted] = useState(false);
+	const [isDragging, setIsDragging] = useState(false);
 	const loadedCountRef = useRef(0);
+	const startYRef = useRef(0);
+	const startScrollTopRef = useRef(0);
 	const reducedMotion = useReducedMotion();
+
+	// Direct progress motion value (0 = start, 1 = end of inner scroll)
+	const progress = useMotionValue(0);
+	const smoothProgress = useSpring(progress, {
+		stiffness: 120,
+		damping: 24,
+		mass: 0.3,
+	});
 
 	const handleItemLoad = useCallback(() => {
 		loadedCountRef.current += 1;
@@ -55,6 +67,31 @@ export function PerspectiveGallery() {
 		const t = setTimeout(() => setIsReady(true), 1200);
 		return () => clearTimeout(t);
 	}, []);
+
+	// Wheel event listener with passive: false so preventDefault and inner scroll work seamlessly
+	useEffect(() => {
+		const el = scrollWrapperRef.current;
+		if (!el) return;
+
+		const onWheel = (e: WheelEvent) => {
+			const maxScroll = el.scrollHeight - el.clientHeight;
+			if (maxScroll <= 0) return;
+			const delta = e.deltaY;
+
+			// Intercept wheel when scrolling within inner gallery bounds
+			if ((delta > 0 && el.scrollTop < maxScroll - 1) || (delta < 0 && el.scrollTop > 1)) {
+				e.preventDefault();
+				e.stopPropagation();
+				el.scrollTop = Math.max(0, Math.min(maxScroll, el.scrollTop + delta));
+				progress.set(el.scrollTop / maxScroll);
+			}
+		};
+
+		el.addEventListener("wheel", onWheel, { passive: false });
+		return () => {
+			el.removeEventListener("wheel", onWheel);
+		};
+	}, [progress]);
 
 	const colMedia = useMemo(() => {
 		const col1Base = UNSPLASH_IMAGES.filter((_, i) => i % 4 === 0);
@@ -70,34 +107,73 @@ export function PerspectiveGallery() {
 		};
 	}, []);
 
-	const { scrollYProgress } = useScroll({
-		target: containerRef,
-		offset: ["start start", "end end"],
-	});
-
-	const smoothProgress = useSpring(scrollYProgress, {
-		stiffness: 100,
-		damping: 20,
-		mass: 0.5,
-	});
-
-	// Banner animations
-	const bannerWidth = useTransform(smoothProgress, [0, 0.15], ["90vw", "100vw"]);
-	const bannerHeight = useTransform(smoothProgress, [0, 0.15], ["80vh", "100vh"]);
-	const bannerRadius = useTransform(smoothProgress, [0, 0.15], ["48px", "0px"]);
-	const bannerBorderWidth = useTransform(smoothProgress, [0, 0.15], ["4px", "0px"]);
-
-	// 3D Matrix animations
-	const rotateY = useTransform(smoothProgress, [0.15, 1], [-45, -8]);
-	const rotateX = useTransform(smoothProgress, [0.15, 1], [25, 4]);
-	const rotateZ = useTransform(smoothProgress, [0.15, 1], [15, 2]);
-	const translateZ = useTransform(smoothProgress, [0.15, 1], [-800, 0]);
+	// 3D Matrix animations inside the frame
+	const rotateY = useTransform(smoothProgress, [0, 1], [-40, -6]);
+	const rotateX = useTransform(smoothProgress, [0, 1], [22, 2]);
+	const rotateZ = useTransform(smoothProgress, [0, 1], [14, 1]);
+	const translateZ = useTransform(smoothProgress, [0, 1], [-650, 40]);
 
 	// Track columns parallax animations
-	const yCol1 = useTransform(smoothProgress, [0.15, 1], ["0%", "-40%"]);
-	const yCol2 = useTransform(smoothProgress, [0.15, 1], ["-40%", "10%"]);
-	const yCol3 = useTransform(smoothProgress, [0.15, 1], ["0%", "-40%"]);
-	const yCol4 = useTransform(smoothProgress, [0.15, 1], ["-30%", "20%"]);
+	const yCol1 = useTransform(smoothProgress, [0, 1], ["0%", "-35%"]);
+	const yCol2 = useTransform(smoothProgress, [0, 1], ["-35%", "15%"]);
+	const yCol3 = useTransform(smoothProgress, [0, 1], ["-5%", "-40%"]);
+	const yCol4 = useTransform(smoothProgress, [0, 1], ["-30%", "20%"]);
+
+	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+		const el = e.currentTarget;
+		const maxScroll = el.scrollHeight - el.clientHeight;
+		if (maxScroll > 0) {
+			progress.set(Math.max(0, Math.min(1, el.scrollTop / maxScroll)));
+		}
+	};
+
+	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		setIsDragging(true);
+		startYRef.current = e.clientY;
+		if (scrollWrapperRef.current) {
+			startScrollTopRef.current = scrollWrapperRef.current.scrollTop;
+		}
+		try {
+			e.currentTarget.setPointerCapture(e.pointerId);
+		} catch {
+			// ignore
+		}
+	};
+
+	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (!isDragging || !scrollWrapperRef.current) return;
+		const dy = e.clientY - startYRef.current;
+		const el = scrollWrapperRef.current;
+		const maxScroll = el.scrollHeight - el.clientHeight;
+		if (maxScroll <= 0) return;
+		el.scrollTop = Math.max(0, Math.min(maxScroll, startScrollTopRef.current - dy * 1.5));
+		progress.set(el.scrollTop / maxScroll);
+	};
+
+	const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+		setIsDragging(false);
+		try {
+			e.currentTarget.releasePointerCapture(e.pointerId);
+		} catch {
+			// ignore
+		}
+	};
+
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		const el = scrollWrapperRef.current;
+		if (!el) return;
+		const maxScroll = el.scrollHeight - el.clientHeight;
+		if (maxScroll <= 0) return;
+		if (e.key === "ArrowDown" || e.key === "PageDown") {
+			e.preventDefault();
+			el.scrollTop = Math.min(maxScroll, el.scrollTop + 60);
+			progress.set(el.scrollTop / maxScroll);
+		} else if (e.key === "ArrowUp" || e.key === "PageUp") {
+			e.preventDefault();
+			el.scrollTop = Math.max(0, el.scrollTop - 60);
+			progress.set(el.scrollTop / maxScroll);
+		}
+	};
 
 	if (!mounted || reducedMotion) {
 		return (
@@ -110,7 +186,7 @@ export function PerspectiveGallery() {
 					{UNSPLASH_IMAGES.slice(0, 8).map((src, index) => (
 						<div className="perspective-gallery__card" key={`static-${index}`}>
 							<img
-								alt="Gallery asset"
+								alt="Gallery visual"
 								className="perspective-gallery__image"
 								loading="lazy"
 								src={src}
@@ -125,100 +201,96 @@ export function PerspectiveGallery() {
 	return (
 		<section
 			aria-label="3D Perspective Gallery"
-			className="perspective-gallery-track"
+			className="perspective-gallery-inner-frame"
 			id="gallery"
-			ref={containerRef}
 		>
-			<div className="perspective-gallery-sticky">
-				<motion.div
-					className="perspective-gallery-banner will-change-transform backface-hidden preserve-3d"
-					style={{
-						width: bannerWidth,
-						height: bannerHeight,
-						borderRadius: bannerRadius,
-						borderWidth: bannerBorderWidth,
-						borderColor: "#2c2738",
-					}}
-				>
-					<div
-						className="perspective-gallery-stage"
-						style={{ perspective: "1000px" }}
-					>
-						{/* Ambient Shadow Box Masking */}
-						<div
-							aria-hidden="true"
-							className="perspective-gallery-vignette perspective-gallery-vignette--vertical"
-						/>
-						<div
-							aria-hidden="true"
-							className="perspective-gallery-vignette perspective-gallery-vignette--horizontal"
-						/>
+			<div
+				aria-label="Interactive 3D perspective gallery canvas"
+				className="perspective-gallery-scroll-wrapper"
+				onKeyDown={handleKeyDown}
+				onPointerCancel={handlePointerUp}
+				onPointerDown={handlePointerDown}
+				onPointerLeave={handlePointerUp}
+				onPointerMove={handlePointerMove}
+				onPointerUp={handlePointerUp}
+				onScroll={handleScroll}
+				ref={scrollWrapperRef}
+				style={{ cursor: isDragging ? "grabbing" : "grab" }}
+				tabIndex={0}
+			>
+				<div className="perspective-gallery-track">
+					<div className="perspective-gallery-sticky">
+						<div className="perspective-gallery-stage" style={{ perspective: "1000px" }}>
+							{/* Ambient Shadow Box Masking */}
+							<div
+								aria-hidden="true"
+								className="perspective-gallery-vignette perspective-gallery-vignette--vertical"
+							/>
+							<div
+								aria-hidden="true"
+								className="perspective-gallery-vignette perspective-gallery-vignette--horizontal"
+							/>
 
-						{/* Parallax Image Grid Matrix */}
-						<motion.div
-							className="perspective-gallery-matrix will-change-transform backface-hidden"
-							style={{
-								rotateX,
-								rotateY,
-								rotateZ,
-								z: translateZ,
-								transformStyle: "preserve-3d",
-							}}
-						>
+							{/* Parallax Image Grid Matrix */}
 							<motion.div
-								className="perspective-gallery-col"
-								style={{ y: yCol1 }}
+								className="perspective-gallery-matrix will-change-transform backface-hidden"
+								style={{
+									rotateX,
+									rotateY,
+									rotateZ,
+									z: translateZ,
+									transformStyle: "preserve-3d",
+								}}
 							>
-								{colMedia.col1.map((src, index) => (
-									<ImageCard
-										key={`col1-${index}`}
-										onLoad={handleItemLoad}
-										src={src}
-									/>
-								))}
-							</motion.div>
+								<motion.div className="perspective-gallery-col" style={{ y: yCol1 }}>
+									{colMedia.col1.map((src, index) => (
+										<ImageCard
+											key={`col1-${index}`}
+											onLoad={handleItemLoad}
+											src={src}
+										/>
+									))}
+								</motion.div>
 
-							<motion.div
-								className="perspective-gallery-col"
-								style={{ y: yCol2 }}
-							>
-								{colMedia.col2.map((src, index) => (
-									<ImageCard
-										key={`col2-${index}`}
-										onLoad={handleItemLoad}
-										src={src}
-									/>
-								))}
-							</motion.div>
+								<motion.div className="perspective-gallery-col" style={{ y: yCol2 }}>
+									{colMedia.col2.map((src, index) => (
+										<ImageCard
+											key={`col2-${index}`}
+											onLoad={handleItemLoad}
+											src={src}
+										/>
+									))}
+								</motion.div>
 
-							<motion.div
-								className="perspective-gallery-col"
-								style={{ y: yCol3 }}
-							>
-								{colMedia.col3.map((src, index) => (
-									<ImageCard
-										key={`col3-${index}`}
-										onLoad={handleItemLoad}
-										src={src}
-									/>
-								))}
-							</motion.div>
+								<motion.div className="perspective-gallery-col" style={{ y: yCol3 }}>
+									{colMedia.col3.map((src, index) => (
+										<ImageCard
+											key={`col3-${index}`}
+											onLoad={handleItemLoad}
+											src={src}
+										/>
+									))}
+								</motion.div>
 
-							<motion.div
-								className="perspective-gallery-col"
-								style={{ y: yCol4 }}
-							>
-								{colMedia.col4.map((src, index) => (
-									<ImageCard
-										key={`col4-${index}`}
-										onLoad={handleItemLoad}
-										src={src}
-									/>
-								))}
+								<motion.div className="perspective-gallery-col" style={{ y: yCol4 }}>
+									{colMedia.col4.map((src, index) => (
+										<ImageCard
+											key={`col4-${index}`}
+											onLoad={handleItemLoad}
+											src={src}
+										/>
+									))}
+								</motion.div>
 							</motion.div>
-						</motion.div>
+						</div>
 					</div>
-				</motion.div>
+				</div>
+			</div>
+
+			{/* Interactive Hint Badge */}
+			<div aria-hidden="true" className="perspective-gallery-hint">
+				<span className="perspective-gallery-hint__dot" />
+				<span>Scroll or drag inside to explore</span>
 			</div>
 		</section>
 	);
