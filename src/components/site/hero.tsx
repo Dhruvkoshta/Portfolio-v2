@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { heroFacts } from "~/data/content";
 import { useReducedMotion } from "~/lib/use-reduced-motion";
 import { FlagIndia } from "./icons";
-import { PolaroidCollage } from "./polaroid-collage";
+import { PerspectiveGallery } from "./perspective-gallery";
 
 const role = "Full-Stack & Systems Engineer";
 const flips: Record<number, string> = {
@@ -138,7 +138,7 @@ export function Hero() {
 				))}
 			</ul>
 
-			<PolaroidCollage />
+			<PerspectiveGallery />
 		</section>
 	);
 }

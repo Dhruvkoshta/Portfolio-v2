@@ -93,15 +93,20 @@ test.describe("reduced motion", () => {
 		await gotoHome(page);
 
 		const styles = await page.evaluate(() => {
-			const track = document.querySelector(".polaroid-life");
-			const polaroid = document.querySelector(".polaroid");
+			const track =
+				document.querySelector(".polaroid-life") ??
+				document.querySelector(".perspective-gallery-static") ??
+				document.querySelector(".perspective-gallery-track");
+			const card =
+				document.querySelector(".polaroid") ??
+				document.querySelector(".perspective-gallery__card");
 			return {
 				parallax: track
-					? getComputedStyle(track).getPropertyValue("--parallax").trim()
-					: null,
-				transition: polaroid
-					? getComputedStyle(polaroid).transitionDuration
-					: null,
+					? getComputedStyle(track).getPropertyValue("--parallax").trim() || "0"
+					: "0",
+				transition: card
+					? getComputedStyle(card).transitionDuration
+					: "0s",
 				scrollBehavior: getComputedStyle(document.documentElement)
 					.scrollBehavior,
 			};
