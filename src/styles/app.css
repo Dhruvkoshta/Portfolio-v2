@@ -2612,6 +2612,157 @@ kbd {
 	}
 }
 
+/* Segmented Scroll Tracker / Left Rail ------------------------------------- */
+
+.scroll-tracker {
+	position: fixed;
+	left: max(14px, calc(50vw - (var(--content-width) / 2) - 44px));
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 45;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 10px 4px;
+	pointer-events: none;
+	user-select: none;
+}
+
+@media (max-width: 1024px) {
+	.scroll-tracker {
+		display: none;
+	}
+}
+
+.scroll-tracker__rail {
+	position: absolute;
+	left: 50%;
+	top: 10px;
+	bottom: 10px;
+	width: 1px;
+	background: color-mix(in srgb, var(--line) 75%, transparent);
+	transform: translateX(-50%);
+	pointer-events: none;
+}
+
+.scroll-tracker__progress {
+	position: absolute;
+	left: 50%;
+	top: 10px;
+	width: 2px;
+	height: calc(var(--tracker-progress, 0) * (100% - 20px));
+	background: color-mix(in srgb, var(--ink) 80%, transparent);
+	border-radius: 1px;
+	transform: translateX(-50%);
+	pointer-events: none;
+	transition: height 120ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-tracker__list {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.scroll-tracker__item {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.scroll-tracker__notch {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 24px;
+	min-width: 24px;
+	min-height: 24px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	pointer-events: auto;
+	color: inherit;
+	outline: none;
+}
+
+.scroll-tracker__dash {
+	display: block;
+	width: 8px;
+	height: 2px;
+	border-radius: 1px;
+	background: color-mix(in srgb, var(--ink) 25%, transparent);
+	transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+		background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+		box-shadow 0.22s ease;
+}
+
+.scroll-tracker__notch:hover .scroll-tracker__dash,
+.scroll-tracker__notch:focus-visible .scroll-tracker__dash {
+	width: 14px;
+	background: var(--ink);
+	transform: scaleY(1.2);
+}
+
+.scroll-tracker__notch[data-active="true"] .scroll-tracker__dash {
+	width: 18px;
+	height: 2.5px;
+	background: var(--ink);
+	box-shadow: 0 0 6px color-mix(in srgb, var(--ink) 20%, transparent);
+}
+
+.scroll-tracker__notch:focus-visible {
+	outline: none;
+}
+
+.scroll-tracker__tooltip {
+	position: absolute;
+	right: calc(100% + 10px);
+	top: 50%;
+	transform: translateY(-50%) translateX(6px);
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 3px 8px;
+	border-radius: 4px;
+	background: var(--ink);
+	color: var(--bg);
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: -0.01em;
+	white-space: nowrap;
+	opacity: 0;
+	pointer-events: none;
+	box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+	transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+	border: 1px solid color-mix(in srgb, var(--line-strong) 40%, transparent);
+}
+
+.scroll-tracker__tooltip-index {
+	color: color-mix(in srgb, var(--bg) 60%, transparent);
+	font-size: 9.5px;
+	font-weight: 500;
+}
+
+.scroll-tracker__tooltip-label {
+	font-weight: 500;
+}
+
+.scroll-tracker__notch:hover .scroll-tracker__tooltip,
+.scroll-tracker__notch:focus-visible .scroll-tracker__tooltip {
+	opacity: 1;
+	transform: translateY(-50%) translateX(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;

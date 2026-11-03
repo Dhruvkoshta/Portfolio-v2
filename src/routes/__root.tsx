@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import { BottomDock } from "~/components/site/bottom-dock";
 import { NotFound } from "~/components/site/not-found";
 import { PixelPet } from "~/components/site/pixel-pet";
+import { ScrollTracker } from "~/components/site/scroll-tracker";
 import { SiteFooter } from "~/components/site/site-footer";
 import { SiteHeader } from "~/components/site/site-header";
 import { recordPageView } from "~/server/analytics";
@@ -80,6 +81,7 @@ function RootLayout() {
 	return (
 		<>
 			<SiteHeader />
+			<ScrollTracker />
 			<main id="main-content">
 				<Outlet />
 			</main>
