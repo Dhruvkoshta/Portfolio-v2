@@ -251,7 +251,7 @@ kbd {
 	position: relative;
 	z-index: 1;
 	border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
-	border-radius: var(--radius-glass);
+	border-radius: 9999px;
 	background: color-mix(in srgb, #fff 82%, transparent);
 	box-shadow: var(--shadow-glass);
 	padding: 4px 8px;
@@ -259,21 +259,68 @@ kbd {
 	pointer-events: auto;
 	opacity: calc(1 - var(--dock-progress, 0));
 	transform: scale(calc(1 - 0.08 * var(--dock-progress, 0)));
-	transition: opacity 0.08s linear, transform 0.08s linear;
+	transition:
+		opacity 0.08s linear,
+		transform 0.08s linear,
+		box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+		background-color 0.28s ease,
+		border-color 0.28s ease;
 }
 
 .appbar {
 	display: flex;
 	max-width: 100%;
 	align-items: center;
-	gap: 1px;
+	gap: 2px;
 	border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
-	border-radius: var(--radius-glass);
+	border-radius: 9999px;
 	background: color-mix(in srgb, #fff 82%, transparent);
-	box-shadow: var(--shadow-glass);
-	padding: 4px;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 8px 24px rgba(0, 0, 0, 0.05);
+	padding: 4px 6px;
 	backdrop-filter: blur(18px) saturate(1.6);
 	pointer-events: auto;
+	transition:
+		gap 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+		padding 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+		box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+		background-color 0.28s ease,
+		border-color 0.28s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.appbar:hover {
+		gap: 6px;
+		padding: 4px 8px;
+		background: color-mix(in srgb, #fff 94%, transparent);
+		border-color: color-mix(in srgb, var(--line-strong) 92%, transparent);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.9) inset,
+			0 14px 40px rgba(0, 0, 0, 0.1),
+			0 2px 6px rgba(0, 0, 0, 0.04);
+	}
+
+	.appbar-right:hover {
+		background: color-mix(in srgb, #fff 94%, transparent);
+		border-color: color-mix(in srgb, var(--line-strong) 92%, transparent);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.9) inset,
+			0 12px 32px rgba(0, 0, 0, 0.08);
+	}
+
+	.appbar:hover .appbar__link {
+		padding: 5px 10px;
+	}
+
+	.appbar:hover .appbar__rule {
+		margin: 0 4px;
+	}
+
+	.appbar:hover .appbar__kbd {
+		opacity: 0.9;
+		transform: scale(1);
+		border-color: color-mix(in srgb, var(--line-strong) 85%, transparent);
+		background: #fff;
+	}
 }
 
 .appbar__link {
@@ -282,7 +329,7 @@ kbd {
 	align-items: center;
 	gap: 5px;
 	border: 0;
-	border-radius: 6px;
+	border-radius: 9999px;
 	background: transparent;
 	padding: 5px 8px;
 	color: var(--ink-soft);
@@ -292,18 +339,22 @@ kbd {
 	text-decoration: none;
 	white-space: nowrap;
 	transition:
+		padding 0.25s cubic-bezier(0.16, 1, 0.3, 1),
 		background-color var(--dur-fast) var(--ease-out),
-		color var(--dur-fast) var(--ease-out);
+		color var(--dur-fast) var(--ease-out),
+		transform var(--dur-fast) var(--ease-out);
 }
 
 .appbar__link:hover {
 	background: var(--bg-subtle);
 	color: var(--ink);
+	transform: translateY(-0.5px);
 }
 
 .appbar__link--current {
 	color: var(--ink);
 	font-weight: 500;
+	background: color-mix(in srgb, var(--ink) 4%, transparent);
 }
 
 .appbar__external {
@@ -315,21 +366,40 @@ kbd {
 	display: inline-flex;
 	min-width: 14px;
 	justify-content: center;
-	border: 1px solid var(--line);
+	border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
 	border-radius: 3px;
-	background: #fafafa;
+	background: color-mix(in srgb, #fafafa 80%, transparent);
 	padding: 1px 4px;
 	color: var(--ink-muted);
 	font-family: var(--font-mono);
 	font-size: 9px;
 	line-height: 1.2;
+	opacity: 0.65;
+	transform: scale(0.94);
+	transform-origin: center center;
+	transition:
+		opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+		border-color 0.2s ease,
+		background-color 0.2s ease,
+		color 0.2s ease;
+}
+
+.appbar__link:hover .appbar__kbd {
+	opacity: 1;
+	transform: scale(1);
+	color: var(--ink);
+	border-color: color-mix(in srgb, var(--ink) 22%, transparent);
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .appbar__rule {
 	width: 1px;
 	height: 16px;
-	margin: 0 4px;
+	margin: 0 2px;
 	background: var(--line);
+	transition: margin 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .appbar__menu {

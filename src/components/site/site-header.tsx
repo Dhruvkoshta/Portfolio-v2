@@ -158,6 +158,12 @@ export function SiteHeader() {
 		setSoundActive(next);
 	}, []);
 
+	const handleLinkHover = useCallback(() => {
+		if (sound.isEnabled()) {
+			sound.play("click");
+		}
+	}, []);
+
 	const togglePanel = useCallback((panel: Exclude<Panel, null>) => {
 		sound.play("click");
 		setOpenPanel((current) => {
@@ -330,6 +336,7 @@ export function SiteHeader() {
 									className="appbar__link"
 									href={item.href}
 									key={item.label}
+									onMouseEnter={handleLinkHover}
 									rel="noreferrer"
 									target="_blank"
 								>
@@ -362,6 +369,7 @@ export function SiteHeader() {
 										.join(" ")}
 									hash={item.hash}
 									key={item.label}
+									onMouseEnter={handleLinkHover}
 									to={item.to}
 								>
 									<span>{item.label}</span>
@@ -382,6 +390,7 @@ export function SiteHeader() {
 								className="appbar__link"
 								data-panel-trigger="socials"
 								onClick={() => togglePanel("socials")}
+								onMouseEnter={handleLinkHover}
 								type="button"
 							>
 								<span>Socials</span>
@@ -405,6 +414,7 @@ export function SiteHeader() {
 												href={social.href}
 												key={social.label}
 												onClick={() => setOpenPanel(null)}
+												onMouseEnter={handleLinkHover}
 												{...(social.external
 													? { rel: "noreferrer", target: "_blank" }
 													: {})}
@@ -435,6 +445,7 @@ export function SiteHeader() {
 								className="appbar__link"
 								data-panel-trigger="misc"
 								onClick={() => togglePanel("misc")}
+								onMouseEnter={handleLinkHover}
 								type="button"
 							>
 								<span>Misc.</span>
@@ -456,6 +467,7 @@ export function SiteHeader() {
 											setOpenPanel(null);
 											scrollToTop();
 										}}
+										onMouseEnter={handleLinkHover}
 										type="button"
 									>
 										<ArrowUpIcon aria-hidden="true" size={14} strokeWidth={1.75} />
@@ -468,6 +480,7 @@ export function SiteHeader() {
 											setOpenPanel(null);
 											setShortcutsOpen(true);
 										}}
+										onMouseEnter={handleLinkHover}
 										type="button"
 									>
 										<CommandIcon
@@ -484,6 +497,7 @@ export function SiteHeader() {
 											setOpenPanel(null);
 											setMenuOpen(true);
 										}}
+										onMouseEnter={handleLinkHover}
 										type="button"
 									>
 										<MenuIcon
@@ -500,6 +514,7 @@ export function SiteHeader() {
 										className="appbar__panel-row"
 										href={`mailto:${site.email}`}
 										onClick={() => setOpenPanel(null)}
+										onMouseEnter={handleLinkHover}
 									>
 										<MailIcon aria-hidden="true" size={14} strokeWidth={1.75} />
 										<span>Email me</span>
@@ -517,6 +532,7 @@ export function SiteHeader() {
 								className="appbar__link appbar__link--ask"
 								data-panel-trigger="ask"
 								onClick={() => togglePanel("ask")}
+								onMouseEnter={handleLinkHover}
 								type="button"
 							>
 								<SparklesIcon
@@ -548,6 +564,7 @@ export function SiteHeader() {
 										className="appbar__ask-link"
 										href={`mailto:${site.email}`}
 										onClick={() => setOpenPanel(null)}
+										onMouseEnter={handleLinkHover}
 									>
 										Email Dhruv
 										<ArrowUpRightIcon
@@ -574,6 +591,7 @@ export function SiteHeader() {
 								soundActive ? "appbar__link--sound-active" : ""
 							}`}
 							onClick={handleToggleSound}
+							onMouseEnter={handleLinkHover}
 							title={
 								soundActive
 									? "Sound ON (Press U to mute)"
