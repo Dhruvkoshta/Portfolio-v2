@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRightIcon, PrinterIcon } from "./icons";
+import { TechBadge } from "./tech-icons";
 import { AmbientRadio } from "./ambient-radio";
 import { sound } from "~/lib/sound";
 import { usePresence } from "~/lib/use-presence";
@@ -56,7 +57,8 @@ export function AccordionRow({
 	const isOpen = isControlled ? controlledIsOpen : uncontrolledIsOpen;
 
 	const toggleOpen = () => {
-		sound.play("switch");
+		const nextState = !isOpen;
+		sound.playAccordion(nextState);
 		if (isControlled && onToggle) {
 			onToggle();
 		} else {
@@ -138,8 +140,8 @@ export function ExperienceSection() {
 	};
 
 	const handleToggleExpandAll = () => {
-		sound.play("click");
 		const nextState = allExpanded === true ? false : true;
+		sound.playAccordion(nextState);
 		setAllExpanded(nextState);
 		const nextOpen: Record<string, boolean> = {};
 		experienceItems.forEach((item) => {
@@ -149,8 +151,9 @@ export function ExperienceSection() {
 	};
 
 	const handleToggleEarlier = () => {
-		sound.play("click");
-		setShowEarlier((prev) => !prev);
+		const next = !showEarlier;
+		sound.playAccordion(next);
+		setShowEarlier(next);
 	};
 
 	return (
@@ -168,39 +171,37 @@ export function ExperienceSection() {
 					>
 						<div className="idx__panel-inner">
 							<p className="idx__body">{item.description}</p>
-							<div className="idx__tags">
-								{item.tags.map((tag) => (
-									<span className="idx__tag" key={tag}>
-										{tag}
-									</span>
-								))}
+							<div className="idx__foot">
+								{item.repository ? (
+									<a
+										className="idx__link"
+										href={item.repository}
+										rel="noreferrer"
+										target="_blank"
+									>
+										Repository
+										<ArrowUpRightIcon size={12} />
+									</a>
+								) : null}
+								{item.website ? (
+									<a
+										className="idx__link"
+										href={item.website}
+										rel="noreferrer"
+										target="_blank"
+									>
+										Website
+										<ArrowUpRightIcon size={12} />
+									</a>
+								) : null}
+								{item.technologies && item.technologies.length > 0 ? (
+									<div aria-label="Technologies used" className="idx__tech-stack">
+										{item.technologies.map((tech) => (
+											<TechBadge key={tech} name={tech} />
+										))}
+									</div>
+								) : null}
 							</div>
-							{item.repository || item.website ? (
-								<div className="idx__foot">
-									{item.repository ? (
-										<a
-											className="idx__link"
-											href={item.repository}
-											rel="noreferrer"
-											target="_blank"
-										>
-											Repository
-											<ArrowUpRightIcon size={12} />
-										</a>
-									) : null}
-									{item.website ? (
-										<a
-											className="idx__link"
-											href={item.website}
-											rel="noreferrer"
-											target="_blank"
-										>
-											Website
-											<ArrowUpRightIcon size={12} />
-										</a>
-									) : null}
-								</div>
-							) : null}
 						</div>
 					</AccordionRow>
 				))}

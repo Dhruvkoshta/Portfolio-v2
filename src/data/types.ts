@@ -16,6 +16,7 @@ export type ExperienceItem = {
 	readonly defaultOpen?: boolean;
 	readonly description: string;
 	readonly tags: readonly string[];
+	readonly technologies?: readonly string[];
 	readonly repository?: string;
 	readonly website?: string;
 };

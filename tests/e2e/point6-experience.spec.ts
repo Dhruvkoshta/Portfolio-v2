@@ -32,10 +32,25 @@ test.describe("Point 6: Experience Section Redesign", () => {
 		const expandAllBtn = expSection.getByRole("button", { name: /expand all/i });
 		await expect(expandAllBtn).toBeVisible();
 
+		// Verify tech badges exist
+		const techBadge = expSection.locator(".tech-badge").first();
+		await expect(techBadge).toBeVisible();
+
+		// Hover over tech badge to show tooltip
+		await techBadge.hover();
+		await page.waitForTimeout(200);
+		const tooltip = techBadge.locator(".tech-badge__tooltip");
+		await expect(tooltip).toBeVisible();
+
+		// Capture hover tooltip screenshot
+		await expSection.screenshot({
+			path: "/home/dhruv/.t3/userdata/providers/antigravity/ac0a3dfd6dddb20962cecff6ee5fe65e19d3923be20e52c5ab52ff877f7e4c32/antigravity-acp/brain/bf0baa6d-55ac-4d9f-b7e6-43e9a0e41734/point6_experience_tech_hover.png",
+		});
+
 		// Capture initial Experience section screenshot
 		await expSection.scrollIntoViewIfNeeded();
 		await page.waitForTimeout(300);
-		await page.screenshot({
+		await expSection.screenshot({
 			path: "/home/dhruv/.t3/userdata/providers/antigravity/ac0a3dfd6dddb20962cecff6ee5fe65e19d3923be20e52c5ab52ff877f7e4c32/antigravity-acp/brain/bf0baa6d-55ac-4d9f-b7e6-43e9a0e41734/point6_experience_initial.png",
 		});
 
@@ -49,7 +64,7 @@ test.describe("Point 6: Experience Section Redesign", () => {
 		await expect(expSection.getByText("1st Place Winner", { exact: true })).toBeVisible();
 
 		// Capture expanded earlier roles screenshot
-		await page.screenshot({
+		await expSection.screenshot({
 			path: "/home/dhruv/.t3/userdata/providers/antigravity/ac0a3dfd6dddb20962cecff6ee5fe65e19d3923be20e52c5ab52ff877f7e4c32/antigravity-acp/brain/bf0baa6d-55ac-4d9f-b7e6-43e9a0e41734/point6_experience_earlier_roles.png",
 		});
 	});

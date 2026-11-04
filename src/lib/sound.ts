@@ -69,6 +69,44 @@ class SoundManager {
 		return this.audioCtx;
 	}
 
+	public playAccordion(opening: boolean): void {
+		if (typeof window === "undefined") return;
+		try {
+			const ctx = this.initContext();
+			if (!ctx) return;
+			const now = ctx.currentTime;
+			if (opening) {
+				// Crisp tactile open click: rising pitch micro-pulse
+				const osc = ctx.createOscillator();
+				const gain = ctx.createGain();
+				osc.type = "sine";
+				osc.frequency.setValueAtTime(440, now);
+				osc.frequency.exponentialRampToValueAtTime(760, now + 0.035);
+				gain.gain.setValueAtTime(0.09, now);
+				gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+				osc.connect(gain);
+				gain.connect(ctx.destination);
+				osc.start(now);
+				osc.stop(now + 0.04);
+			} else {
+				// Crisp tactile close snap: falling pitch micro-pulse
+				const osc = ctx.createOscillator();
+				const gain = ctx.createGain();
+				osc.type = "sine";
+				osc.frequency.setValueAtTime(640, now);
+				osc.frequency.exponentialRampToValueAtTime(320, now + 0.03);
+				gain.gain.setValueAtTime(0.08, now);
+				gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+				osc.connect(gain);
+				gain.connect(ctx.destination);
+				osc.start(now);
+				osc.stop(now + 0.035);
+			}
+		} catch {
+			// Fail silently if audio is restricted
+		}
+	}
+
 	public play(effect: SoundEffect): void {
 		if (!this.enabled || typeof window === "undefined") return;
 

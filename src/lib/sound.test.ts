@@ -34,4 +34,9 @@ describe("Sound Engine", () => {
 		expect(() => sound.play("shutter")).not.toThrow();
 		expect(() => sound.play("switch")).not.toThrow();
 	});
+
+	it("does not throw when playAccordion is called for opening or closing", () => {
+		expect(() => sound.playAccordion(true)).not.toThrow();
+		expect(() => sound.playAccordion(false)).not.toThrow();
+	});
 });

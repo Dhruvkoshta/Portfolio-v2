@@ -69,6 +69,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"Core Tooling",
 			"Linux Systems",
 		],
+		technologies: ["Linux", "C++", "Python", "Docker", "Git"],
 	},
 	{
 		id: "freelance",
@@ -91,6 +92,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"Docker",
 			"Nginx Proxies",
 		],
+		technologies: ["Next.js", "React", "Node.js", "Python", "Docker", "SQL Databases", "Nginx"],
 	},
 	{
 		id: "patent",
@@ -113,6 +115,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"SQLite",
 			"Sockets",
 		],
+		technologies: ["ESP32", "LoRa Wireless", "React", "Node.js", "SQLite", "Sockets", "C++"],
 		repository: "https://github.com/Dhruvkoshta/Monitoring-System",
 	},
 	{
@@ -132,6 +135,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"Event Infrastructure",
 			"Developer Outreach",
 		],
+		technologies: ["React", "Next.js", "Node.js", "Git", "Cloudflare"],
 	},
 	{
 		id: "utsav",
@@ -150,6 +154,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"Operations",
 			"Event Systems",
 		],
+		technologies: ["React", "TypeScript", "Git"],
 	},
 	{
 		id: "hardware-iot",
@@ -169,6 +174,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"I2C / SPI / UART",
 			"Sensors",
 		],
+		technologies: ["C++", "ESP32", "Linux", "Git"],
 	},
 	{
 		id: "terminal-titans",
@@ -189,6 +195,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"React",
 			"FastAPI",
 		],
+		technologies: ["Python", "PyTorch", "React", "FastAPI"],
 	},
 	{
 		id: "open-source-tools",
@@ -208,6 +215,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"Web Utilities",
 			"C++ / TypeScript",
 		],
+		technologies: ["Linux", "Git", "Python", "TypeScript", "C++"],
 		repository: "https://github.com/Dhruvkoshta",
 	},
 	{
@@ -227,6 +235,7 @@ export const experienceItems: readonly ExperienceItem[] = [
 			"Responsive Design",
 			"Client Web Apps",
 		],
+		technologies: ["React", "JavaScript", "CSS", "Git"],
 	},
 ];
 

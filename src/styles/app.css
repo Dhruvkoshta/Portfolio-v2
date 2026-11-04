@@ -1503,9 +1503,11 @@ kbd {
 	position: relative;
 	display: flex;
 	align-items: baseline;
-	gap: 12px;
+	gap: 10px;
 	padding: 12px 6px;
 	border-radius: 6px;
+	min-width: 0;
+	max-width: 100%;
 	transition: background-color var(--dur-fast) var(--ease-out);
 }
 
@@ -1528,9 +1530,10 @@ kbd {
 .idx__col-left {
 	display: flex;
 	align-items: baseline;
-	gap: 10px;
+	gap: 8px;
 	min-width: 0;
-	flex-shrink: 0;
+	flex: 0 1 auto;
+	overflow: hidden;
 }
 
 .idx__title {
@@ -1539,17 +1542,23 @@ kbd {
 	color: var(--ink);
 	white-space: nowrap;
 	letter-spacing: -0.01em;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .idx__sub {
 	color: var(--ink-muted);
 	font-size: 12.5px;
 	white-space: nowrap;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .idx__leader {
 	flex: 1 1 auto;
-	min-width: 2rem;
+	min-width: 1rem;
 	align-self: center;
 	height: 1px;
 	margin-inline: 4px;
@@ -1560,9 +1569,11 @@ kbd {
 .idx__col-right {
 	display: flex;
 	align-items: baseline;
-	gap: 12px;
-	flex-shrink: 0;
+	gap: 10px;
+	flex: 0 1 auto;
+	min-width: 0;
 	margin-left: auto;
+	justify-content: flex-end;
 }
 
 /* Red accent highlight text matching reference image */
@@ -1572,6 +1583,11 @@ kbd {
 	font-size: 12.5px;
 	white-space: nowrap;
 	letter-spacing: -0.005em;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: min(22rem, 36vw);
+	flex-shrink: 1;
 }
 
 .idx__flair {
@@ -1661,7 +1677,9 @@ kbd {
 
 .idx__foot {
 	display: flex;
-	gap: 14px;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
 	margin-top: 4px;
 }
 
@@ -1681,6 +1699,105 @@ kbd {
 	color: var(--accent);
 	text-decoration-color: currentColor;
 	text-decoration-style: solid;
+}
+
+/* Small tech icons with hover tooltip matching reference video */
+.idx__tech-stack {
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-left: 4px;
+}
+
+.tech-badge {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 4px;
+	border: 1px solid var(--line);
+	background: var(--bg-card, #ffffff);
+	color: var(--ink-soft);
+	transition: border-color var(--dur-fast) ease, color var(--dur-fast) ease, transform 0.15s ease;
+	cursor: pointer;
+}
+
+.tech-badge:hover,
+.tech-badge:focus-visible {
+	border-color: var(--ink-faint);
+	color: var(--ink);
+	background: var(--bg-subtle);
+	transform: translateY(-1px);
+}
+
+.tech-badge__tooltip {
+	position: absolute;
+	bottom: calc(100% + 7px);
+	left: 50%;
+	transform: translateX(-50%) translateY(4px);
+	background: #ffffff;
+	color: var(--ink);
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	padding: 3px 7px;
+	font-family: var(--font-sans);
+	font-size: 11px;
+	font-weight: 500;
+	white-space: nowrap;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease, transform 0.15s ease;
+	z-index: 50;
+}
+
+.tech-badge__tooltip::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	border-width: 4px;
+	border-style: solid;
+	border-color: #ffffff transparent transparent transparent;
+}
+
+.tech-badge:hover .tech-badge__tooltip,
+.tech-badge:focus-visible .tech-badge__tooltip {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0);
+}
+
+/* Responsive wrap to prevent text overflow */
+@media (max-width: 768px) {
+	.idx__grid {
+		flex-wrap: wrap;
+		row-gap: 4px;
+	}
+	.idx__col-left {
+		flex: 1 1 100%;
+		flex-wrap: wrap;
+	}
+	.idx__sub {
+		white-space: normal;
+	}
+	.idx__leader {
+		display: none;
+	}
+	.idx__col-right {
+		flex: 1 1 100%;
+		margin-left: 0;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		row-gap: 4px;
+	}
+	.idx__highlight {
+		max-width: 100%;
+		white-space: normal;
+	}
 }
 
 /* Bottom Actions: Show more earlier roles & Expand all */
