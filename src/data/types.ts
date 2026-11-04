@@ -11,10 +11,13 @@ export type ExperienceItem = {
 	readonly location: string;
 	readonly period: string;
 	readonly flair?: string;
+	readonly highlight?: string;
+	readonly isEarlierRole?: boolean;
 	readonly defaultOpen?: boolean;
 	readonly description: string;
 	readonly tags: readonly string[];
 	readonly repository?: string;
+	readonly website?: string;
 };
 
 export type StatItem = {

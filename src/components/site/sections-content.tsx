@@ -32,8 +32,11 @@ type AccordionRowProps = {
 	title: string;
 	subtitle?: string;
 	flair?: string;
+	highlight?: string;
 	meta: string;
 	children: ReactNode;
+	isOpen?: boolean;
+	onToggle?: () => void;
 	defaultOpen?: boolean;
 };
 
@@ -41,19 +44,28 @@ export function AccordionRow({
 	title,
 	subtitle,
 	flair,
+	highlight,
 	meta,
 	children,
+	isOpen: controlledIsOpen,
+	onToggle,
 	defaultOpen = false,
 }: AccordionRowProps) {
-	const [isOpen, setIsOpen] = useState(defaultOpen);
+	const [uncontrolledIsOpen, setUncontrolledIsOpen] = useState(defaultOpen);
+	const isControlled = controlledIsOpen !== undefined;
+	const isOpen = isControlled ? controlledIsOpen : uncontrolledIsOpen;
 
 	const toggleOpen = () => {
 		sound.play("switch");
-		setIsOpen((prev) => !prev);
+		if (isControlled && onToggle) {
+			onToggle();
+		} else {
+			setUncontrolledIsOpen((prev) => !prev);
+		}
 	};
 
 	return (
-		<li className="idx__row">
+		<li className={`idx__row ${isOpen ? "idx__row--open" : ""}`}>
 			<div className="idx__grid">
 				<button
 					aria-expanded={isOpen}
@@ -64,29 +76,30 @@ export function AccordionRow({
 					<span className="sr-only">Toggle details for {title}</span>
 				</button>
 
-				<span className="idx__details">
-					<span className="idx__title">
-						<span className="idx__title-text">{title}</span>
-					</span>
+				<div className="idx__col-left">
+					<span className="idx__title">{title}</span>
 					{subtitle ? <span className="idx__sub">{subtitle}</span> : null}
-				</span>
+				</div>
 
 				<span aria-hidden="true" className="idx__leader" />
 
-				<div className="idx__trail">
-					{flair ? <span className="idx__flair">{flair}</span> : null}
+				<div className="idx__col-right">
+					{highlight ? (
+						<span className="idx__highlight">{highlight}</span>
+					) : flair ? (
+						<span className="idx__flair">{flair}</span>
+					) : null}
 					<span className="idx__meta">{meta}</span>
+					<button
+						aria-hidden="true"
+						className="idx__plus-btn"
+						onClick={toggleOpen}
+						tabIndex={-1}
+						type="button"
+					>
+						{isOpen ? "−" : "+"}
+					</button>
 				</div>
-
-				<button
-					aria-hidden="true"
-					className="idx__plus-btn"
-					onClick={toggleOpen}
-					tabIndex={-1}
-					type="button"
-				>
-					{isOpen ? "−" : "+"}
-				</button>
 			</div>
 
 			{isOpen ? <div className="idx__panel">{children}</div> : null}
@@ -99,18 +112,58 @@ export function AccordionRow({
 ------------------------------------------------------------------------- */
 
 export function ExperienceSection() {
+	const [showEarlier, setShowEarlier] = useState(false);
+	const [allExpanded, setAllExpanded] = useState<boolean | null>(null);
+	const [openItems, setOpenItems] = useState<Record<string, boolean>>(() => {
+		const initial: Record<string, boolean> = {};
+		experienceItems.forEach((item) => {
+			if (item.defaultOpen) {
+				initial[item.id] = true;
+			}
+		});
+		return initial;
+	});
+
+	const displayedItems = showEarlier
+		? experienceItems
+		: experienceItems.filter((item) => !item.isEarlierRole);
+
+	const earlierCount = experienceItems.filter((item) => item.isEarlierRole).length;
+
+	const handleToggleItem = (id: string) => {
+		setOpenItems((prev) => ({
+			...prev,
+			[id]: !prev[id],
+		}));
+	};
+
+	const handleToggleExpandAll = () => {
+		sound.play("click");
+		const nextState = allExpanded === true ? false : true;
+		setAllExpanded(nextState);
+		const nextOpen: Record<string, boolean> = {};
+		experienceItems.forEach((item) => {
+			nextOpen[item.id] = nextState;
+		});
+		setOpenItems(nextOpen);
+	};
+
+	const handleToggleEarlier = () => {
+		sound.play("click");
+		setShowEarlier((prev) => !prev);
+	};
+
 	return (
 		<div className="idx">
 			<ul aria-label="Experience history" className="idx__list">
-				{experienceItems.map((item) => (
+				{displayedItems.map((item) => (
 					<AccordionRow
-						defaultOpen={item.defaultOpen}
-						flair={item.flair}
+						highlight={item.highlight}
+						isOpen={openItems[item.id] ?? false}
 						key={item.id}
 						meta={item.period}
-						subtitle={
-							item.location ? `${item.role} • ${item.location}` : item.role
-						}
+						onToggle={() => handleToggleItem(item.id)}
+						subtitle={item.role}
 						title={item.company}
 					>
 						<div className="idx__panel-inner">
@@ -122,23 +175,56 @@ export function ExperienceSection() {
 									</span>
 								))}
 							</div>
-							{item.repository ? (
+							{item.repository || item.website ? (
 								<div className="idx__foot">
-									<a
-										className="idx__link"
-										href={item.repository}
-										rel="noreferrer"
-										target="_blank"
-									>
-										Repository
-										<ArrowUpRightIcon size={12} />
-									</a>
+									{item.repository ? (
+										<a
+											className="idx__link"
+											href={item.repository}
+											rel="noreferrer"
+											target="_blank"
+										>
+											Repository
+											<ArrowUpRightIcon size={12} />
+										</a>
+									) : null}
+									{item.website ? (
+										<a
+											className="idx__link"
+											href={item.website}
+											rel="noreferrer"
+											target="_blank"
+										>
+											Website
+											<ArrowUpRightIcon size={12} />
+										</a>
+									) : null}
 								</div>
 							) : null}
 						</div>
 					</AccordionRow>
 				))}
 			</ul>
+
+			{/* Bottom Controls: Show earlier roles + Expand/Collapse all */}
+			<div className="idx__actions">
+				{earlierCount > 0 ? (
+					<button
+						className="idx__action-btn"
+						onClick={handleToggleEarlier}
+						type="button"
+					>
+						{showEarlier ? "Hide earlier roles" : `Show ${earlierCount} more earlier roles`}
+					</button>
+				) : null}
+				<button
+					className="idx__action-toggle"
+					onClick={handleToggleExpandAll}
+					type="button"
+				>
+					{allExpanded ? "Collapse all" : "Expand all"}
+				</button>
+			</div>
 		</div>
 	);
 }
