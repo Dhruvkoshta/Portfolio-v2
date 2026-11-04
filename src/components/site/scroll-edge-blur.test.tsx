@@ -7,13 +7,17 @@ describe("ScrollEdgeBlur Component", () => {
 		cleanup();
 	});
 
-	it("renders aria-hidden blur container with layers", () => {
+	it("renders aria-hidden blur container with layers for both top and bottom", () => {
 		const { container } = render(<ScrollEdgeBlur />);
-		const root = container.querySelector(".scroll-edge-blur--top");
-		expect(root).toBeInTheDocument();
-		expect(root).toHaveAttribute("aria-hidden", "true");
+		const top = container.querySelector(".scroll-edge-blur--top");
+		expect(top).toBeInTheDocument();
+		expect(top).toHaveAttribute("aria-hidden", "true");
+
+		const bottom = container.querySelector(".scroll-edge-blur--bottom");
+		expect(bottom).toBeInTheDocument();
+		expect(bottom).toHaveAttribute("aria-hidden", "true");
 
 		const layers = container.querySelectorAll(".scroll-edge-blur__layer");
-		expect(layers.length).toBe(6);
+		expect(layers.length).toBe(12);
 	});
 });

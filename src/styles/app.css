@@ -3104,8 +3104,9 @@ kbd {
 /* Progressive Gradient Blur / Scrim --------------------------------------- */
 
 :root {
-	--scroll-edge-blur-height: clamp(4.5rem, 8vw, 6rem);
+	--scroll-edge-blur-height: clamp(80px, 9vw, 100px);
 	--z-scroll-edge-blur-top: 55;
+	--z-scroll-edge-blur-bottom: 80;
 }
 
 .scroll-edge-blur,
@@ -3127,6 +3128,11 @@ kbd {
 	z-index: var(--z-scroll-edge-blur-top);
 }
 
+.scroll-edge-blur--bottom {
+	bottom: 0;
+	z-index: var(--z-scroll-edge-blur-bottom);
+}
+
 .scroll-edge-blur__safe {
 	position: absolute;
 	left: 0;
@@ -3136,6 +3142,12 @@ kbd {
 	backdrop-filter: blur(14px);
 	-webkit-backdrop-filter: blur(14px);
 	pointer-events: none;
+}
+
+.scroll-edge-blur__safe--bottom {
+	top: auto;
+	bottom: 0;
+	height: env(safe-area-inset-bottom, 0px);
 }
 
 .scroll-edge-blur__stack {
@@ -3158,13 +3170,25 @@ kbd {
 .scroll-edge-blur__tint {
 	position: absolute;
 	inset: 0;
+	pointer-events: none;
+}
+
+.scroll-edge-blur__tint--top {
 	background: linear-gradient(
 		to bottom,
 		color-mix(in srgb, var(--bg) 88%, transparent) 0%,
 		color-mix(in srgb, var(--bg) 40%, transparent) 55%,
 		transparent 100%
 	);
-	pointer-events: none;
+}
+
+.scroll-edge-blur__tint--bottom {
+	background: linear-gradient(
+		to top,
+		color-mix(in srgb, var(--bg) 88%, transparent) 0%,
+		color-mix(in srgb, var(--bg) 40%, transparent) 55%,
+		transparent 100%
+	);
 }
 
 /* Segmented Scroll Tracker / Left Rail ------------------------------------- */
