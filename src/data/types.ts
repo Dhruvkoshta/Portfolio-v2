@@ -40,12 +40,15 @@ export type ProjectItem = {
 	readonly title: string;
 	readonly subtitle: string;
 	readonly year: string;
+	readonly dateSpan?: string;
 	readonly desc: string;
 	readonly tags: readonly string[];
 	readonly image: string;
+	readonly video?: string;
 	readonly patent?: boolean;
 	readonly github?: string;
 	readonly website?: string;
+	readonly teaser?: string;
 };
 
 export type OtherProjectItem = {
