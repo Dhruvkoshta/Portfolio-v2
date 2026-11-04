@@ -67,13 +67,21 @@ export type OtherProjectItem = {
 export type EducationItem = {
 	readonly id: string;
 	readonly institution: string;
+	readonly flag?: string;
 	readonly degree: string;
 	readonly location: string;
 	readonly period: string;
 	readonly score: string;
+	readonly honors?: readonly string[];
+	readonly barcode?: string;
 	readonly leadership?: readonly string[];
 	readonly coursework?: readonly string[];
 	readonly summary?: string;
+};
+
+export type CourseItem = {
+	readonly name: string;
+	readonly grade: string;
 };
 
 export type SkillCategory = {

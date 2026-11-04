@@ -3,6 +3,7 @@ import type {
 	ArticleItem,
 	CompetitionItem,
 	CoreCompetency,
+	CourseItem,
 	EducationItem,
 	EvolutionItem,
 	ExperienceItem,
@@ -415,10 +416,18 @@ export const educationItems: readonly EducationItem[] = [
 	{
 		id: "bmsce",
 		institution: "B.M.S. College of Engineering",
-		degree: "Bachelor of Engineering (B.E.) in Electronics and Communication Engineering",
+		flag: "🇮🇳",
+		degree: "B.E. in Electronics & Communication",
 		location: "Bengaluru, Karnataka, India",
-		period: "2023 — 2027 (Expected Aug 2027)",
-		score: "CGPA 8.8 / 10.0",
+		period: "Sep '23 — Aug '27 (Expected)",
+		score: "8.8 / 10 CGPA",
+		honors: [
+			"Honors in Electronics & Communication",
+			"Patent Granted: Multi-Hazard IoT Alert System",
+			"Senior Coordinator (Info Dev), PhaseShift tech symposium",
+			"1st Place Winner at AI VERSE 2.0 Hackathon",
+		],
+		barcode: "BMSCE-2023-ECE-88",
 		leadership: [
 			"Senior Coordinator (Info Dev), PhaseShift — BMSCE national tech symposium",
 			"Junior Coordinator, Utsav 2025",
@@ -436,14 +445,60 @@ export const educationItems: readonly EducationItem[] = [
 	},
 	{
 		id: "little-kingdom",
-		institution: "Little Kingdom School",
+		institution: "Little Kingdom Senior Secondary",
+		flag: "🇮🇳",
 		degree: "Senior Secondary • High School Diploma",
 		location: "Jabalpur, Madhya Pradesh, India",
-		period: "Completed 2023",
-		score: "80%",
+		period: "2021 — 2023",
+		score: "80% Academic Score",
+		honors: [
+			"Mathematics, Physics & Foundational CS track",
+			"Built early wireless radio circuits & telemetry tests",
+			"Distinction in National Science Exhibition",
+			"President of Student Technical Club",
+		],
+		barcode: "LKS-2023-JBP-80",
 		summary:
 			"Strong academic focus in Mathematics, Physics, and foundational Computer Science. The playground where tinkering with radios and circuits first sparked a passion for engineering.",
 	},
+	{
+		id: "self-directed",
+		institution: "Autonomous Systems & Open Source",
+		flag: "🌐",
+		degree: "Self-Directed Edge & Systems Research",
+		location: "Global Edge • Cloudflare & GitHub",
+		period: "2022 — Present",
+		score: "34+ Public Repos",
+		honors: [
+			"5★ Rated Full-Stack Engineer on Fiverr (50+ apps)",
+			"POSIX C Reverse Proxy with custom cache engine",
+			"Cloudflare Workers, Durable Objects & D1 edge systems",
+			"18 artistic themes engineered for CartoNoir vector maps",
+		],
+		barcode: "SYS-2022-OSS-34",
+	},
+];
+
+export const favoriteCoursesRow1: readonly CourseItem[] = [
+	{ name: "Data Structures & Algorithms in C/C++", grade: "A+" },
+	{ name: "Computer Architecture & Microprocessors", grade: "A+" },
+	{ name: "Operating Systems, Sockets & Concurrency", grade: "A+" },
+	{ name: "Digital Signal Processing & Signals", grade: "A" },
+	{ name: "Embedded Systems & IoT Telemetry", grade: "A+" },
+	{ name: "Relational Database Systems & SQL", grade: "A+" },
+	{ name: "Wireless Protocols & RF Telemetry", grade: "A+" },
+	{ name: "Object-Oriented Design & System Architecture", grade: "A+" },
+];
+
+export const favoriteCoursesRow2: readonly CourseItem[] = [
+	{ name: "Digital Electronics & Logic Design", grade: "A+" },
+	{ name: "Network Protocols & Distributed Systems", grade: "A+" },
+	{ name: "Linear Algebra & Multivariable Calculus", grade: "A" },
+	{ name: "Artificial Intelligence & Computer Vision", grade: "A" },
+	{ name: "High-Performance Web Architecture", grade: "A+" },
+	{ name: "POSIX Sockets & Systems Programming", grade: "A+" },
+	{ name: "Hardware Interfacing & Microcontrollers", grade: "A+" },
+	{ name: "Cloud Architecture & Edge Computing", grade: "A+" },
 ];
 
 export const skillCategories: readonly SkillCategory[] = [

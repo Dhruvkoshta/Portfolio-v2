@@ -75,12 +75,12 @@ describe("Content Layer Integrity", () => {
 	});
 
 	it("has verified education entries for BMSCE and Little Kingdom", () => {
-		expect(educationItems.length).toBe(2);
+		expect(educationItems.length).toBeGreaterThanOrEqual(2);
 		const bmsce = educationItems.find((e) => e.id === "bmsce");
 		expect(bmsce?.score).toContain("8.8");
 		expect(bmsce?.coursework?.length).toBeGreaterThan(4);
 		const lks = educationItems.find((e) => e.id === "little-kingdom");
-		expect(lks?.score).toBe("80%");
+		expect(lks?.score).toContain("80%");
 	});
 
 	it("categorizes all skills into 4 distinct groups with core competencies", () => {
