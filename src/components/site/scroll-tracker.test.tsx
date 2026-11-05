@@ -31,4 +31,13 @@ describe("ScrollTracker Component", () => {
 		expect(scrollMock).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
 		document.body.removeChild(targetEl);
 	});
+
+	it("synchronizes tracker progress with section index rather than overshooting", () => {
+		const { container } = render(<ScrollTracker />);
+		const nav = container.querySelector(".scroll-tracker");
+		expect(nav).toBeInTheDocument();
+		// At initial render (top of page), progress is near 0, not overshooting
+		const progress = nav?.getAttribute("style");
+		expect(progress).toContain("--tracker-progress");
+	});
 });

@@ -30,35 +30,71 @@ export function ScrollTracker() {
 		const updateActiveSection = () => {
 			const scrollY = window.scrollY;
 			const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-			const progress = docHeight > 0 ? Math.min(1, Math.max(0, scrollY / docHeight)) : 0;
-			setScrollProgress(progress);
-
-			// If at top of the document
-			if (scrollY < 120) {
-				setActiveId("me");
-				return;
-			}
-
-			// If at bottom of the document
-			if (scrollY + window.innerHeight >= document.documentElement.scrollHeight - 60) {
-				setActiveId(TRACKER_ITEMS[TRACKER_ITEMS.length - 1].id);
-				return;
-			}
-
-			// Find active section in viewport
 			const viewportTrigger = window.innerHeight * 0.35;
-			let currentActive = "me";
+			const count = TRACKER_ITEMS.length;
+			const listHeight = count * 24 + (count - 1) * 6; // 444px for 15 items
 
-			for (const item of TRACKER_ITEMS) {
-				const el = document.getElementById(item.id);
+			// 1. If at the very top of the page
+			if (scrollY < 40) {
+				setActiveId("me");
+				const topFraction = Math.max(0, scrollY / 40);
+				setScrollProgress((topFraction * 12) / listHeight);
+				return;
+			}
+
+			// 2. If at the very bottom of the document
+			if (docHeight > 0 && scrollY + window.innerHeight >= document.documentElement.scrollHeight - 40) {
+				setActiveId(TRACKER_ITEMS[count - 1].id);
+				setScrollProgress(1);
+				return;
+			}
+
+			// 3. Find active section based on viewportTrigger
+			let activeIdx = 0;
+			for (let i = 0; i < count; i++) {
+				const el = document.getElementById(TRACKER_ITEMS[i].id);
 				if (!el) continue;
 				const rect = el.getBoundingClientRect();
 				if (rect.top <= viewportTrigger && rect.bottom > 0) {
-					currentActive = item.id;
+					activeIdx = i;
 				}
 			}
 
-			setActiveId(currentActive);
+			setActiveId(TRACKER_ITEMS[activeIdx].id);
+
+			// 4. Calculate progress within the current active section
+			const currentEl = document.getElementById(TRACKER_ITEMS[activeIdx].id);
+			let intraProgress = 0;
+
+			if (activeIdx < count - 1) {
+				const nextEl = document.getElementById(TRACKER_ITEMS[activeIdx + 1].id);
+				if (currentEl && nextEl) {
+					const currentTop = currentEl.offsetTop;
+					const nextTop = nextEl.offsetTop;
+					const sectionSpan = nextTop - currentTop;
+					if (sectionSpan > 0) {
+						const scrolledIntoSection = scrollY + viewportTrigger - currentTop;
+						intraProgress = Math.max(0, Math.min(1, scrolledIntoSection / sectionSpan));
+					}
+				}
+			} else if (currentEl) {
+				const currentTop = currentEl.offsetTop;
+				const remainingScroll = docHeight - currentTop;
+				if (remainingScroll > 0) {
+					const scrolledIntoSection = scrollY - currentTop;
+					intraProgress = Math.max(0, Math.min(1, scrolledIntoSection / remainingScroll));
+				}
+			}
+
+			// Continuous section position (e.g. 6.0 when entering Education, 6.5 halfway through)
+			const continuousIndex = activeIdx + intraProgress;
+
+			// Position tip of the line on the center of notch continuousIndex
+			// Notch i center is at: 12px + i * 30px
+			const notchCenterY = 12 + continuousIndex * 30;
+			const normalizedProgress = Math.max(0, Math.min(1, notchCenterY / listHeight));
+
+			setScrollProgress(normalizedProgress);
 		};
 
 		const onScroll = () => {
