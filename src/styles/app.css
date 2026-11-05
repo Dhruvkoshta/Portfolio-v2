@@ -2799,6 +2799,349 @@ kbd {
 	line-height: 1.5;
 }
 
+/* Spotify Bookshelf & Sliding Vinyl Record (.spotify-*) ----------------- */
+
+.spotify-shelf-wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.spotify-head-controls {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: -38px;
+	margin-bottom: 24px;
+	position: relative;
+	z-index: 2;
+}
+
+@media (max-width: 640px) {
+	.spotify-head-controls {
+		margin-top: -8px;
+		margin-bottom: 16px;
+		justify-content: flex-start;
+	}
+}
+
+.spotify-shelf-stage {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+.bookshelf-scene {
+	position: relative;
+	width: 100%;
+	max-width: 820px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 50px;
+}
+
+.bookshelf-content {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	gap: 16px;
+	width: 100%;
+	z-index: 2;
+	position: relative;
+}
+
+/* Book Spines */
+.book-cluster {
+	display: flex;
+	align-items: flex-end;
+	gap: 3px;
+	padding-bottom: 2px;
+}
+
+@media (max-width: 720px) {
+	.book-cluster--right {
+		display: none;
+	}
+}
+
+.book-spine {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 180px;
+	border-radius: 3px 3px 0 0;
+	text-decoration: none;
+	box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.15);
+	cursor: pointer;
+	overflow: hidden;
+	position: relative;
+	transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+	user-select: none;
+}
+
+.book-spine:hover {
+	transform: translateY(-8px) scale(1.02);
+	box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.book-spine__text {
+	writing-mode: vertical-rl;
+	transform: rotate(180deg);
+	font-family: var(--font-body);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	white-space: nowrap;
+	text-transform: lowercase;
+	padding: 8px 0;
+}
+
+/* Vinyl & Sleeve Unit */
+.vinyl-sleeve-unit {
+	position: relative;
+	width: 200px;
+	height: 200px;
+	flex-shrink: 0;
+	cursor: pointer;
+	text-decoration: none;
+	margin: 0 4px;
+}
+
+/* Vinyl Record Disc */
+.vinyl-disc {
+	position: absolute;
+	width: 186px;
+	height: 186px;
+	border-radius: 50%;
+	background: radial-gradient(circle, #262626 0%, #121212 70%, #050505 100%);
+	top: 7px;
+	left: 7px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1;
+	transform: translateY(0) rotate(0deg);
+	transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+}
+
+.vinyl-groove {
+	position: absolute;
+	border-radius: 50%;
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	pointer-events: none;
+}
+
+.vinyl-groove--1 { width: 160px; height: 160px; }
+.vinyl-groove--2 { width: 130px; height: 130px; }
+.vinyl-groove--3 { width: 100px; height: 100px; }
+
+.vinyl-label {
+	width: 70px;
+	height: 70px;
+	border-radius: 50%;
+	background: #fdfbf7;
+	border: 2px solid #e5e5e5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.vinyl-label__ring {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.vinyl-label__text {
+	font-family: var(--font-mono);
+	font-size: 6.5px;
+	font-weight: 700;
+	color: #1a1a1a;
+	letter-spacing: -0.01em;
+	max-width: 58px;
+	line-height: 1.15;
+}
+
+.vinyl-center-hole {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: #000000;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Hover Micro-Interaction: Record slides smoothly upwards & out */
+.vinyl-sleeve-unit:hover .vinyl-disc,
+.vinyl-sleeve-unit:focus-visible .vinyl-disc {
+	transform: translateY(-56px) rotate(42deg);
+	box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Album Sleeve Cover */
+.album-sleeve {
+	position: absolute;
+	inset: 0;
+	background: #18181b;
+	border-radius: 4px;
+	overflow: hidden;
+	z-index: 2;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.album-sleeve__grid {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	opacity: 0.85;
+}
+
+.album-sleeve__cell--1 {
+	background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.album-sleeve__cell--2 {
+	background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.album-sleeve__cell--3 {
+	background: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+
+.album-sleeve__cell--4 {
+	background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+.album-sleeve__overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 60%);
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	padding: 10px 12px;
+	color: #ffffff;
+}
+
+.album-sleeve__tag {
+	font-family: var(--font-body);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.album-sleeve__icon {
+	color: #1ed760;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+/* 3D Shelf Plinth & Supports */
+.shelf-plinth {
+	position: relative;
+	width: 100%;
+	z-index: 3;
+}
+
+.shelf-plinth__top {
+	width: 100%;
+	height: 12px;
+	background: linear-gradient(to bottom, #d5b895, #b89874);
+	border-top: 1px solid rgba(255, 255, 255, 0.4);
+	border-bottom: 1px solid #8c6d4f;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.shelf-plinth__front {
+	width: 100%;
+	height: 16px;
+	background: linear-gradient(to bottom, #9d7c58, #7d5e3c);
+	border-bottom: 2px solid #5a4128;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.shelf-bracket {
+	position: absolute;
+	top: 28px;
+	width: 8px;
+	height: 24px;
+	background: #4a3826;
+	border-radius: 0 0 2px 2px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.shelf-bracket--left { left: 40px; }
+.shelf-bracket--right { right: 40px; }
+
+/* Subtext & Wave */
+.spotify-shelf-subtext {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 36px;
+	font-size: 13px;
+	color: var(--ink-muted);
+}
+
+.spotify-presence-wave {
+	display: inline-flex;
+	align-items: flex-end;
+	gap: 3px;
+	height: 14px;
+}
+
+.wave-bar {
+	width: 3px;
+	border-radius: 2px;
+	background-color: #1ed760;
+	animation: wave-pulse 1.2s ease-in-out infinite alternate;
+}
+
+.wave-bar--1 { height: 6px; animation-delay: 0.1s; }
+.wave-bar--2 { height: 14px; animation-delay: 0.3s; }
+.wave-bar--3 { height: 9px; animation-delay: 0.5s; }
+
+@keyframes wave-pulse {
+	0% { height: 4px; }
+	100% { height: 14px; }
+}
+
+.spotify-shelf-caption {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.spotify-shelf-track {
+	font-weight: 500;
+	color: var(--ink);
+}
+
+.spotify-shelf-by {
+	color: var(--ink-muted);
+	font-weight: 400;
+}
+
+.spotify-curated-list {
+	width: 100%;
+	margin-top: 28px;
+}
+
+.spotify-control-stage {
+	width: 100%;
+	animation: panel-in var(--dur-fast) var(--ease-out);
+}
+
 /* Testimonials Quote Card ------------------------------------------------- */
 
 .quote-card {
