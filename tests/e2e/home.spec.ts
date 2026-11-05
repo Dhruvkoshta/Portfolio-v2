@@ -149,13 +149,17 @@ test("pixel pet Byte is interactive and reacts to petting", async ({ page }) => 
 test("ambient radio player is accessible in the bottom dock and spotify section", async ({ page }) => {
 	await gotoHome(page);
 
-	const bottomRadioBtn = page.getByRole("button", { name: /play ambient radio/i });
+	const bottomRadioBtn = page.getByRole("button", { name: /play.*radio/i });
 	await expect(bottomRadioBtn).toBeVisible();
+
+	// Select Control my Music tab in Spotify section
+	const controlTab = page.getByRole("tab", { name: /control my music/i });
+	await controlTab.click();
 
 	// Full player in Spotify section
 	const radioPlayer = page.getByRole("region", { name: "Ambient Radio Player" });
 	await expect(radioPlayer).toBeVisible();
-	await expect(radioPlayer.getByText("Electric — Lofi Stream")).toBeVisible();
+	await expect(radioPlayer.getByText(/Broken Free/i)).toBeVisible();
 });
 
 test("thermal receipt form validates input and submits message", async ({ page }) => {

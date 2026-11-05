@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { sound } from "~/lib/sound";
+import { useRadio } from "~/lib/radio";
 import { PauseIcon, PlayIcon, RadioIcon, SpeakerIcon, SpeakerMuteIcon } from "./icons";
 
 type AmbientRadioProps = {
@@ -8,72 +7,20 @@ type AmbientRadioProps = {
 };
 
 export function AmbientRadio({ compact = false, className = "" }: AmbientRadioProps) {
-	const audioRef = useRef<HTMLAudioElement | null>(null);
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [isMuted, setIsMuted] = useState(false);
-	const [volume, setVolume] = useState(0.4);
-	const [currentTime, setCurrentTime] = useState(0);
-	const [duration, setDuration] = useState(0);
-
-	useEffect(() => {
-		const audio = new Audio("/media/electric.mp3");
-		audio.loop = true;
-		audio.volume = 0.4;
-		audioRef.current = audio;
-
-		const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-		const handleLoadedMetadata = () => setDuration(audio.duration || 0);
-		const handleEnded = () => setIsPlaying(false);
-
-		audio.addEventListener("timeupdate", handleTimeUpdate);
-		audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-		audio.addEventListener("ended", handleEnded);
-
-		return () => {
-			audio.pause();
-			audio.removeEventListener("timeupdate", handleTimeUpdate);
-			audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-			audio.removeEventListener("ended", handleEnded);
-			audioRef.current = null;
-		};
-	}, []);
-
-	const togglePlay = () => {
-		const audio = audioRef.current;
-		if (!audio) return;
-
-		sound.play("click");
-
-		if (isPlaying) {
-			audio.pause();
-			setIsPlaying(false);
-		} else {
-			audio
-				.play()
-				.then(() => setIsPlaying(true))
-				.catch(() => setIsPlaying(false));
-		}
-	};
-
-	const toggleMute = () => {
-		const audio = audioRef.current;
-		if (!audio) return;
-		sound.play("click");
-		const nextMute = !isMuted;
-		audio.muted = nextMute;
-		setIsMuted(nextMute);
-	};
+	const {
+		isPlaying,
+		isMuted,
+		volume,
+		currentTime,
+		duration,
+		togglePlay,
+		toggleMute,
+		setVolume,
+	} = useRadio();
 
 	const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newVol = Number.parseFloat(e.target.value);
 		setVolume(newVol);
-		if (audioRef.current) {
-			audioRef.current.volume = newVol;
-			if (newVol > 0 && isMuted) {
-				audioRef.current.muted = false;
-				setIsMuted(false);
-			}
-		}
 	};
 
 	const formatTime = (secs: number) => {
@@ -90,7 +37,11 @@ export function AmbientRadio({ compact = false, className = "" }: AmbientRadioPr
 					aria-label={isPlaying ? "Radio: Pause stream" : "Radio: Play stream"}
 					className={`radio-btn ${isPlaying ? "radio-btn--playing" : ""}`}
 					onClick={togglePlay}
-					title={isPlaying ? "Pause Electric (Lofi)" : "Play Electric (Lofi)"}
+					title={
+						isPlaying
+							? "Pause Broken Free (RnB Instrumental)"
+							: "Play Broken Free (RnB Instrumental)"
+					}
 					type="button"
 				>
 					{isPlaying ? <PauseIcon size={12} /> : <PlayIcon size={12} />}
@@ -110,7 +61,7 @@ export function AmbientRadio({ compact = false, className = "" }: AmbientRadioPr
 				<div className="ambient-radio__meta">
 					<RadioIcon aria-hidden="true" className="ambient-radio__icon" size={16} />
 					<div className="ambient-radio__info">
-						<span className="ambient-radio__title">Electric — Lofi Stream</span>
+						<span className="ambient-radio__title">Broken Free — RnB Instrumental</span>
 						<span className="ambient-radio__artist">Dhruv&apos;s Focus Soundtrack</span>
 					</div>
 				</div>
@@ -141,7 +92,7 @@ export function AmbientRadio({ compact = false, className = "" }: AmbientRadioPr
 				<div className="ambient-radio__time" aria-live="off">
 					<span>{formatTime(currentTime)}</span>
 					<span>/</span>
-					<span>{duration ? formatTime(duration) : "0:25"}</span>
+					<span>{duration ? formatTime(duration) : "4:02"}</span>
 				</div>
 
 				<div className="ambient-radio__volume-group">

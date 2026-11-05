@@ -1,54 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import { sound } from "~/lib/sound";
+import { useState } from "react";
+import { useRadio } from "~/lib/radio";
 
 export function BottomDock() {
-	const audioRef = useRef<HTMLAudioElement | null>(null);
-	const [isPlaying, setIsPlaying] = useState(false);
+	const { isPlaying, togglePlay, restart } = useRadio();
 	const [hovered, setHovered] = useState(false);
-
-	useEffect(() => {
-		const audio = new Audio("/media/electric.mp3");
-		audio.loop = true;
-		audio.volume = 0.4;
-		audioRef.current = audio;
-
-		const handleEnded = () => setIsPlaying(false);
-		audio.addEventListener("ended", handleEnded);
-
-		return () => {
-			audio.pause();
-			audio.removeEventListener("ended", handleEnded);
-			audioRef.current = null;
-		};
-	}, []);
-
-	const togglePlay = () => {
-		const audio = audioRef.current;
-		if (!audio) return;
-		sound.play("click");
-		if (isPlaying) {
-			audio.pause();
-			setIsPlaying(false);
-		} else {
-			audio
-				.play()
-				.then(() => setIsPlaying(true))
-				.catch(() => setIsPlaying(false));
-		}
-	};
-
-	const restartTrack = () => {
-		const audio = audioRef.current;
-		if (!audio) return;
-		sound.play("click");
-		audio.currentTime = 0;
-		if (!isPlaying) {
-			audio
-				.play()
-				.then(() => setIsPlaying(true))
-				.catch(() => setIsPlaying(false));
-		}
-	};
 
 	return (
 		<aside aria-label="Audio dock" className="ed3-bottom-dock">
@@ -65,7 +20,7 @@ export function BottomDock() {
 								<button
 									aria-label="Restart track"
 									className="ed3-bottom-dock__btn ed3-bottom-dock__btn--icon"
-									onClick={restartTrack}
+									onClick={restart}
 									title="Restart stream"
 									type="button"
 								>
@@ -79,9 +34,7 @@ export function BottomDock() {
 
 								{/* Main Radio Play/Pause button */}
 								<button
-									aria-label={
-										isPlaying ? "Pause ambient radio" : "Play ambient radio"
-									}
+									aria-label={isPlaying ? "Pause Radio" : "Play Radio"}
 									aria-pressed={isPlaying}
 									className={`ed3-bottom-dock__btn ed3-bottom-dock__btn--main ${
 										isPlaying ? "ed3-bottom-dock__btn--playing" : ""
@@ -91,8 +44,8 @@ export function BottomDock() {
 									onMouseLeave={() => setHovered(false)}
 									title={
 										isPlaying
-											? "Pause Electric (Lofi Focus)"
-											: "Play Electric (Lofi Focus)"
+											? "Pause Broken Free (RnB Focus)"
+											: "Play Broken Free (RnB Focus)"
 									}
 									type="button"
 								>
