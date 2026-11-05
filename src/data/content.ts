@@ -12,7 +12,6 @@ import type {
 	OtherProjectItem,
 	PlaylistItem,
 	ProjectItem,
-	ResearchItem,
 	SkillCategory,
 	StatItem,
 	TestimonialItem,
@@ -565,24 +564,6 @@ export const coreCompetencies: readonly CoreCompetency[] = [
 		name: "DevOps & Containerization",
 		description:
 			"Containerizing client and internal applications with Docker, configuring Nginx reverse proxies, caching, rate-limiting, and traffic management.",
-	},
-];
-
-export const researchItems: readonly ResearchItem[] = [
-	{
-		title: "Anonymous Communication: Metadata Stripping & Cryptographic Hashing",
-		flair: "Privacy Research",
-		category: "Application Security",
-	},
-	{
-		title: "Input Sanitization & Secure Query Validation Against Spoofing",
-		flair: "Sanitization",
-		category: "Web Security",
-	},
-	{
-		title: "Fault-Tolerant LoRa Mesh Telemetry & Serial Data Integrity (Patent)",
-		flair: "Hardware Security",
-		category: "IoT Protocol",
 	},
 ];
 

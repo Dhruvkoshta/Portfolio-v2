@@ -12,8 +12,8 @@ describe("ScrollTracker Component", () => {
 		expect(nav).toBeInTheDocument();
 
 		const buttons = screen.getAllByRole("button");
-		// 1 hero + 15 sections = 16 buttons
-		expect(buttons).toHaveLength(16);
+		// 1 hero + 14 sections = 15 buttons
+		expect(buttons).toHaveLength(15);
 		expect(buttons[0]).toHaveAttribute("aria-label", "00 Top");
 	});
 

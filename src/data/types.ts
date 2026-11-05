@@ -95,12 +95,6 @@ export type CoreCompetency = {
 	readonly description: string;
 };
 
-export type ResearchItem = {
-	readonly title: string;
-	readonly flair: string;
-	readonly category: string;
-};
-
 export type CompetitionItem = {
 	readonly id: string;
 	readonly title: string;

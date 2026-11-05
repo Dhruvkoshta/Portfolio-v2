@@ -20,7 +20,6 @@ import {
 	miscSetups,
 	otherProjects,
 	playlists,
-	researchItems,
 	skillCategories,
 	testimonial,
 } from "~/data/content";
@@ -877,45 +876,7 @@ export function SkillsSection() {
 }
 
 /* -------------------------------------------------------------------------
-   08. Ethical Hacking & Research Section
-------------------------------------------------------------------------- */
-
-export function EthicalHackingSection() {
-	return (
-		<div className="idx">
-			<div className="ed-callout">
-				<div className="ed-callout__copy">
-					<p className="eyebrow">Responsible Research & Security</p>
-					<p>
-						Practical security research focusing on cryptographic hashing,
-						metadata stripping, input sanitization, and wireless telemetry
-						fault-tolerance.
-					</p>
-				</div>
-				<span className="idx__flair">Responsible Disclosure</span>
-			</div>
-			<ul className="idx__list" style={{ marginTop: "16px" }}>
-				{researchItems.map((item) => (
-					<li className="idx__row" key={item.title}>
-						<div className="idx__grid">
-							<span className="idx__details">
-								<span className="idx__title-text">{item.title}</span>
-							</span>
-							<span aria-hidden="true" className="idx__leader" />
-							<div className="idx__trail">
-								<span className="idx__flair">{item.flair}</span>
-								<span className="idx__meta">{item.category}</span>
-							</div>
-						</div>
-					</li>
-				))}
-			</ul>
-		</div>
-	);
-}
-
-/* -------------------------------------------------------------------------
-   09. Competitions & Hackathons Section
+   08. Competitions & Hackathons Section
 ------------------------------------------------------------------------- */
 
 export function CompetitionsSection() {

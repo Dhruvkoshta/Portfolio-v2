@@ -7,7 +7,6 @@ import {
 	CompetitionsSection,
 	ContactReceiptSection,
 	EducationSection,
-	EthicalHackingSection,
 	ExperienceSection,
 	FeaturedProjectsSection,
 	MiscSection,
@@ -59,8 +58,6 @@ function sectionContent(id: string) {
 			return <EducationSection />;
 		case "skills":
 			return <SkillsSection />;
-		case "ethical-hacking":
-			return <EthicalHackingSection />;
 		case "competitions":
 			return <CompetitionsSection />;
 		case "what-others-say":

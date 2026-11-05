@@ -20,7 +20,7 @@ test("home page renders the hero and every section", async ({ page }) => {
 			.getByRole("link", { name: /Notes/ }),
 	).toHaveAttribute("href", "https://notes.dhruvkoshta.me");
 
-	await expect(page.locator(".ed-section")).toHaveCount(15);
+	await expect(page.locator(".ed-section")).toHaveCount(14);
 	await expect(page.locator("#experience h2")).toHaveText("Experience");
 	await expect(page.locator("#contact h2")).toContainText(
 		"Get in Contact via Printed Receipt",

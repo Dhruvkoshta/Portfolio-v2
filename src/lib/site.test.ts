@@ -21,9 +21,9 @@ describe("site config", () => {
 });
 
 describe("section index", () => {
-	it("keeps the hero plus fifteen anchored sections", () => {
-		expect(sections).toHaveLength(15);
-		expect(sections.length + 1).toBe(16);
+	it("keeps the hero plus fourteen anchored sections", () => {
+		expect(sections).toHaveLength(14);
+		expect(sections.length + 1).toBe(15);
 	});
 
 	it("uses unique, stable ids and indexes", () => {

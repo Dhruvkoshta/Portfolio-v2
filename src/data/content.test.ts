@@ -13,7 +13,6 @@ import {
 	miscSetups,
 	otherProjects,
 	playlists,
-	researchItems,
 	skillCategories,
 	statistics,
 	testimonial,
@@ -100,6 +99,5 @@ describe("Content Layer Integrity", () => {
 		expect(asAKidStory.length).toBeGreaterThan(50);
 		expect(evolutions.length).toBe(3);
 		expect(articles.length).toBeGreaterThanOrEqual(3);
-		expect(researchItems.length).toBe(3);
 	});
 });

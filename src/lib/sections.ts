@@ -8,7 +8,7 @@ export type SectionMeta = {
 };
 
 /**
- * The fifteen sections below the hero, in page order. Ids are stable because
+ * The fourteen sections below the hero, in page order. Ids are stable because
  * the appbar, menus, and deep links all target them.
  */
 export const sections: readonly SectionMeta[] = [
@@ -76,17 +76,8 @@ export const sections: readonly SectionMeta[] = [
 			"Languages, frameworks, and systems I reach for, grouped by the kind of problem they solve.",
 	},
 	{
-		id: "ethical-hacking",
-		index: "08",
-		title: "Ethical Hacking",
-		navLabel: "Security",
-		meta: "Disclosures",
-		blurb:
-			"Responsible disclosures and security work, published only once the affected teams have had their say.",
-	},
-	{
 		id: "competitions",
-		index: "09",
+		index: "08",
 		title: "Competitions & Hackathons",
 		navLabel: "Competitions",
 		meta: "Wins",
@@ -95,7 +86,7 @@ export const sections: readonly SectionMeta[] = [
 	},
 	{
 		id: "what-others-say",
-		index: "10",
+		index: "09",
 		title: "What Others Say",
 		navLabel: "Praise",
 		meta: "Quotes",
@@ -104,7 +95,7 @@ export const sections: readonly SectionMeta[] = [
 	},
 	{
 		id: "portfolio-evolution",
-		index: "11",
+		index: "10",
 		title: "Portfolio Evolution",
 		navLabel: "Evolution",
 		meta: "History",
@@ -113,7 +104,7 @@ export const sections: readonly SectionMeta[] = [
 	},
 	{
 		id: "spotify",
-		index: "12",
+		index: "11",
 		title: "Spotify",
 		navLabel: "Spotify",
 		meta: "Playlists",
@@ -122,7 +113,7 @@ export const sections: readonly SectionMeta[] = [
 	},
 	{
 		id: "misc",
-		index: "13",
+		index: "12",
 		title: "Misc.",
 		navLabel: "Misc.",
 		meta: "Orbit",
@@ -131,7 +122,7 @@ export const sections: readonly SectionMeta[] = [
 	},
 	{
 		id: "as-a-kid",
-		index: "14",
+		index: "13",
 		title: "As a Kid",
 		navLabel: "As a kid",
 		meta: "Archive",
@@ -140,7 +131,7 @@ export const sections: readonly SectionMeta[] = [
 	},
 	{
 		id: "contact",
-		index: "15",
+		index: "14",
 		title: "Get in Contact via Printed Receipt",
 		navLabel: "Contact",
 		meta: "Receipt",
