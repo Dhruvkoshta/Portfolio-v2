@@ -33,4 +33,5 @@ export interface SubmitMessageResult {
 	id?: string;
 	error?: string;
 	fallback?: boolean;
+	emailed?: boolean;
 }

@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { sendReceiptEmail } from "~/lib/email";
 import { messageInputSchema, type SubmitMessageResult } from "~/lib/messages";
 
 export const submitContactMessage = createServerFn({ method: "POST" })
@@ -9,13 +10,34 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 
 		try {
 			let db: D1Database | undefined;
+			let resendApiKey: string | undefined;
+
 			try {
 				const cloudflare = await import("cloudflare:workers");
 				db = cloudflare.env?.DB;
+				const envRecord = cloudflare.env as unknown as
+					| Record<string, string | undefined>
+					| undefined;
+				resendApiKey = envRecord?.RESEND_API_KEY;
 			} catch {
 				// Not in workerd environment (e.g. tests or local mock)
 			}
 
+			// Also check process.env fallback if in Node environment
+			if (!resendApiKey && typeof process !== "undefined" && process.env?.RESEND_API_KEY) {
+				resendApiKey = process.env.RESEND_API_KEY;
+			}
+
+			// 1. Dispatch email directly to dhruvkoshta@gmail.com
+			const emailResult = await sendReceiptEmail({
+				messageId,
+				message: data.message,
+				replyTo: data.replyTo || "",
+				timestamp,
+				apiKey: resendApiKey,
+			});
+
+			// 2. Persist in D1 database if available
 			if (db) {
 				await db
 					.prepare(
@@ -34,6 +56,7 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 					success: true,
 					id: messageId,
 					fallback: false,
+					emailed: emailResult.sent,
 				};
 			}
 
@@ -42,6 +65,7 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 				success: true,
 				id: messageId,
 				fallback: true,
+				emailed: emailResult.sent,
 			};
 		} catch (err) {
 			const errorMessage =

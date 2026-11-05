@@ -1324,8 +1324,11 @@ export function ContactReceiptSection() {
 							<span aria-hidden="true">✓</span> Message Printed & Saved
 						</div>
 						<p className="receipt__success-msg">
-							Your inquiry has been stored in Dhruv&apos;s inquiries database
-							({receiptNumber}). Thank you for reaching out!
+							Your inquiry has been printed and recorded ({receiptNumber}) and dispatched to{" "}
+							<a className="text-link" href="mailto:dhruvkoshta@gmail.com">
+								dhruvkoshta@gmail.com
+							</a>
+							. Thank you for reaching out!
 						</p>
 						<div className="receipt__divider" />
 						<button
