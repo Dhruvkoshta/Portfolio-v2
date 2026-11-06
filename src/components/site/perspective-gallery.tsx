@@ -113,10 +113,10 @@ export function PerspectiveGallery() {
 
 	// Column parallax animations:
 	// Gentle parallax during scroll, smoothly converging to 0% at end of scroll so all rows are full and aligned
-	const yCol1 = useTransform(smoothProgress, [0, 1], ["-8%", "0%"]);
-	const yCol2 = useTransform(smoothProgress, [0, 1], ["8%", "0%"]);
-	const yCol3 = useTransform(smoothProgress, [0, 1], ["-10%", "0%"]);
-	const yCol4 = useTransform(smoothProgress, [0, 1], ["8%", "0%"]);
+	const yCol1 = useTransform(smoothProgress, [0, 1], ["-10%", "0%"]);
+	const yCol2 = useTransform(smoothProgress, [0, 1], ["10%", "0%"]);
+	const yCol3 = useTransform(smoothProgress, [0, 1], ["-12%", "0%"]);
+	const yCol4 = useTransform(smoothProgress, [0, 1], ["10%", "0%"]);
 
 	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
 		const el = e.currentTarget;
@@ -145,7 +145,7 @@ export function PerspectiveGallery() {
 		const el = scrollWrapperRef.current;
 		const maxScroll = el.scrollHeight - el.clientHeight;
 		if (maxScroll <= 0) return;
-		el.scrollTop = Math.max(0, Math.min(maxScroll, startScrollTopRef.current - dy * 1.5));
+		el.scrollTop = Math.max(0, Math.min(maxScroll, startScrollTopRef.current - dy));
 		progress.set(el.scrollTop / maxScroll);
 	};
 
@@ -204,7 +204,7 @@ export function PerspectiveGallery() {
 			id="gallery"
 		>
 			<div
-				aria-label="Interactive 3D perspective gallery canvas"
+				aria-label="Interactive gallery canvas"
 				className="perspective-gallery-scroll-wrapper"
 				onKeyDown={handleKeyDown}
 				onPointerCancel={handlePointerUp}

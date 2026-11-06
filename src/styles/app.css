@@ -1023,7 +1023,7 @@ kbd {
 .perspective-gallery-track {
 	position: relative;
 	width: 100%;
-	height: 250%;
+	height: 600%;
 	pointer-events: none;
 }
 
