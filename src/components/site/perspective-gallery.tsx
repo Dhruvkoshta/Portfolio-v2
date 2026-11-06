@@ -128,14 +128,14 @@ export function PerspectiveGallery() {
 	const rawPanY = useMotionValue(-190);
 
 	const panX = useSpring(rawPanX, {
-		stiffness: reduced ? 1000 : 280,
-		damping: reduced ? 100 : 30,
-		mass: 0.4,
+		stiffness: reduced ? 1000 : 360,
+		damping: reduced ? 100 : 25,
+		mass: 0.25,
 	});
 	const panY = useSpring(rawPanY, {
-		stiffness: reduced ? 1000 : 280,
-		damping: reduced ? 100 : 30,
-		mass: 0.4,
+		stiffness: reduced ? 1000 : 360,
+		damping: reduced ? 100 : 25,
+		mass: 0.25,
 	});
 
 	// Track pointer for drag vs click disambiguation
@@ -201,15 +201,36 @@ export function PerspectiveGallery() {
 	}, [activeCardId]);
 
 	const applyPanDelta = useCallback(
-		(deltaX: number, deltaY: number) => {
-			const dx = Number.isFinite(deltaX) ? deltaX : 0;
-			const dy = Number.isFinite(deltaY) ? deltaY : 0;
-			const nextX = clampX(rawPanX.get() - dx);
-			const nextY = clampY(rawPanY.get() - dy);
+		(deltaX: number, deltaY: number, deltaMode = 0) => {
+			let dx = Number.isFinite(deltaX) ? deltaX : 0;
+			let dy = Number.isFinite(deltaY) ? deltaY : 0;
+
+			// Normalize deltaMode: 1 = DOM_DELTA_LINE (Firefox/mice), 2 = DOM_DELTA_PAGE
+			if (deltaMode === 1) {
+				dx *= 36;
+				dy *= 36;
+			} else if (deltaMode === 2) {
+				dx *= 400;
+				dy *= 400;
+			}
+
+			// If vertical wheel is used with little/no horizontal delta (standard mouse wheel),
+			// translate vertical wheel to horizontal pan so the user can fluidly explore the 2500px wide gallery
+			if (Math.abs(dx) < 1 && Math.abs(dy) > 0) {
+				dx = dy * 2.5;
+				dy = dy * 0.4;
+			} else {
+				// Trackpad two-finger swipe or Shift+wheel: apply responsive speed multiplier
+				dx *= 2.2;
+				dy *= 2.2;
+			}
+
+			const nextX = Math.max(minPanX, Math.min(maxPanX, rawPanX.get() - dx));
+			const nextY = Math.max(minPanY, Math.min(maxPanY, rawPanY.get() - dy));
 			rawPanX.set(nextX);
 			rawPanY.set(nextY);
 		},
-		[clampX, clampY, rawPanX, rawPanY],
+		[minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY],
 	);
 
 	// Native wheel listener for 2D trackpad / wheel panning with e.preventDefault()
@@ -219,7 +240,7 @@ export function PerspectiveGallery() {
 
 		const onWheel = (e: WheelEvent) => {
 			e.preventDefault();
-			applyPanDelta(e.deltaX, e.deltaY);
+			applyPanDelta(e.deltaX, e.deltaY, e.deltaMode);
 		};
 
 		el.addEventListener("wheel", onWheel, { passive: false });
@@ -309,6 +330,22 @@ export function PerspectiveGallery() {
 		setActiveCardId(null);
 	};
 
+	const handleContainerKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "ArrowRight") {
+			e.preventDefault();
+			applyPanDelta(200, 0);
+		} else if (e.key === "ArrowLeft") {
+			e.preventDefault();
+			applyPanDelta(-200, 0);
+		} else if (e.key === "ArrowDown") {
+			e.preventDefault();
+			applyPanDelta(0, 140);
+		} else if (e.key === "ArrowUp") {
+			e.preventDefault();
+			applyPanDelta(0, -140);
+		}
+	};
+
 	const activeCard = POLAROID_DATA.find((c) => c.id === activeCardId);
 
 	return (
@@ -316,12 +353,12 @@ export function PerspectiveGallery() {
 			{/* Outer Frame & Architectural Container */}
 			<div
 				aria-label="3D perspective gallery"
-				className={`h-[520px] w-full overflow-hidden bg-[#f4f4f5] relative border border-neutral-300 rounded-none select-none ${
+				className={`h-[520px] w-full overflow-hidden bg-[#f4f4f5] relative border border-neutral-300 rounded-none select-none focus:outline-none focus:ring-1 focus:ring-neutral-400 ${
 					isDragging ? "cursor-grabbing" : "cursor-grab"
 				}`}
 				id="gallery"
+				onKeyDown={handleContainerKeyDown}
 				onPointerDown={handlePointerDown}
-				onWheel={(e) => applyPanDelta(e.deltaX, e.deltaY)}
 				ref={containerRef}
 				role="region"
 				tabIndex={0}
