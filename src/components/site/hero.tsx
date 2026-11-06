@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { heroFacts } from "~/data/content";
 import { useReducedMotion } from "~/lib/use-reduced-motion";
-import { AsciiPortrait } from "./ascii-portrait";
 import { FlagIndia } from "./icons";
 import { PerspectiveGallery } from "./perspective-gallery";
 
@@ -60,7 +59,27 @@ export function Hero() {
 	return (
 		<section aria-labelledby="hero-title" className="hero" id="me">
 			<div className="hero__portrait">
-				<AsciiPortrait />
+				<picture>
+					<source
+						sizes="(max-width: 600px) 132px, 176px"
+						srcSet="/media/portrait/dhruv-portrait-360.avif 360w, /media/portrait/dhruv-portrait-480.avif 480w, /media/portrait/dhruv-portrait-720.avif 720w"
+						type="image/avif"
+					/>
+					<source
+						sizes="(max-width: 600px) 132px, 176px"
+						srcSet="/media/portrait/dhruv-portrait-360.webp 360w, /media/portrait/dhruv-portrait-480.webp 480w, /media/portrait/dhruv-portrait-720.webp 720w"
+						type="image/webp"
+					/>
+					<img
+						alt="Portrait of Dhruv Koshta."
+						decoding="async"
+						fetchPriority="high"
+						height={464}
+						loading="eager"
+						src="/media/portrait/dhruv-portrait-360.webp"
+						width={360}
+					/>
+				</picture>
 
 				{/* 4 corner crosshairs around portrait */}
 				<span aria-hidden="true" className="hero__portrait-plus hero__portrait-plus--tl">
