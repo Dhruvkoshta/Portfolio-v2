@@ -30,10 +30,10 @@ export const Route = createFileRoute("/")({
 			{
 				rel: "preload",
 				as: "image",
-				href: "/media/portrait/dhruv-dither-360.avif",
+				href: "/media/portrait/dhruv-portrait-360.avif",
 				type: "image/avif",
 				imageSrcSet:
-					"/media/portrait/dhruv-dither-360.avif 360w, /media/portrait/dhruv-dither-480.avif 480w, /media/portrait/dhruv-dither-720.avif 720w",
+					"/media/portrait/dhruv-portrait-360.avif 360w, /media/portrait/dhruv-portrait-480.avif 480w, /media/portrait/dhruv-portrait-720.avif 720w",
 				imageSizes: "(max-width: 600px) 132px, 176px",
 				fetchPriority: "high",
 			},

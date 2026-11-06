@@ -62,21 +62,21 @@ export function Hero() {
 				<picture>
 					<source
 						sizes="(max-width: 600px) 132px, 176px"
-						srcSet="/media/portrait/dhruv-dither-360.avif 360w, /media/portrait/dhruv-dither-480.avif 480w, /media/portrait/dhruv-dither-720.avif 720w"
+						srcSet="/media/portrait/dhruv-portrait-360.avif 360w, /media/portrait/dhruv-portrait-480.avif 480w, /media/portrait/dhruv-portrait-720.avif 720w"
 						type="image/avif"
 					/>
 					<source
 						sizes="(max-width: 600px) 132px, 176px"
-						srcSet="/media/portrait/dhruv-dither-360.webp 360w, /media/portrait/dhruv-dither-480.webp 480w, /media/portrait/dhruv-dither-720.webp 720w"
+						srcSet="/media/portrait/dhruv-portrait-360.webp 360w, /media/portrait/dhruv-portrait-480.webp 480w, /media/portrait/dhruv-portrait-720.webp 720w"
 						type="image/webp"
 					/>
 					<img
-						alt="A dithered line portrait of Dhruv Koshta."
+						alt="Portrait of Dhruv Koshta."
 						decoding="async"
 						fetchPriority="high"
-						height={399}
+						height={464}
 						loading="eager"
-						src="/media/portrait/dhruv-dither-360.webp"
+						src="/media/portrait/dhruv-portrait-360.webp"
 						width={360}
 					/>
 				</picture>

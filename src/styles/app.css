@@ -826,8 +826,7 @@ kbd {
 	display: block;
 	width: 100%;
 	height: auto;
-	aspect-ratio: 176 / 172;
-	mix-blend-mode: multiply;
+	aspect-ratio: 1067 / 1375;
 	object-fit: cover;
 	object-position: 50% 0;
 }
