@@ -1,13 +1,18 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Point 3: Perspective Gallery Inner Bounding & Scroll", () => {
-	test("fits within the inner content column boundaries and responds to inner scroll", async ({ page }) => {
+	test("fits within inner content boundaries, renders corner nodes, helper text, and responds to scroll", async ({
+		page,
+	}) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
+		await page.waitForFunction(
+			() => document.documentElement.dataset.hydrated === "true",
+		);
 
 		// Locate the gallery frame
 		const gallery = page.locator("#gallery");
 		await expect(gallery).toBeVisible();
+		await gallery.scrollIntoViewIfNeeded();
 
 		// Check bounding box width does not exceed container
 		const shell = page.locator(".ed3__shell").first();
@@ -24,24 +29,43 @@ test.describe("Point 3: Perspective Gallery Inner Bounding & Scroll", () => {
 			expect(galleryBox.x).toBeGreaterThanOrEqual(shellBox.x - 2);
 		}
 
-		// Locate scroll canvas
-		const canvas = page.locator(".perspective-gallery-scroll-wrapper");
+		// Verify 4 corner nodes exist
+		const cornerNodes = gallery.locator("span.rounded-full.bg-neutral-400");
+		await expect(cornerNodes).toHaveCount(4);
+
+		// Verify helper caption below
+		const caption = page.getByText("Drag, click, or horizontal scroll");
+		await expect(caption).toBeVisible();
+
+		// Locate 2D panning canvas
+		const canvas = page.locator('[data-testid="polaroid-canvas"]');
 		await expect(canvas).toBeVisible();
 
-		// Verify matrix is rendered
-		const matrix = page.locator(".perspective-gallery-matrix");
-		await expect(matrix).toBeVisible();
+		// Verify 25+ Polaroid cards are loaded
+		const cards = canvas.locator('[data-testid="polaroid-card"]');
+		const cardCount = await cards.count();
+		expect(cardCount).toBeGreaterThanOrEqual(25);
 
-		await page.screenshot({ path: "/home/dhruv/.t3/userdata/providers/antigravity/ac0a3dfd6dddb20962cecff6ee5fe65e19d3923be20e52c5ab52ff877f7e4c32/antigravity-acp/brain/bf0baa6d-55ac-4d9f-b7e6-43e9a0e41734/point3_inner_gallery_initial.png" });
+		// Record initial canvas transform
+		const initialTransform = await canvas.evaluate(
+			(el) => window.getComputedStyle(el).transform,
+		);
 
-		// Hover and scroll inside the gallery
-		await canvas.hover();
-		await page.mouse.wheel(0, 500);
-		await page.waitForTimeout(600);
+		// Pan canvas via drag interaction
+		if (galleryBox) {
+			const startX = galleryBox.x + galleryBox.width / 2;
+			const startY = galleryBox.y + galleryBox.height / 2;
 
-		await page.screenshot({ path: "/home/dhruv/.t3/userdata/providers/antigravity/ac0a3dfd6dddb20962cecff6ee5fe65e19d3923be20e52c5ab52ff877f7e4c32/antigravity-acp/brain/bf0baa6d-55ac-4d9f-b7e6-43e9a0e41734/point3_inner_gallery_scrolled.png" });
+			await page.mouse.move(startX, startY);
+			await page.mouse.down();
+			await page.mouse.move(startX - 100, startY - 50, { steps: 5 });
+			await page.mouse.up();
+			await page.waitForTimeout(500);
+		}
 
-		const scrolledTransform = await matrix.evaluate((el) => window.getComputedStyle(el).transform);
-		expect(scrolledTransform).toBeTruthy();
+		const scrolledTransform = await canvas.evaluate(
+			(el) => window.getComputedStyle(el).transform,
+		);
+		expect(scrolledTransform).not.toBe(initialTransform);
 	});
 });

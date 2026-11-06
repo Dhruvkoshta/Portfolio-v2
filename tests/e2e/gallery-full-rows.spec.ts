@@ -1,52 +1,75 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("Gallery End of Scroll Full Rows", () => {
-	test("displays all full rows with balanced columns at the end of scroll on desktop and mobile", async ({
+test.describe("Polaroid Gallery Mechanics & Lightbox", () => {
+	test("displays scattered Polaroid cards, click-to-focus lightbox, and drag disambiguation", async ({
 		page,
 	}) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
+		await page.waitForFunction(
+			() => document.documentElement.dataset.hydrated === "true",
+		);
 
 		const gallery = page.locator("#gallery");
 		await expect(gallery).toBeVisible();
+		await gallery.scrollIntoViewIfNeeded();
 
-		const wrapper = page.locator(".perspective-gallery-scroll-wrapper");
-		await expect(wrapper).toBeVisible();
+		const canvas = page.locator('[data-testid="polaroid-canvas"]');
+		await expect(canvas).toBeVisible();
 
-		// Scroll inner gallery wrapper to the end of scroll
-		await wrapper.evaluate((el) => {
-			el.scrollTop = el.scrollHeight - el.clientHeight;
-			el.dispatchEvent(new Event("scroll"));
-		});
+		// Verify 25+ Polaroid cards with correct caption formatting (YYYY + text)
+		const cards = canvas.locator('[data-testid="polaroid-card"]');
+		const count = await cards.count();
+		expect(count).toBeGreaterThanOrEqual(25);
 
-		// Wait for Framer Motion spring to settle
-		await page.waitForTimeout(600);
+		const centerCard = canvas.locator('[data-testid="polaroid-card"]').nth(13);
+		const captionText = await centerCard.locator("p").innerText();
+		expect(captionText).toMatch(/^\d{4}\s\+\s.+$/);
 
-		// Verify every column has cards visible inside the gallery frame
-		const colCardsInfo = await gallery.evaluate((gal) => {
-			const galRect = gal.getBoundingClientRect();
-			const cols = Array.from(gal.querySelectorAll(".perspective-gallery-col"));
-			return cols.map((col, ci) => {
-				const cards = Array.from(col.querySelectorAll(".perspective-gallery__card"));
-				const visibleCards = cards.filter((card) => {
-					const cr = card.getBoundingClientRect();
-					return cr.bottom > galRect.top + 20 && cr.top < galRect.bottom - 20;
-				});
-				return {
-					colIndex: ci,
-					totalCards: cards.length,
-					visibleCount: visibleCards.length,
-				};
-			});
-		});
+		// Test click-to-focus lightbox state
+		await centerCard.click();
 
-		// Expect 4 columns
-		expect(colCardsInfo).toHaveLength(4);
+		// Backdrop overlay should be visible with blur and white wash
+		const backdrop = gallery.locator('[aria-label="Close focused photo"]');
+		await expect(backdrop).toBeVisible();
 
-		// Every column must have all 3 cards visible within the gallery frame
-		for (const col of colCardsInfo) {
-			expect(col.totalCards).toBe(3);
-			expect(col.visibleCount).toBe(3);
+		// Pressing Escape should close the modal
+		await page.keyboard.press("Escape");
+		await expect(backdrop).not.toBeVisible();
+
+		// Open again and close by clicking the backdrop
+		await centerCard.click();
+		await expect(backdrop).toBeVisible();
+		await backdrop.click({ position: { x: 20, y: 20 } });
+		await expect(backdrop).not.toBeVisible();
+
+		// Test drag vs click disambiguation: dragging > 5px should NOT open lightbox
+		const initialTransform = await canvas.evaluate(
+			(el) => window.getComputedStyle(el).transform,
+		);
+
+		const galleryBox = await gallery.boundingBox();
+		expect(galleryBox).not.toBeNull();
+
+		if (galleryBox) {
+			const startX = galleryBox.x + galleryBox.width / 2;
+			const startY = galleryBox.y + galleryBox.height / 2;
+
+			await page.mouse.move(startX, startY);
+			await page.mouse.down();
+			await page.mouse.move(startX - 80, startY - 40, { steps: 5 });
+			await page.mouse.up();
+
+			// Wait for spring settling
+			await page.waitForTimeout(400);
+
+			// Lightbox should not be open
+			await expect(backdrop).not.toBeVisible();
+
+			// Canvas transform should have shifted
+			const pannedTransform = await canvas.evaluate(
+				(el) => window.getComputedStyle(el).transform,
+			);
+			expect(pannedTransform).not.toBe(initialTransform);
 		}
 	});
 });

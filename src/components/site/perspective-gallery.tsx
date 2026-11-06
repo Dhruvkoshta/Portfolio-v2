@@ -1,295 +1,462 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "~/lib/use-reduced-motion";
 
-const UNSPLASH_IMAGES = [
-	"https://cdn.21st.dev/assets/mirror/a9/a9c2900d44fe6288b344f447cb12a05f7e64c439479a8ccb977d3b20eb371156.jpg",
-	"https://cdn.21st.dev/assets/mirror/29/29cf6ad39eb198c05b8d915fca0becfd3d270d510d32eaec1b886c426c681c67.jpg",
-	"https://cdn.21st.dev/assets/mirror/61/6154958e9df110914005256ff2319d43a2c2e0fc8bb54e9f8bce7b91fdce5df1.jpg",
-	"https://cdn.21st.dev/assets/mirror/6d/6db92aff3c02cce69e2c672a6dd4e99cbf5c55d68fbf08c460527e6c7c5b64ba.jpg",
-	"https://cdn.21st.dev/assets/mirror/42/42ad2d0680dba697d578434e5af5620c7ab1c7c55bc36cec3b55eec8b7a79cbf.jpg",
-	"https://cdn.21st.dev/assets/mirror/cd/cd3dc09b1bbed97cfc879e2c5e62fdbc68dc4070b6105e476410d70e31d1e459.jpg",
-	"https://cdn.21st.dev/assets/mirror/02/0232d63e3e0cb8d3599a77e29f87f8ec4b9fadfd031592296b3f19a730a5348c.jpg",
-	"https://cdn.21st.dev/assets/mirror/56/562b212caa6ec06d8b0b313660dac6aa0bbfb729092cc4f16d04558a319af6b1.jpg",
-	"https://cdn.21st.dev/assets/mirror/02/02cbcd62720734d469f2ea8e5ed7a212e18cb05e73457445b4d755ad0ae1fcd8.jpg",
-	"https://images.unsplash.com/photo-1550614000-4b95d4ed798a?auto=format&fit=crop&w=600&q=80",
-	"https://cdn.21st.dev/assets/mirror/c4/c42df7c9c444a1189dad0570c0d01986454cd6a10eaf253a9ab40eb921a5bae5.jpg",
-	"https://cdn.21st.dev/assets/mirror/27/275fbf3f84c5258c7a8235a8a47022f847d0f408c950288c532aefa83d072a2c.jpg",
-	"https://cdn.21st.dev/assets/mirror/7e/7e2fb073870b2f578a37a693b1e0c9402a98201149509b54da2f86a2ee6abf5e.jpg",
-	"https://cdn.21st.dev/assets/mirror/3d/3d74651780292fb5a2ba23e525d9d09860bb83fbfafc7ede17b8e3662d7b1022.jpg",
-];
-
-interface ImageCardProps {
-	src: string;
-	onLoad?: () => void;
+export interface PolaroidItem {
+	id: string;
+	img: string;
+	label: string;
+	rot: number;
+	x: number;
+	y: number;
+	zIndex?: number;
 }
 
-const ImageCard = ({ src, onLoad }: ImageCardProps) => {
-	return (
-		<div className="perspective-gallery__card will-change-transform backface-hidden preserve-3d">
-			<img
-				alt="Gallery visual"
-				className="perspective-gallery__image"
-				draggable={false}
-				loading="lazy"
-				onLoad={onLoad}
-				src={src}
-			/>
-		</div>
-	);
-};
+export const POLAROID_DATA: PolaroidItem[] = [
+	// Tier 1 (top row)
+	{ id: "p1", x: 80, y: 70, rot: -3.5, label: "2025 + top-of-mountain dinner", img: "https://picsum.photos/id/10/600/750" },
+	{ id: "p2", x: 340, y: 110, rot: 2.2, label: "2023 + cotton candy clouds", img: "https://picsum.photos/id/15/600/750" },
+	{ id: "p3", x: 600, y: 65, rot: -4.0, label: "2025 + mount revelstoke national park", img: "https://picsum.photos/id/28/600/750" },
+	{ id: "p4", x: 860, y: 95, rot: 1.8, label: "2024 + tokyo late night ramen", img: "https://picsum.photos/id/29/600/750" },
+	{ id: "p5", x: 1120, y: 60, rot: -2.5, label: "2024 + kyoto golden pavilion", img: "https://picsum.photos/id/42/600/750" },
+	{ id: "p6", x: 1380, y: 105, rot: 3.8, label: "2023 + highway 1 coastal run", img: "https://picsum.photos/id/48/600/750" },
+	{ id: "p7", x: 1640, y: 75, rot: -1.5, label: "2025 + lake louise turquoise waters", img: "https://picsum.photos/id/54/600/750" },
+	{ id: "p8", x: 1900, y: 115, rot: 4.2, label: "2024 + iceland black sand beach", img: "https://picsum.photos/id/65/600/750" },
+	{ id: "p9", x: 2160, y: 80, rot: -3.0, label: "2023 + midnight coding session", img: "https://picsum.photos/id/76/600/750" },
+
+	// Tier 2 (middle row)
+	{ id: "p10", x: 50, y: 340, rot: 3.2, label: "2025 + swiss alps cable car", img: "https://picsum.photos/id/88/600/750" },
+	{ id: "p11", x: 300, y: 320, rot: -2.8, label: "2024 + amsterdam canal morning", img: "https://picsum.photos/id/96/600/750" },
+	{ id: "p12", x: 550, y: 360, rot: 4.5, label: "2023 + dolomites knife edge ridge", img: "https://picsum.photos/id/110/600/750" },
+	{ id: "p13", x: 810, y: 330, rot: -1.8, label: "2025 + seattle pine tree fog", img: "https://picsum.photos/id/116/600/750" },
+	{ id: "p14", x: 1060, y: 365, rot: 2.5, label: "2024 + banff sunburst peak", img: "https://picsum.photos/id/124/600/750" },
+	{ id: "p15", x: 1320, y: 335, rot: -4.2, label: "2023 + neon street reflections", img: "https://picsum.photos/id/133/600/750" },
+	{ id: "p16", x: 1580, y: 355, rot: 3.0, label: "2025 + yosemite half dome sunrise", img: "https://picsum.photos/id/142/600/750" },
+	{ id: "p17", x: 1840, y: 325, rot: -2.2, label: "2024 + lofoten red cabin glow", img: "https://picsum.photos/id/152/600/750" },
+	{ id: "p18", x: 2090, y: 350, rot: 4.0, label: "2023 + santorini whitewashed alleys", img: "https://picsum.photos/id/160/600/750" },
+
+	// Tier 3 (bottom row)
+	{ id: "p19", x: 90, y: 590, rot: -3.8, label: "2025 + shibuya crossing rainfall", img: "https://picsum.photos/id/164/600/750" },
+	{ id: "p20", x: 350, y: 620, rot: 2.0, label: "2024 + oregon coastline bonfire", img: "https://picsum.photos/id/175/600/750" },
+	{ id: "p21", x: 610, y: 580, rot: -4.5, label: "2023 + autumn in central park", img: "https://picsum.photos/id/180/600/750" },
+	{ id: "p22", x: 870, y: 615, rot: 1.4, label: "2025 + lisbon tram no 28", img: "https://picsum.photos/id/193/600/750" },
+	{ id: "p23", x: 1130, y: 585, rot: -2.9, label: "2024 + vancouver skyline at dusk", img: "https://picsum.photos/id/204/600/750" },
+	{ id: "p24", x: 1390, y: 625, rot: 3.6, label: "2023 + mont blanc glacier walk", img: "https://picsum.photos/id/211/600/750" },
+	{ id: "p25", x: 1650, y: 590, rot: -1.7, label: "2025 + zion canyon narrows hike", img: "https://picsum.photos/id/219/600/750" },
+	{ id: "p26", x: 1910, y: 630, rot: 4.8, label: "2024 + golden hour flight home", img: "https://picsum.photos/id/225/600/750" },
+	{ id: "p27", x: 2150, y: 595, rot: -3.2, label: "2025 + cafe corner pour-over", img: "https://picsum.photos/id/237/600/750" },
+	{ id: "p28", x: 2280, y: 340, rot: 1.9, label: "2023 + desert stargazing night", img: "https://picsum.photos/id/249/600/750" },
+];
+
+const CANVAS_WIDTH = 2500;
+const CANVAS_HEIGHT = 900;
+const VIEWPORT_HEIGHT = 520;
+
+function playShutterSound(isOpen: boolean) {
+	try {
+		const AudioCtx =
+			window.AudioContext ||
+			(window as unknown as { webkitAudioContext: typeof window.AudioContext })
+				.webkitAudioContext;
+		if (!AudioCtx) return;
+		const ctx = new AudioCtx();
+		const now = ctx.currentTime;
+
+		if (isOpen) {
+			// Shutter click tone
+			const osc = ctx.createOscillator();
+			const gain = ctx.createGain();
+			osc.type = "sine";
+			osc.frequency.setValueAtTime(1200, now);
+			osc.frequency.exponentialRampToValueAtTime(320, now + 0.04);
+			gain.gain.setValueAtTime(0.06, now);
+			gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+			osc.connect(gain);
+			gain.connect(ctx.destination);
+			osc.start(now);
+			osc.stop(now + 0.06);
+
+			// Subtle paper flutter burst
+			const bufferSize = Math.floor(ctx.sampleRate * 0.05);
+			const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+			const data = buffer.getChannelData(0);
+			for (let i = 0; i < bufferSize; i++) {
+				data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+			}
+			const noise = ctx.createBufferSource();
+			noise.buffer = buffer;
+			const filter = ctx.createBiquadFilter();
+			filter.type = "bandpass";
+			filter.frequency.setValueAtTime(2000, now);
+			const noiseGain = ctx.createGain();
+			noiseGain.gain.setValueAtTime(0.04, now);
+			noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+			noise.connect(filter);
+			filter.connect(noiseGain);
+			noiseGain.connect(ctx.destination);
+			noise.start(now);
+			noise.stop(now + 0.06);
+		} else {
+			// Soft set-down tone
+			const osc = ctx.createOscillator();
+			const gain = ctx.createGain();
+			osc.type = "sine";
+			osc.frequency.setValueAtTime(300, now);
+			osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
+			gain.gain.setValueAtTime(0.04, now);
+			gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+			osc.connect(gain);
+			gain.connect(ctx.destination);
+			osc.start(now);
+			osc.stop(now + 0.06);
+		}
+	} catch {
+		// Ignore audio error if blocked
+	}
+}
 
 export function PerspectiveGallery() {
-	const scrollWrapperRef = useRef<HTMLDivElement>(null);
-	const [isReady, setIsReady] = useState(false);
-	const [mounted, setMounted] = useState(false);
-	const [isDragging, setIsDragging] = useState(false);
-	const loadedCountRef = useRef(0);
-	const startYRef = useRef(0);
-	const startScrollTopRef = useRef(0);
-	const reducedMotion = useReducedMotion();
+	const containerRef = useRef<HTMLDivElement>(null);
+	const reduced = useReducedMotion();
 
-	// Direct progress motion value (0 = start, 1 = end of inner scroll)
-	const progress = useMotionValue(0);
-	const smoothProgress = useSpring(progress, {
-		stiffness: 120,
-		damping: 24,
-		mass: 0.3,
+	const [activeCardId, setActiveCardId] = useState<string | null>(null);
+	const [isDragging, setIsDragging] = useState(false);
+	const [viewportWidth, setViewportWidth] = useState(800);
+
+	// Pan position motion values
+	const rawPanX = useMotionValue(-850);
+	const rawPanY = useMotionValue(-190);
+
+	const panX = useSpring(rawPanX, {
+		stiffness: reduced ? 1000 : 280,
+		damping: reduced ? 100 : 30,
+		mass: 0.4,
+	});
+	const panY = useSpring(rawPanY, {
+		stiffness: reduced ? 1000 : 280,
+		damping: reduced ? 100 : 30,
+		mass: 0.4,
 	});
 
-	const handleItemLoad = useCallback(() => {
-		loadedCountRef.current += 1;
-		if (!isReady && loadedCountRef.current >= 1) setIsReady(true);
-	}, [isReady]);
+	// Track pointer for drag vs click disambiguation
+	const pointerDownRef = useRef<{
+		panX: number;
+		panY: number;
+		time: number;
+		x: number;
+		y: number;
+	} | null>(null);
+	const hasInitializedRef = useRef(false);
 
-	useEffect(() => {
-		setMounted(true);
-		const t = setTimeout(() => setIsReady(true), 1200);
-		return () => clearTimeout(t);
-	}, []);
+	// Calculate bounds
+	const minPanX = Math.min(0, viewportWidth - CANVAS_WIDTH);
+	const maxPanX = 0;
+	const minPanY = Math.min(0, VIEWPORT_HEIGHT - CANVAS_HEIGHT);
+	const maxPanY = 0;
 
-	// Wheel event listener with passive: false so preventDefault and inner scroll work seamlessly
+	const clampX = useCallback(
+		(val: number) => Math.max(minPanX - 40, Math.min(maxPanX + 40, val)),
+		[minPanX, maxPanX],
+	);
+	const clampY = useCallback(
+		(val: number) => Math.max(minPanY - 30, Math.min(maxPanY + 30, val)),
+		[minPanY, maxPanY],
+	);
+
+	// Measure viewport width
 	useEffect(() => {
-		const el = scrollWrapperRef.current;
+		if (!containerRef.current) return;
+		const el = containerRef.current;
+		const updateWidth = () => {
+			const w = el.clientWidth || 800;
+			setViewportWidth(w);
+			if (!hasInitializedRef.current) {
+				hasInitializedRef.current = true;
+				const initialX = Math.round((w - CANVAS_WIDTH) / 2);
+				const initialY = Math.round((VIEWPORT_HEIGHT - CANVAS_HEIGHT) / 2);
+				rawPanX.set(initialX);
+				rawPanY.set(initialY);
+			}
+		};
+		updateWidth();
+
+		if (typeof ResizeObserver !== "undefined") {
+			const ro = new ResizeObserver(() => updateWidth());
+			ro.observe(el);
+			return () => ro.disconnect();
+		}
+		return undefined;
+	}, [rawPanX, rawPanY]);
+
+	// Close on Escape key
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape" && activeCardId) {
+				playShutterSound(false);
+				setActiveCardId(null);
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [activeCardId]);
+
+	const applyPanDelta = useCallback(
+		(deltaX: number, deltaY: number) => {
+			const dx = Number.isFinite(deltaX) ? deltaX : 0;
+			const dy = Number.isFinite(deltaY) ? deltaY : 0;
+			const nextX = clampX(rawPanX.get() - dx);
+			const nextY = clampY(rawPanY.get() - dy);
+			rawPanX.set(nextX);
+			rawPanY.set(nextY);
+		},
+		[clampX, clampY, rawPanX, rawPanY],
+	);
+
+	// Native wheel listener for 2D trackpad / wheel panning with e.preventDefault()
+	useEffect(() => {
+		const el = containerRef.current;
 		if (!el) return;
 
 		const onWheel = (e: WheelEvent) => {
-			const maxScroll = el.scrollHeight - el.clientHeight;
-			if (maxScroll <= 0) return;
-			const delta = e.deltaY;
-
-			// Intercept wheel when scrolling within inner gallery bounds
-			if ((delta > 0 && el.scrollTop < maxScroll - 1) || (delta < 0 && el.scrollTop > 1)) {
-				e.preventDefault();
-				e.stopPropagation();
-				el.scrollTop = Math.max(0, Math.min(maxScroll, el.scrollTop + delta));
-				progress.set(el.scrollTop / maxScroll);
-			}
+			e.preventDefault();
+			applyPanDelta(e.deltaX, e.deltaY);
 		};
 
 		el.addEventListener("wheel", onWheel, { passive: false });
+		return () => el.removeEventListener("wheel", onWheel);
+	}, [applyPanDelta]);
+
+	// Window-level pointer drag listeners
+	useEffect(() => {
+		if (!isDragging) return;
+
+		const handlePointerMove = (e: PointerEvent) => {
+			if (!pointerDownRef.current) return;
+			const dx = e.clientX - pointerDownRef.current.x;
+			const dy = e.clientY - pointerDownRef.current.y;
+
+			if (Math.hypot(dx, dy) > 5) {
+				const nextX = clampX(pointerDownRef.current.panX + dx);
+				const nextY = clampY(pointerDownRef.current.panY + dy);
+				rawPanX.set(nextX);
+				rawPanY.set(nextY);
+			}
+		};
+
+		const handlePointerUp = () => {
+			setIsDragging(false);
+
+			// Spring back into strict bounds if pushed past edge buffer
+			const curX = rawPanX.get();
+			const curY = rawPanY.get();
+			if (curX < minPanX) rawPanX.set(minPanX);
+			if (curX > maxPanX) rawPanX.set(maxPanX);
+			if (curY < minPanY) rawPanY.set(minPanY);
+			if (curY > maxPanY) rawPanY.set(maxPanY);
+
+			setTimeout(() => {
+				pointerDownRef.current = null;
+			}, 100);
+		};
+
+		window.addEventListener("pointermove", handlePointerMove);
+		window.addEventListener("pointerup", handlePointerUp);
+		window.addEventListener("pointercancel", handlePointerUp);
+
 		return () => {
-			el.removeEventListener("wheel", onWheel);
+			window.removeEventListener("pointermove", handlePointerMove);
+			window.removeEventListener("pointerup", handlePointerUp);
+			window.removeEventListener("pointercancel", handlePointerUp);
 		};
-	}, [progress]);
+	}, [isDragging, clampX, clampY, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY]);
 
-	const colMedia = useMemo(() => {
-		// 12 curated images: exactly 3 cards per column across 4 columns = 3 full rows
-		const images = UNSPLASH_IMAGES.slice(0, 12);
-		return {
-			col1: images.filter((_, i) => i % 4 === 0),
-			col2: images.filter((_, i) => i % 4 === 1),
-			col3: images.filter((_, i) => i % 4 === 2),
-			col4: images.filter((_, i) => i % 4 === 3),
+	// Pointer drag handlers
+	const handlePointerDown = (e: React.PointerEvent) => {
+		// Only primary click
+		if (e.button !== 0) return;
+		pointerDownRef.current = {
+			x: e.clientX,
+			y: e.clientY,
+			panX: rawPanX.get(),
+			panY: rawPanY.get(),
+			time: Date.now(),
 		};
-	}, []);
-
-	// 3D Matrix animations inside the frame:
-	// Starts with 3D perspective depth, smoothly rotates to 0deg (front-facing) at scroll end
-	const rotateY = useTransform(smoothProgress, [0, 1], [-28, 0]);
-	const rotateX = useTransform(smoothProgress, [0, 1], [14, 0]);
-	const rotateZ = useTransform(smoothProgress, [0, 1], [8, 0]);
-	const translateZ = useTransform(smoothProgress, [0, 1], [-180, 0]);
-
-	// Column parallax animations:
-	// Gentle parallax during scroll, smoothly converging to 0% at end of scroll so all rows are full and aligned
-	const yCol1 = useTransform(smoothProgress, [0, 1], ["-10%", "0%"]);
-	const yCol2 = useTransform(smoothProgress, [0, 1], ["10%", "0%"]);
-	const yCol3 = useTransform(smoothProgress, [0, 1], ["-12%", "0%"]);
-	const yCol4 = useTransform(smoothProgress, [0, 1], ["10%", "0%"]);
-
-	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-		const el = e.currentTarget;
-		const maxScroll = el.scrollHeight - el.clientHeight;
-		if (maxScroll > 0) {
-			progress.set(Math.max(0, Math.min(1, el.scrollTop / maxScroll)));
-		}
-	};
-
-	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
 		setIsDragging(true);
-		startYRef.current = e.clientY;
-		if (scrollWrapperRef.current) {
-			startScrollTopRef.current = scrollWrapperRef.current.scrollTop;
-		}
-		try {
-			e.currentTarget.setPointerCapture(e.pointerId);
-		} catch {
-			// ignore
-		}
 	};
 
-	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-		if (!isDragging || !scrollWrapperRef.current) return;
-		const dy = e.clientY - startYRef.current;
-		const el = scrollWrapperRef.current;
-		const maxScroll = el.scrollHeight - el.clientHeight;
-		if (maxScroll <= 0) return;
-		el.scrollTop = Math.max(0, Math.min(maxScroll, startScrollTopRef.current - dy));
-		progress.set(el.scrollTop / maxScroll);
-	};
+	const handleCardClick = (cardId: string, e: React.MouseEvent) => {
+		e.stopPropagation();
+		// Distinguish between drag (> 5px) and click (< 5px)
+		if (pointerDownRef.current) {
+			const dist = Math.hypot(
+				e.clientX - pointerDownRef.current.x,
+				e.clientY - pointerDownRef.current.y,
+			);
+			if (dist > 5) return;
+		}
 
-	const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-		setIsDragging(false);
-		try {
-			e.currentTarget.releasePointerCapture(e.pointerId);
-		} catch {
-			// ignore
+		if (activeCardId === cardId) {
+			playShutterSound(false);
+			setActiveCardId(null);
+		} else {
+			playShutterSound(true);
+			setActiveCardId(cardId);
 		}
 	};
 
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-		const el = scrollWrapperRef.current;
-		if (!el) return;
-		const maxScroll = el.scrollHeight - el.clientHeight;
-		if (maxScroll <= 0) return;
-		if (e.key === "ArrowDown" || e.key === "PageDown") {
-			e.preventDefault();
-			el.scrollTop = Math.min(maxScroll, el.scrollTop + 60);
-			progress.set(el.scrollTop / maxScroll);
-		} else if (e.key === "ArrowUp" || e.key === "PageUp") {
-			e.preventDefault();
-			el.scrollTop = Math.max(0, el.scrollTop - 60);
-			progress.set(el.scrollTop / maxScroll);
-		}
+	const handleBackdropClick = () => {
+		playShutterSound(false);
+		setActiveCardId(null);
 	};
 
-	if (!mounted || reducedMotion) {
-		return (
-			<section
-				aria-label="3D Perspective Gallery"
-				className="perspective-gallery-static"
-				id="gallery"
-			>
-				<div className="perspective-gallery-static__grid">
-					{UNSPLASH_IMAGES.slice(0, 8).map((src, index) => (
-						<div className="perspective-gallery__card" key={`static-${index}`}>
-							<img
-								alt="Gallery visual"
-								className="perspective-gallery__image"
-								loading="lazy"
-								src={src}
-							/>
-						</div>
-					))}
-				</div>
-			</section>
-		);
-	}
+	const activeCard = POLAROID_DATA.find((c) => c.id === activeCardId);
 
 	return (
-		<section
-			aria-label="3D Perspective Gallery"
-			className="perspective-gallery-inner-frame"
-			id="gallery"
-		>
+		<div className="w-full relative my-8">
+			{/* Outer Frame & Architectural Container */}
 			<div
-				aria-label="Interactive gallery canvas"
-				className="perspective-gallery-scroll-wrapper"
-				onKeyDown={handleKeyDown}
-				onPointerCancel={handlePointerUp}
+				aria-label="3D perspective gallery"
+				className={`h-[520px] w-full overflow-hidden bg-[#f4f4f5] relative border border-neutral-300 rounded-none select-none ${
+					isDragging ? "cursor-grabbing" : "cursor-grab"
+				}`}
+				id="gallery"
 				onPointerDown={handlePointerDown}
-				onPointerLeave={handlePointerUp}
-				onPointerMove={handlePointerMove}
-				onPointerUp={handlePointerUp}
-				onScroll={handleScroll}
-				ref={scrollWrapperRef}
+				onWheel={(e) => applyPanDelta(e.deltaX, e.deltaY)}
+				ref={containerRef}
 				role="region"
-				style={{ cursor: isDragging ? "grabbing" : "grab" }}
 				tabIndex={0}
 			>
-				<div className="perspective-gallery-track" />
-			</div>
-
-			<div className="perspective-gallery-stage" style={{ perspective: "1000px" }}>
-				{/* Ambient Shadow Box Masking */}
-				<div
+				{/* 4 Corner Intersection Nodes centered on vertices */}
+				<span
 					aria-hidden="true"
-					className="perspective-gallery-vignette perspective-gallery-vignette--vertical"
+					className="w-1.5 h-1.5 rounded-full bg-neutral-400 absolute -top-[3px] -left-[3px] z-10 pointer-events-none"
 				/>
-				<div
+				<span
 					aria-hidden="true"
-					className="perspective-gallery-vignette perspective-gallery-vignette--horizontal"
+					className="w-1.5 h-1.5 rounded-full bg-neutral-400 absolute -top-[3px] -right-[3px] z-10 pointer-events-none"
+				/>
+				<span
+					aria-hidden="true"
+					className="w-1.5 h-1.5 rounded-full bg-neutral-400 absolute -bottom-[3px] -left-[3px] z-10 pointer-events-none"
+				/>
+				<span
+					aria-hidden="true"
+					className="w-1.5 h-1.5 rounded-full bg-neutral-400 absolute -bottom-[3px] -right-[3px] z-10 pointer-events-none"
 				/>
 
-				{/* Parallax Image Grid Matrix */}
+				{/* 2D Panning Canvas Plane */}
 				<motion.div
-					className="perspective-gallery-matrix will-change-transform backface-hidden"
+					className="absolute w-[2500px] h-[900px] will-change-transform polaroid-canvas"
+					data-testid="polaroid-canvas"
 					style={{
-						rotateX,
-						rotateY,
-						rotateZ,
-						z: translateZ,
-						transformStyle: "preserve-3d",
+						x: panX,
+						y: panY,
 					}}
 				>
-					<motion.div className="perspective-gallery-col" style={{ y: yCol1 }}>
-						{colMedia.col1.map((src, index) => (
-							<ImageCard
-								key={`col1-${index}`}
-								onLoad={handleItemLoad}
-								src={src}
-							/>
-						))}
-					</motion.div>
+					{POLAROID_DATA.map((card) => {
+						const isCardActive = activeCardId === card.id;
 
-					<motion.div className="perspective-gallery-col" style={{ y: yCol2 }}>
-						{colMedia.col2.map((src, index) => (
-							<ImageCard
-								key={`col2-${index}`}
-								onLoad={handleItemLoad}
-								src={src}
-							/>
-						))}
-					</motion.div>
+						return (
+							<div
+								className={`absolute bg-white p-2.5 pb-4 shadow-md border border-neutral-200/80 w-56 cursor-zoom-in transition-all duration-200 hover:scale-[1.04] hover:!rotate-0 hover:z-20 ${
+									activeCardId && !isCardActive ? "opacity-20 pointer-events-none" : "opacity-100"
+								}`}
+								data-testid="polaroid-card"
+								key={card.id}
+								onClick={(e) => handleCardClick(card.id, e)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" || e.key === " ") {
+										e.preventDefault();
+										handleCardClick(card.id, e as unknown as React.MouseEvent);
+									}
+								}}
+								role="button"
+								style={{
+									left: card.x,
+									top: card.y,
+									transform: `rotate(${card.rot}deg)`,
+									zIndex: card.zIndex ?? 1,
+								}}
+								tabIndex={0}
+							>
+								{/* Polaroid Image */}
+								<div className="w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-none pointer-events-none">
+									<img
+										alt={card.label}
+										className="w-full h-full object-cover"
+										draggable={false}
+										loading="lazy"
+										src={card.img}
+									/>
+								</div>
 
-					<motion.div className="perspective-gallery-col" style={{ y: yCol3 }}>
-						{colMedia.col3.map((src, index) => (
-							<ImageCard
-								key={`col3-${index}`}
-								onLoad={handleItemLoad}
-								src={src}
-							/>
-						))}
-					</motion.div>
-
-					<motion.div className="perspective-gallery-col" style={{ y: yCol4 }}>
-						{colMedia.col4.map((src, index) => (
-							<ImageCard
-								key={`col4-${index}`}
-								onLoad={handleItemLoad}
-								src={src}
-							/>
-						))}
-					</motion.div>
+								{/* Polaroid Caption */}
+								<p className="text-[11px] text-neutral-700 font-medium font-mono text-center truncate px-1 pt-2.5 pointer-events-none">
+									{card.label}
+								</p>
+							</div>
+						);
+					})}
 				</motion.div>
+
+				{/* Click-to-Focus Lightbox State Overlay */}
+				<AnimatePresence>
+					{activeCard ? (
+						<motion.div
+							animate={{ opacity: 1 }}
+							className="absolute inset-0 z-20"
+							exit={{ opacity: 0 }}
+							initial={{ opacity: 0 }}
+							key={`lightbox-${activeCard.id}`}
+							transition={{ duration: 0.25 }}
+						>
+							{/* Soft washed out backdrop */}
+							<div
+								aria-label="Close focused photo"
+								className="absolute inset-0 bg-white/80 backdrop-blur-[2px] cursor-zoom-out"
+								onClick={handleBackdropClick}
+								role="button"
+								tabIndex={0}
+							/>
+
+							{/* Elevated focused card centered in viewport frame */}
+							<div className="absolute inset-0 z-30 flex items-center justify-center p-6 pointer-events-none">
+								<motion.div
+									animate={{ scale: 1, rotate: 0 }}
+									className="bg-white p-3.5 pb-5 shadow-2xl border border-neutral-200 w-72 sm:w-80 max-h-[440px] pointer-events-auto cursor-zoom-out"
+									exit={{ scale: 0.85, opacity: 0 }}
+									initial={{ scale: 0.85, rotate: activeCard.rot }}
+									onClick={handleBackdropClick}
+									transition={{
+										type: "spring",
+										stiffness: reduced ? 1000 : 320,
+										damping: reduced ? 100 : 28,
+										mass: 0.5,
+									}}
+								>
+									<div className="w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-none">
+										<img
+											alt={activeCard.label}
+											className="w-full h-full object-cover"
+											draggable={false}
+											src={activeCard.img}
+										/>
+									</div>
+
+									<p className="text-xs text-neutral-800 font-medium font-mono text-center truncate px-1 pt-3">
+										{activeCard.label}
+									</p>
+								</motion.div>
+							</div>
+						</motion.div>
+					) : null}
+				</AnimatePresence>
 			</div>
 
-			{/* Interactive Hint Badge */}
-			<div aria-hidden="true" className="perspective-gallery-hint">
-				<span className="perspective-gallery-hint__dot" />
-				<span>Scroll or drag inside to explore</span>
-			</div>
-		</section>
+			{/* Muted Helper Caption below bottom border */}
+			<p className="text-xs text-neutral-400 text-center mt-2 font-mono">
+				Drag, click, or horizontal scroll
+			</p>
+		</div>
 	);
 }
