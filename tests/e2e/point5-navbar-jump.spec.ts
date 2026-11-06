@@ -27,7 +27,10 @@ test.describe("Point 5: Navbar Pop-Up Jump & Left-to-Center Scroll Travel", () =
 
 		// Now scroll down past 160px so dock-progress reaches 1.0
 		await page.mouse.move(0, 500);
-		await page.evaluate(() => window.scrollTo({ top: 300, behavior: "instant" }));
+		await page.evaluate(() => {
+			window.scrollTo({ top: 300, behavior: "instant" });
+			window.dispatchEvent(new Event("scroll"));
+		});
 		await page.waitForTimeout(400);
 
 		// The left capsule should have translated toward the center

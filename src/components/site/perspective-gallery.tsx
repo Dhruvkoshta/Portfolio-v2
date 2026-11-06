@@ -94,30 +94,29 @@ export function PerspectiveGallery() {
 	}, [progress]);
 
 	const colMedia = useMemo(() => {
-		const col1Base = UNSPLASH_IMAGES.filter((_, i) => i % 4 === 0);
-		const col2Base = UNSPLASH_IMAGES.filter((_, i) => i % 4 === 1);
-		const col3Base = UNSPLASH_IMAGES.filter((_, i) => i % 4 === 2);
-		const col4Base = UNSPLASH_IMAGES.filter((_, i) => i % 4 === 3);
-
+		// 12 curated images: exactly 3 cards per column across 4 columns = 3 full rows
+		const images = UNSPLASH_IMAGES.slice(0, 12);
 		return {
-			col1: [...col1Base, ...col1Base],
-			col2: [...col2Base, ...col2Base],
-			col3: [...col3Base, ...col3Base],
-			col4: [...col4Base, ...col4Base],
+			col1: images.filter((_, i) => i % 4 === 0),
+			col2: images.filter((_, i) => i % 4 === 1),
+			col3: images.filter((_, i) => i % 4 === 2),
+			col4: images.filter((_, i) => i % 4 === 3),
 		};
 	}, []);
 
-	// 3D Matrix animations inside the frame
-	const rotateY = useTransform(smoothProgress, [0, 1], [-40, -6]);
-	const rotateX = useTransform(smoothProgress, [0, 1], [22, 2]);
-	const rotateZ = useTransform(smoothProgress, [0, 1], [14, 1]);
-	const translateZ = useTransform(smoothProgress, [0, 1], [-650, 40]);
+	// 3D Matrix animations inside the frame:
+	// Starts with 3D perspective depth, smoothly rotates to 0deg (front-facing) at scroll end
+	const rotateY = useTransform(smoothProgress, [0, 1], [-28, 0]);
+	const rotateX = useTransform(smoothProgress, [0, 1], [14, 0]);
+	const rotateZ = useTransform(smoothProgress, [0, 1], [8, 0]);
+	const translateZ = useTransform(smoothProgress, [0, 1], [-180, 0]);
 
-	// Track columns parallax animations
-	const yCol1 = useTransform(smoothProgress, [0, 1], ["0%", "-35%"]);
-	const yCol2 = useTransform(smoothProgress, [0, 1], ["-35%", "15%"]);
-	const yCol3 = useTransform(smoothProgress, [0, 1], ["-5%", "-40%"]);
-	const yCol4 = useTransform(smoothProgress, [0, 1], ["-30%", "20%"]);
+	// Column parallax animations:
+	// Gentle parallax during scroll, smoothly converging to 0% at end of scroll so all rows are full and aligned
+	const yCol1 = useTransform(smoothProgress, [0, 1], ["-8%", "0%"]);
+	const yCol2 = useTransform(smoothProgress, [0, 1], ["8%", "0%"]);
+	const yCol3 = useTransform(smoothProgress, [0, 1], ["-10%", "0%"]);
+	const yCol4 = useTransform(smoothProgress, [0, 1], ["8%", "0%"]);
 
 	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
 		const el = e.currentTarget;
@@ -215,76 +214,75 @@ export function PerspectiveGallery() {
 				onPointerUp={handlePointerUp}
 				onScroll={handleScroll}
 				ref={scrollWrapperRef}
+				role="region"
 				style={{ cursor: isDragging ? "grabbing" : "grab" }}
 				tabIndex={0}
 			>
-				<div className="perspective-gallery-track">
-					<div className="perspective-gallery-sticky">
-						<div className="perspective-gallery-stage" style={{ perspective: "1000px" }}>
-							{/* Ambient Shadow Box Masking */}
-							<div
-								aria-hidden="true"
-								className="perspective-gallery-vignette perspective-gallery-vignette--vertical"
+				<div className="perspective-gallery-track" />
+			</div>
+
+			<div className="perspective-gallery-stage" style={{ perspective: "1000px" }}>
+				{/* Ambient Shadow Box Masking */}
+				<div
+					aria-hidden="true"
+					className="perspective-gallery-vignette perspective-gallery-vignette--vertical"
+				/>
+				<div
+					aria-hidden="true"
+					className="perspective-gallery-vignette perspective-gallery-vignette--horizontal"
+				/>
+
+				{/* Parallax Image Grid Matrix */}
+				<motion.div
+					className="perspective-gallery-matrix will-change-transform backface-hidden"
+					style={{
+						rotateX,
+						rotateY,
+						rotateZ,
+						z: translateZ,
+						transformStyle: "preserve-3d",
+					}}
+				>
+					<motion.div className="perspective-gallery-col" style={{ y: yCol1 }}>
+						{colMedia.col1.map((src, index) => (
+							<ImageCard
+								key={`col1-${index}`}
+								onLoad={handleItemLoad}
+								src={src}
 							/>
-							<div
-								aria-hidden="true"
-								className="perspective-gallery-vignette perspective-gallery-vignette--horizontal"
+						))}
+					</motion.div>
+
+					<motion.div className="perspective-gallery-col" style={{ y: yCol2 }}>
+						{colMedia.col2.map((src, index) => (
+							<ImageCard
+								key={`col2-${index}`}
+								onLoad={handleItemLoad}
+								src={src}
 							/>
+						))}
+					</motion.div>
 
-							{/* Parallax Image Grid Matrix */}
-							<motion.div
-								className="perspective-gallery-matrix will-change-transform backface-hidden"
-								style={{
-									rotateX,
-									rotateY,
-									rotateZ,
-									z: translateZ,
-									transformStyle: "preserve-3d",
-								}}
-							>
-								<motion.div className="perspective-gallery-col" style={{ y: yCol1 }}>
-									{colMedia.col1.map((src, index) => (
-										<ImageCard
-											key={`col1-${index}`}
-											onLoad={handleItemLoad}
-											src={src}
-										/>
-									))}
-								</motion.div>
+					<motion.div className="perspective-gallery-col" style={{ y: yCol3 }}>
+						{colMedia.col3.map((src, index) => (
+							<ImageCard
+								key={`col3-${index}`}
+								onLoad={handleItemLoad}
+								src={src}
+							/>
+						))}
+					</motion.div>
 
-								<motion.div className="perspective-gallery-col" style={{ y: yCol2 }}>
-									{colMedia.col2.map((src, index) => (
-										<ImageCard
-											key={`col2-${index}`}
-											onLoad={handleItemLoad}
-											src={src}
-										/>
-									))}
-								</motion.div>
-
-								<motion.div className="perspective-gallery-col" style={{ y: yCol3 }}>
-									{colMedia.col3.map((src, index) => (
-										<ImageCard
-											key={`col3-${index}`}
-											onLoad={handleItemLoad}
-											src={src}
-										/>
-									))}
-								</motion.div>
-
-								<motion.div className="perspective-gallery-col" style={{ y: yCol4 }}>
-									{colMedia.col4.map((src, index) => (
-										<ImageCard
-											key={`col4-${index}`}
-											onLoad={handleItemLoad}
-											src={src}
-										/>
-									))}
-								</motion.div>
-							</motion.div>
-						</div>
-					</div>
-				</div>
+					<motion.div className="perspective-gallery-col" style={{ y: yCol4 }}>
+						{colMedia.col4.map((src, index) => (
+							<ImageCard
+								key={`col4-${index}`}
+								onLoad={handleItemLoad}
+								src={src}
+							/>
+						))}
+					</motion.div>
+				</motion.div>
 			</div>
 
 			{/* Interactive Hint Badge */}

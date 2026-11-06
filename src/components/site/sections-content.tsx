@@ -963,7 +963,7 @@ export function SpotifySection() {
 	const spotifyPlaylistUrl = "https://open.spotify.com/playlist/7IbpZshuCcooJoDMvOs9Yp";
 
 	const leftSpines = [
-		{ title: "matt's coffee shop", bg: "#d97706", color: "#fff", width: 28 },
+		{ title: "matt's coffee shop", bg: "#b45309", color: "#fff", width: 28 },
 		{ title: "privilege of pressure", bg: "#1e3a8a", color: "#e0e7ff", width: 34 },
 		{ title: "demanding excellence", bg: "#991b1b", color: "#fee2e2", width: 30 },
 	];
@@ -1049,7 +1049,6 @@ export function SpotifySection() {
 
 							{/* Centerpiece Vinyl & Sleeve */}
 							<a
-								aria-label="Dhruv's Spotify Playlist - Open in Spotify"
 								className="vinyl-sleeve-unit"
 								href={spotifyPlaylistUrl}
 								rel="noreferrer"
