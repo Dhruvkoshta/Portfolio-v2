@@ -818,17 +818,47 @@ kbd {
 	margin: 0;
 }
 
-.hero__portrait picture {
-	display: block;
-}
-
-.hero__portrait img {
+.ascii-portrait {
+	position: relative;
 	display: block;
 	width: 100%;
-	height: auto;
 	aspect-ratio: 1067 / 1375;
+	background: #ffffff;
+	border-radius: 2px;
+	overflow: hidden;
+	user-select: none;
+	touch-action: pan-y;
+	cursor: crosshair;
+}
+
+.ascii-portrait__canvas {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.ascii-portrait__fallback {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	transition: opacity 0.25s ease;
+}
+
+.ascii-portrait__fallback img {
+	display: block;
+	width: 100%;
+	height: 100%;
 	object-fit: cover;
 	object-position: 50% 0;
+}
+
+.ascii-portrait__fallback--hidden {
+	opacity: 0;
 }
 
 .hero__portrait-plus {
