@@ -26,11 +26,6 @@ const TOP_LAYERS = [
 		mask: "linear-gradient(to top, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 1) 100%, rgba(0, 0, 0, 1) 100%)",
 		zIndex: 5,
 	},
-	{
-		blur: "14px",
-		mask: "linear-gradient(to top, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 1) 100%, rgba(0, 0, 0, 1) 100%)",
-		zIndex: 6,
-	},
 ] as const;
 
 const BOTTOM_LAYERS = [
@@ -59,11 +54,6 @@ const BOTTOM_LAYERS = [
 		mask: "linear-gradient(to bottom, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 1) 100%, rgba(0, 0, 0, 1) 100%)",
 		zIndex: 5,
 	},
-	{
-		blur: "14px",
-		mask: "linear-gradient(to bottom, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 1) 100%, rgba(0, 0, 0, 1) 100%)",
-		zIndex: 6,
-	},
 ] as const;
 
 export function ScrollEdgeBlur() {
@@ -90,7 +80,6 @@ export function ScrollEdgeBlur() {
 						/>
 					))}
 				</div>
-				<div className="scroll-edge-blur__tint scroll-edge-blur__tint--top" />
 			</div>
 
 			{/* Bottom Progressive Edge Blur (behind bottom radio bar, z-index below dock) */}
@@ -114,7 +103,6 @@ export function ScrollEdgeBlur() {
 						/>
 					))}
 				</div>
-				<div className="scroll-edge-blur__tint scroll-edge-blur__tint--bottom" />
 			</div>
 		</>
 	);

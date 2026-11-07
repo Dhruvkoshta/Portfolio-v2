@@ -18,6 +18,6 @@ describe("ScrollEdgeBlur Component", () => {
 		expect(bottom).toHaveAttribute("aria-hidden", "true");
 
 		const layers = container.querySelectorAll(".scroll-edge-blur__layer");
-		expect(layers.length).toBe(12);
+		expect(layers.length).toBe(10);
 	});
 });
