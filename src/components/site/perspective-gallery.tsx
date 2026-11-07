@@ -395,7 +395,7 @@ export function PerspectiveGallery() {
 
 						return (
 							<div
-								className={`absolute bg-white p-2.5 pb-4 shadow-md border border-neutral-200/80 w-56 cursor-zoom-in transition-all duration-200 hover:scale-[1.04] hover:!rotate-0 hover:z-20 ${
+								className={`absolute bg-white p-2.5 pb-4 shadow-md border border-neutral-200/80 w-56 cursor-zoom-in transition-[transform,opacity] duration-200 hover:scale-[1.04] hover:!rotate-0 hover:z-20 ${
 									activeCardId && !isCardActive ? "opacity-20 pointer-events-none" : "opacity-100"
 								}`}
 								data-testid="polaroid-card"

@@ -110,13 +110,13 @@ export function PixelPet() {
 						width="40"
 					>
 						{/* Ears */}
-						<rect fill="var(--fg)" height="3" width="2" x="4" y="3" />
-						<rect fill="var(--fg)" height="3" width="2" x="18" y="3" />
+						<rect fill="var(--ink)" height="3" width="2" x="4" y="3" />
+						<rect fill="var(--ink)" height="3" width="2" x="18" y="3" />
 						<rect fill="var(--accent)" height="2" width="1" x="5" y="4" />
 						<rect fill="var(--accent)" height="2" width="1" x="18" y="4" />
 
 						{/* Head */}
-						<rect fill="var(--fg)" height="10" width="16" x="4" y="6" />
+						<rect fill="var(--ink)" height="10" width="16" x="4" y="6" />
 
 						{/* Eyes */}
 						{isSleeping ? (
@@ -135,19 +135,19 @@ export function PixelPet() {
 
 						{/* Snout & Whiskers */}
 						<rect fill="var(--accent)" height="1" width="2" x="11" y="12" />
-						<rect fill="var(--border)" height="1" width="2" x="2" y="11" />
-						<rect fill="var(--border)" height="1" width="2" x="20" y="11" />
+						<rect fill="var(--line-strong)" height="1" width="2" x="2" y="11" />
+						<rect fill="var(--line-strong)" height="1" width="2" x="20" y="11" />
 
 						{/* Body */}
-						<rect fill="var(--fg)" height="6" width="12" x="6" y="16" />
+						<rect fill="var(--ink)" height="6" width="12" x="6" y="16" />
 
 						{/* Paws */}
-						<rect fill="var(--border)" height="2" width="2" x="7" y="21" />
-						<rect fill="var(--border)" height="2" width="2" x="15" y="21" />
+						<rect fill="var(--line-strong)" height="2" width="2" x="7" y="21" />
+						<rect fill="var(--line-strong)" height="2" width="2" x="15" y="21" />
 
 						{/* Tail */}
-						<rect fill="var(--fg)" height="5" width="2" x="18" y="16" />
-						<rect fill="var(--fg)" height="2" width="2" x="20" y="15" />
+						<rect fill="var(--ink)" height="5" width="2" x="18" y="16" />
+						<rect fill="var(--ink)" height="2" width="2" x="20" y="15" />
 					</svg>
 				</button>
 

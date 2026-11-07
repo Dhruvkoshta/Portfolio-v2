@@ -119,7 +119,14 @@ export function ScrollTracker() {
 	const scrollToSection = useCallback((id: string) => {
 		const el = document.getElementById(id);
 		if (!el) return;
-		el.scrollIntoView({ behavior: "smooth", block: "start" });
+		const prefersReducedMotion =
+			typeof window !== "undefined" &&
+			typeof window.matchMedia === "function" &&
+			window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		el.scrollIntoView({
+			behavior: prefersReducedMotion ? "auto" : "smooth",
+			block: "start",
+		});
 	}, []);
 
 	return (

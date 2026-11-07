@@ -32,6 +32,34 @@ describe("ScrollTracker Component", () => {
 		document.body.removeChild(targetEl);
 	});
 
+	it("uses instant auto scroll when prefers-reduced-motion is active", () => {
+		const targetEl = document.createElement("div");
+		targetEl.id = "experience";
+		const scrollMock = vi.fn();
+		targetEl.scrollIntoView = scrollMock;
+		document.body.appendChild(targetEl);
+
+		window.matchMedia = vi.fn().mockImplementation((query) => ({
+			matches: query === "(prefers-reduced-motion: reduce)",
+			media: query,
+			onchange: null,
+			addListener: vi.fn(),
+			removeListener: vi.fn(),
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+			dispatchEvent: vi.fn(),
+		}));
+
+		render(<ScrollTracker />);
+		const expButton = screen.getByRole("button", { name: "01 Experience" });
+		fireEvent.click(expButton);
+
+		expect(scrollMock).toHaveBeenCalledWith({ behavior: "auto", block: "start" });
+		document.body.removeChild(targetEl);
+		// Cleanup matchMedia mock
+		delete (window as unknown as { matchMedia?: unknown }).matchMedia;
+	});
+
 	it("synchronizes tracker progress with section index rather than overshooting", () => {
 		const { container } = render(<ScrollTracker />);
 		const nav = container.querySelector(".scroll-tracker");

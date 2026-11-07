@@ -463,8 +463,8 @@ kbd {
 		transform: translateX(3px);
 	}
 
-	.appbar__panel-row:active {
-		transform: translateX(1px) scale(0.98);
+	.appbar__panel-row:active:not(:disabled) {
+		transform: translateX(1px) scale(0.96);
 	}
 }
 
@@ -606,6 +606,7 @@ kbd {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	overflow-y: auto;
+	overscroll-behavior: contain;
 }
 
 .menu-row {
@@ -829,6 +830,8 @@ kbd {
 	aspect-ratio: 1067 / 1375;
 	object-fit: cover;
 	object-position: 50% 0;
+	outline: 1px solid oklch(0 0 0 / 0.1);
+	outline-offset: -1px;
 }
 
 .hero__portrait-plus {
@@ -1339,10 +1342,6 @@ kbd {
 .ed3-bottom-dock__lift--shown {
 	transform: translateZ(0);
 	opacity: 1;
-}
-
-.ed3-dock {
-	border-radius: var(--radius-glass);
 }
 
 .ed3__appbar-glass-shell {
@@ -3398,7 +3397,10 @@ kbd {
 	background: #fff;
 	color: var(--ink-soft);
 	text-decoration: none;
-	transition: all var(--dur-fast) var(--ease-out);
+	transition:
+		border-color var(--dur-fast) var(--ease-out),
+		color var(--dur-fast) var(--ease-out),
+		transform var(--dur-fast) var(--ease-out);
 }
 
 .ed3-footer__channel:hover {

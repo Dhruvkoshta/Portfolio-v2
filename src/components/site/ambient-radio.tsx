@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useRadio } from "~/lib/radio";
 import { PauseIcon, PlayIcon, RadioIcon, SpeakerIcon, SpeakerMuteIcon } from "./icons";
 
@@ -44,7 +45,20 @@ export function AmbientRadio({ compact = false, className = "" }: AmbientRadioPr
 					}
 					type="button"
 				>
-					{isPlaying ? <PauseIcon size={12} /> : <PlayIcon size={12} />}
+					<span className="inline-flex items-center justify-center w-[12px] h-[12px]">
+						<AnimatePresence initial={false} mode="popLayout">
+							<motion.span
+								animate={{ opacity: 1, scale: 1 }}
+								className="inline-flex items-center justify-center"
+								exit={{ opacity: 0, scale: 0.8 }}
+								initial={{ opacity: 0, scale: 0.8 }}
+								key={isPlaying ? "pause" : "play"}
+								transition={{ duration: 0.18, ease: "easeOut" }}
+							>
+								{isPlaying ? <PauseIcon size={12} /> : <PlayIcon size={12} />}
+							</motion.span>
+						</AnimatePresence>
+					</span>
 					<span className="radio-btn__label">Radio</span>
 				</button>
 			</div>
@@ -85,7 +99,20 @@ export function AmbientRadio({ compact = false, className = "" }: AmbientRadioPr
 					onClick={togglePlay}
 					type="button"
 				>
-					{isPlaying ? <PauseIcon size={14} /> : <PlayIcon size={14} />}
+					<span className="inline-flex items-center justify-center w-[14px] h-[14px]">
+						<AnimatePresence initial={false} mode="popLayout">
+							<motion.span
+								animate={{ opacity: 1, scale: 1 }}
+								className="inline-flex items-center justify-center"
+								exit={{ opacity: 0, scale: 0.8 }}
+								initial={{ opacity: 0, scale: 0.8 }}
+								key={isPlaying ? "pause" : "play"}
+								transition={{ duration: 0.18, ease: "easeOut" }}
+							>
+								{isPlaying ? <PauseIcon size={14} /> : <PlayIcon size={14} />}
+							</motion.span>
+						</AnimatePresence>
+					</span>
 					<span>{isPlaying ? "Pause" : "Play Radio"}</span>
 				</button>
 

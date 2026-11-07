@@ -213,7 +213,7 @@ export function PlayIcon(props: IconProps) {
 			width={props.size ?? 14}
 			{...props}
 		>
-			<polygon points="5 3 19 12 5 21 5 3" />
+			<polygon points="6 3 20 12 6 21 6 3" />
 		</svg>
 	);
 }
