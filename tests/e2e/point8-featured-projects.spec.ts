@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 test.describe("Point 8: Featured Projects Card Layout & Terminal Canvas Redesign", () => {
 	test("renders left year rail, terminal media canvas with corner pluses, action links, tech badges, and date span", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
+		await page.waitForFunction(
+			() => document.documentElement.dataset.hydrated === "true",
+		);
 
 		const featuredSection = page.locator("#featured-projects");
 		await expect(featuredSection).toBeVisible();

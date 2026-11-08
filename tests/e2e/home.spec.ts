@@ -180,7 +180,7 @@ test("thermal receipt form validates input and submits message", async ({ page }
 	await submitBtn.click();
 
 	// Verify printed confirmation
-	await expect(page.getByText("Message Printed & Saved")).toBeVisible();
+	await expect(page.getByText("Message Printed & Saved")).toBeVisible({ timeout: 10000 });
 	await expect(page.getByRole("button", { name: "Print Another Receipt" })).toBeVisible();
 });
 

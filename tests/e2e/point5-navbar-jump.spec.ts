@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 test.describe("Point 5: Navbar Pop-Up Jump & Left-to-Center Scroll Travel", () => {
 	test("pops up nav items on hover and slides left-to-center as page scrolls", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
+		await page.waitForFunction(
+			() => document.documentElement.dataset.hydrated === "true",
+		);
 
 		const appbar = page.locator(".appbar");
 		const left = page.locator(".appbar-left");

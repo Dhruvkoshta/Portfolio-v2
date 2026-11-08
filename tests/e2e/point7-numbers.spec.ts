@@ -3,7 +3,9 @@ import { expect, test } from "@playwright/test";
 test.describe("Point 7: By the Numbers (Statistics) Section Redesign", () => {
 	test("renders 2-column split list, interactive tabs, flag tooltips, live dot, and catch 'em all view", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
+		await page.waitForFunction(
+			() => document.documentElement.dataset.hydrated === "true",
+		);
 
 		const numbersSection = page.locator("#by-the-numbers");
 		await expect(numbersSection).toBeVisible();
