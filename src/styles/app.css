@@ -4114,17 +4114,88 @@ kbd {
 	background: none;
 	border: none;
 	padding: 0;
-	cursor: pointer;
+	cursor: grab;
 	image-rendering: pixelated;
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
 	transition: transform var(--dur-fast);
+	position: relative;
 }
 
-.pixel-pet:hover {
+.pixel-pet:active {
+	cursor: grabbing;
+}
+
+.pixel-pet--dragging {
+	cursor: grabbing !important;
+	transition: none !important;
+}
+
+.pixel-pet--floating {
+	cursor: grab;
+	transition: none !important;
+}
+
+.pixel-pet:hover:not(.pixel-pet--dragging):not(.pixel-pet--floating) {
 	transform: translateY(-3px) scale(1.05);
 }
 
-.pixel-pet--awake .pixel-pet__sprite {
+.pixel-pet--awake:not(.pixel-pet--dragging):not(.pixel-pet--floating) .pixel-pet__sprite {
 	animation: cat-bob 2.4s ease-in-out infinite;
+}
+
+/* Parachute Canopy & Lines ------------------------------------------------ */
+
+.pixel-pet__chute {
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	width: 44px;
+	height: 24px;
+	margin: 0 0 10px -22px;
+	transform-origin: 50% 100%;
+	pointer-events: none;
+	z-index: 2;
+	animation: chute-open 0.32s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+
+@keyframes chute-open {
+	0% {
+		transform: scale(0.15, 0.3);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1, 1);
+		opacity: 1;
+	}
+}
+
+.pixel-pet__chute-canopy {
+	position: absolute;
+	inset: 0;
+	background: var(--accent);
+	clip-path: polygon(0% 100%, 14% 22%, 50% 0%, 86% 22%, 100% 100%, 50% 74%);
+	filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
+}
+
+.pixel-pet__chute-line {
+	position: absolute;
+	bottom: -10px;
+	width: 1px;
+	height: 14px;
+	background: var(--ink);
+	opacity: 0.55;
+}
+
+.pixel-pet__chute-line--l {
+	left: 5px;
+	transform: rotate(-6deg);
+}
+
+.pixel-pet__chute-line--r {
+	right: 5px;
+	transform: rotate(6deg);
 }
 
 @keyframes cat-bob {
