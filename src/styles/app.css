@@ -4045,7 +4045,7 @@ kbd {
 	position: fixed;
 	bottom: 24px;
 	right: 24px;
-	z-index: 40;
+	z-index: 90;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
@@ -4167,7 +4167,7 @@ kbd {
 	position: fixed;
 	bottom: 16px;
 	right: 16px;
-	z-index: 40;
+	z-index: 90;
 	background: #fff;
 	border: 1px solid var(--line);
 	box-shadow: var(--shadow-glass);

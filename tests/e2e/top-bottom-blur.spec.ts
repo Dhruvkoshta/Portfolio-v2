@@ -35,6 +35,13 @@ test.describe("Progressive Edge Blur: Top & Bottom Radio Dock", () => {
 		const bottomZIndex = await bottomBlur.evaluate((el) => window.getComputedStyle(el).zIndex);
 		expect(bottomZIndex).toBe("80");
 
+		// Pixel pet Byte sits above the bottom blur
+		const petContainer = page.locator(".pixel-pet-container");
+		await expect(petContainer).toBeAttached();
+		const petZIndex = await petContainer.evaluate((el) => window.getComputedStyle(el).zIndex);
+		expect(Number(petZIndex)).toBeGreaterThan(Number(bottomZIndex));
+		expect(petZIndex).toBe("90");
+
 		// Scroll down a bit to see text scrolling through the top blur
 		await page.evaluate(() => window.scrollTo(0, 380));
 		await page.waitForTimeout(300);
