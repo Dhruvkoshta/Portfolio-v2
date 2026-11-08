@@ -16,13 +16,13 @@ test.describe("Point 8: Featured Projects Card Layout & Terminal Canvas Redesign
 		const projectItems = featuredSection.locator(".wk__item");
 		expect(await projectItems.count()).toBeGreaterThanOrEqual(4);
 
-		// First project: ProctoAI
+		// First project: S.P.E.C.T.R.E.
 		const firstItem = projectItems.first();
 		await expect(firstItem).toBeVisible();
 
 		// Check left year rail
 		const year = firstItem.locator(".wk__year");
-		await expect(year).toHaveText("2024");
+		await expect(year).toHaveText("2026");
 
 		// Check terminal media canvas
 		const media = firstItem.locator(".wk__media");
@@ -34,7 +34,7 @@ test.describe("Point 8: Featured Projects Card Layout & Terminal Canvas Redesign
 
 		// Check title
 		const title = firstItem.locator(".wk__title");
-		await expect(title).toContainText("ProctoAI");
+		await expect(title).toContainText("S.P.E.C.T.R.E.");
 
 		// Check action links
 		const links = firstItem.locator(".wk__links");
@@ -52,7 +52,10 @@ test.describe("Point 8: Featured Projects Card Layout & Terminal Canvas Redesign
 		expect(await techBadges.count()).toBeGreaterThanOrEqual(3);
 
 		const dateSpan = footer.locator(".wk__date-span");
-		await expect(dateSpan).toHaveText("Aug '24 — Oct '24");
+		await expect(dateSpan).toHaveText("May '26 — Oct '26");
+
+		// ProctoAI is also rendered
+		await expect(featuredSection.getByText("ProctoAI", { exact: false })).toBeVisible();
 
 		// Check Patent project
 		const patentBadge = featuredSection.locator(".wk__badge").first();
