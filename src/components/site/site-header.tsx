@@ -316,10 +316,6 @@ export function SiteHeader() {
 				Skip to main content
 			</a>
 
-			<div className="announcement">
-				<p>Open to interesting problems and good conversations.</p>
-			</div>
-
 			<header className="appbar-wrap">
 				<div
 					className="appbar-shell"

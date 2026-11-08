@@ -263,7 +263,7 @@ export function PixelPet() {
 	return (
 		<aside
 			aria-label="Pixel Companion Byte"
-			className="pixel-pet-container"
+			className={`pixel-pet-container ${isFloating ? "pixel-pet-container--floating" : ""}`}
 			style={{
 				transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`,
 				transition: isDragging || isFloating ? "none" : "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",

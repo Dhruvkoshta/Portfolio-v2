@@ -130,22 +130,24 @@ export function PerspectiveGallery() {
 	const panX = useSpring(rawPanX, {
 		stiffness: reduced ? 1000 : 360,
 		damping: reduced ? 100 : 25,
-		mass: 0.25,
+		mass: 0.2,
 	});
 	const panY = useSpring(rawPanY, {
 		stiffness: reduced ? 1000 : 360,
 		damping: reduced ? 100 : 25,
-		mass: 0.25,
+		mass: 0.2,
 	});
 
-	// Track pointer for drag vs click disambiguation
+	// Track pointer for drag vs click disambiguation and mobile velocity
 	const pointerDownRef = useRef<{
+		isTouch: boolean;
 		panX: number;
 		panY: number;
 		time: number;
 		x: number;
 		y: number;
 	} | null>(null);
+	const velocityHistoryRef = useRef<{ time: number; x: number; y: number }[]>([]);
 	const hasInitializedRef = useRef(false);
 
 	// Calculate bounds
@@ -256,9 +258,19 @@ export function PerspectiveGallery() {
 			const dx = e.clientX - pointerDownRef.current.x;
 			const dy = e.clientY - pointerDownRef.current.y;
 
+			// Sample velocity history for fling momentum
+			const now = performance.now();
+			const history = velocityHistoryRef.current;
+			history.push({ time: now, x: e.clientX, y: e.clientY });
+			if (history.length > 6) history.shift();
+
 			if (Math.hypot(dx, dy) > 5) {
-				const nextX = clampX(pointerDownRef.current.panX + dx);
-				const nextY = clampY(pointerDownRef.current.panY + dy);
+				// On mobile / touch screens, apply a 2.2x speed multiplier so dragging feels fast and responsive
+				const multiplier = pointerDownRef.current.isTouch ? 2.2 : 1.0;
+				const nextX = clampX(pointerDownRef.current.panX + dx * multiplier);
+				const nextY = clampY(
+					pointerDownRef.current.panY + dy * (pointerDownRef.current.isTouch ? 1.6 : 1.0),
+				);
 				rawPanX.set(nextX);
 				rawPanY.set(nextY);
 			}
@@ -267,14 +279,48 @@ export function PerspectiveGallery() {
 		const handlePointerUp = () => {
 			setIsDragging(false);
 
-			// Spring back into strict bounds if pushed past edge buffer
-			const curX = rawPanX.get();
-			const curY = rawPanY.get();
-			if (curX < minPanX) rawPanX.set(minPanX);
-			if (curX > maxPanX) rawPanX.set(maxPanX);
-			if (curY < minPanY) rawPanY.set(minPanY);
-			if (curY > maxPanY) rawPanY.set(maxPanY);
+			const isTouch = pointerDownRef.current?.isTouch;
+			const history = velocityHistoryRef.current;
+			const now = performance.now();
+			const recent = history.filter((p) => now - p.time < 120);
 
+			if (isTouch && recent.length >= 2) {
+				const oldest = recent[0];
+				const newest = recent[recent.length - 1];
+				const dt = Math.max(newest.time - oldest.time, 10);
+				const vx = (newest.x - oldest.x) / dt; // px/ms
+				const vy = (newest.y - oldest.y) / dt;
+
+				// If flicked with sufficient momentum, glide forward smoothly with inertia
+				if (Math.hypot(vx, vy) > 0.15) {
+					const flingX = vx * 450;
+					const flingY = vy * 250;
+					const curX = rawPanX.get();
+					const curY = rawPanY.get();
+					const targetX = Math.max(minPanX, Math.min(maxPanX, curX + flingX));
+					const targetY = Math.max(minPanY, Math.min(maxPanY, curY + flingY));
+					rawPanX.set(targetX);
+					rawPanY.set(targetY);
+				} else {
+					// Spring back into strict bounds if pushed past edge buffer
+					const curX = rawPanX.get();
+					const curY = rawPanY.get();
+					if (curX < minPanX) rawPanX.set(minPanX);
+					if (curX > maxPanX) rawPanX.set(maxPanX);
+					if (curY < minPanY) rawPanY.set(minPanY);
+					if (curY > maxPanY) rawPanY.set(maxPanY);
+				}
+			} else {
+				// Spring back into strict bounds if pushed past edge buffer
+				const curX = rawPanX.get();
+				const curY = rawPanY.get();
+				if (curX < minPanX) rawPanX.set(minPanX);
+				if (curX > maxPanX) rawPanX.set(maxPanX);
+				if (curY < minPanY) rawPanY.set(minPanY);
+				if (curY > maxPanY) rawPanY.set(maxPanY);
+			}
+
+			velocityHistoryRef.current = [];
 			setTimeout(() => {
 				pointerDownRef.current = null;
 			}, 100);
@@ -295,13 +341,20 @@ export function PerspectiveGallery() {
 	const handlePointerDown = (e: React.PointerEvent) => {
 		// Only primary click
 		if (e.button !== 0) return;
+		const isTouch =
+			e.pointerType === "touch" ||
+			(typeof window !== "undefined" && window.innerWidth <= 768);
 		pointerDownRef.current = {
-			x: e.clientX,
-			y: e.clientY,
+			isTouch,
 			panX: rawPanX.get(),
 			panY: rawPanY.get(),
-			time: Date.now(),
+			time: performance.now(),
+			x: e.clientX,
+			y: e.clientY,
 		};
+		velocityHistoryRef.current = [
+			{ time: performance.now(), x: e.clientX, y: e.clientY },
+		];
 		setIsDragging(true);
 	};
 
@@ -361,6 +414,7 @@ export function PerspectiveGallery() {
 				onPointerDown={handlePointerDown}
 				ref={containerRef}
 				role="region"
+				style={{ touchAction: "pan-y" }}
 				tabIndex={0}
 			>
 				{/* 4 Corner Intersection Nodes centered on vertices */}

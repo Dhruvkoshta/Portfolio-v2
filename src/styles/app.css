@@ -4068,6 +4068,11 @@ kbd {
 	white-space: nowrap;
 }
 
+.pixel-pet-container--floating .pixel-pet__bubble {
+	margin-bottom: 48px;
+	z-index: 10;
+}
+
 .pixel-pet__bubble-arrow {
 	position: absolute;
 	bottom: -5px;
