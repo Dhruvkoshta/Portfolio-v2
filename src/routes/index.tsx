@@ -16,7 +16,7 @@ import {
 	SkillsSection,
 	SpotifySection,
 	WhatOthersSaySection,
-} from "~/components/site/sections-content";
+} from "~/components/site/sections";
 import { sections } from "~/lib/sections";
 import { site } from "~/lib/site";
 

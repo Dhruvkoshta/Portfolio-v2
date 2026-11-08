@@ -1,0 +1,15 @@
+export { AccordionRow, type AccordionRowProps } from "./accordion-row";
+export { ExperienceSection } from "./experience-section";
+export { NumbersSection } from "./numbers-section";
+export { BlogSection } from "./blog-section";
+export { FeaturedProjectsSection } from "./featured-projects-section";
+export { OtherProjectsSection } from "./other-projects-section";
+export { EducationSection } from "./education-section";
+export { SkillsSection } from "./skills-section";
+export { CompetitionsSection } from "./competitions-section";
+export { WhatOthersSaySection } from "./what-others-say-section";
+export { PortfolioEvolutionSection } from "./portfolio-evolution-section";
+export { SpotifySection } from "./spotify-section";
+export { MiscSection } from "./misc-section";
+export { AsAKidSection } from "./as-a-kid-section";
+export { ContactReceiptSection } from "./contact-receipt-section";
