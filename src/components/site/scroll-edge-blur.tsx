@@ -64,7 +64,13 @@ export function ScrollEdgeBlur() {
 				aria-hidden="true"
 				className="scroll-edge-blur scroll-edge-blur--top"
 			>
-				<div className="scroll-edge-blur__safe" />
+				<div
+					className="scroll-edge-blur__safe"
+					style={{
+						backdropFilter: "blur(7px)",
+						WebkitBackdropFilter: "blur(7px)",
+					}}
+				/>
 				<div className="scroll-edge-blur__stack">
 					{TOP_LAYERS.map((layer, index) => (
 						<div
@@ -74,6 +80,10 @@ export function ScrollEdgeBlur() {
 								{
 									"--blur": layer.blur,
 									"--mask": layer.mask,
+									backdropFilter: `blur(${layer.blur})`,
+									WebkitBackdropFilter: `blur(${layer.blur})`,
+									maskImage: layer.mask,
+									WebkitMaskImage: layer.mask,
 									zIndex: layer.zIndex,
 								} as CSSProperties
 							}
@@ -87,7 +97,13 @@ export function ScrollEdgeBlur() {
 				aria-hidden="true"
 				className="scroll-edge-blur scroll-edge-blur--bottom"
 			>
-				<div className="scroll-edge-blur__safe scroll-edge-blur__safe--bottom" />
+				<div
+					className="scroll-edge-blur__safe scroll-edge-blur__safe--bottom"
+					style={{
+						backdropFilter: "blur(7px)",
+						WebkitBackdropFilter: "blur(7px)",
+					}}
+				/>
 				<div className="scroll-edge-blur__stack">
 					{BOTTOM_LAYERS.map((layer, index) => (
 						<div
@@ -97,6 +113,10 @@ export function ScrollEdgeBlur() {
 								{
 									"--blur": layer.blur,
 									"--mask": layer.mask,
+									backdropFilter: `blur(${layer.blur})`,
+									WebkitBackdropFilter: `blur(${layer.blur})`,
+									maskImage: layer.mask,
+									WebkitMaskImage: layer.mask,
 									zIndex: layer.zIndex,
 								} as CSSProperties
 							}

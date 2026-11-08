@@ -264,8 +264,8 @@ kbd {
 	background: var(--ed3-glass-fill);
 	box-shadow: var(--ed3-glass-shadow);
 	padding: 4px 8px;
-	backdrop-filter: var(--ed3-glass-blur);
 	-webkit-backdrop-filter: var(--ed3-glass-blur);
+	backdrop-filter: var(--ed3-glass-blur);
 	overflow: hidden;
 	pointer-events: auto;
 	opacity: calc(1 - var(--dock-progress, 0));
@@ -305,8 +305,8 @@ kbd {
 	background: var(--ed3-glass-fill);
 	box-shadow: var(--ed3-glass-shadow);
 	padding: 4px 6px;
-	backdrop-filter: var(--ed3-glass-blur);
 	-webkit-backdrop-filter: var(--ed3-glass-blur);
+	backdrop-filter: var(--ed3-glass-blur);
 	overflow: hidden;
 	pointer-events: auto;
 	transition:
@@ -477,8 +477,8 @@ kbd {
 	border-radius: var(--radius-glass);
 	background: var(--ed3-glass-fill);
 	box-shadow: var(--ed3-glass-shadow);
-	backdrop-filter: var(--ed3-glass-blur);
 	-webkit-backdrop-filter: var(--ed3-glass-blur);
+	backdrop-filter: var(--ed3-glass-blur);
 	padding: 5px;
 	animation: panel-in var(--dur-fast) var(--ease-out);
 }
@@ -1398,8 +1398,8 @@ kbd {
 	border-radius: var(--radius-glass);
 	background: var(--ed3-glass-fill);
 	box-shadow: var(--ed3-glass-shadow);
-	backdrop-filter: var(--ed3-glass-blur);
 	-webkit-backdrop-filter: var(--ed3-glass-blur);
+	backdrop-filter: var(--ed3-glass-blur);
 	overflow: hidden;
 }
 
@@ -3635,8 +3635,8 @@ kbd {
 		padding: 0;
 		color: var(--ink-soft);
 		line-height: 1;
-		backdrop-filter: var(--ed3-glass-blur);
 		-webkit-backdrop-filter: var(--ed3-glass-blur);
+		backdrop-filter: var(--ed3-glass-blur);
 	}
 
 	.appbar__home-mark {
@@ -3656,8 +3656,8 @@ kbd {
 		letter-spacing: 0.08em;
 		line-height: 1;
 		text-decoration: none;
-		backdrop-filter: var(--ed3-glass-blur);
 		-webkit-backdrop-filter: var(--ed3-glass-blur);
+		backdrop-filter: var(--ed3-glass-blur);
 	}
 
 	.menu-sheet__nav {
@@ -4234,8 +4234,8 @@ kbd {
 	right: 0;
 	top: 0;
 	height: env(safe-area-inset-top, 0px);
-	backdrop-filter: blur(7px);
 	-webkit-backdrop-filter: blur(7px);
+	backdrop-filter: blur(7px);
 	pointer-events: none;
 }
 
@@ -4255,10 +4255,10 @@ kbd {
 .scroll-edge-blur__layer {
 	position: absolute;
 	inset: 0;
-	backdrop-filter: blur(var(--blur));
-	-webkit-backdrop-filter: blur(var(--blur));
-	mask-image: var(--mask);
+	-webkit-backdrop-filter: blur(var(--blur, 7px));
+	backdrop-filter: blur(var(--blur, 7px));
 	-webkit-mask-image: var(--mask);
+	mask-image: var(--mask);
 	pointer-events: none;
 }
 
