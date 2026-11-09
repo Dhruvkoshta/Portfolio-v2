@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sound } from "~/lib/sound";
 import { useReducedMotion } from "~/lib/use-reduced-motion";
 import {
@@ -13,6 +13,25 @@ export function PixelPet() {
 	const [isSleeping, setIsSleeping] = useState(false);
 	const [hearts, setHearts] = useState<{ id: number; x: number }[]>([]);
 	const [minimized, setMinimized] = useState(false);
+	const [visible, setVisible] = useState(true);
+
+	useEffect(() => {
+		try {
+			const saved = localStorage.getItem("show-pet");
+			if (saved === "false") setVisible(false);
+		} catch {
+			// ignore localStorage error
+		}
+
+		const handleToggle = (e: Event) => {
+			const custom = e as CustomEvent<{ visible: boolean }>;
+			if (typeof custom.detail?.visible === "boolean") {
+				setVisible(custom.detail.visible);
+			}
+		};
+		window.addEventListener("toggle-pixel-pet", handleToggle);
+		return () => window.removeEventListener("toggle-pixel-pet", handleToggle);
+	}, []);
 
 	const handlePet = () => {
 		sound.play("pop");
@@ -41,6 +60,8 @@ export function PixelPet() {
 		isSleeping,
 		onPet: handlePet,
 	});
+
+	if (!visible) return null;
 
 	if (minimized) {
 		return (

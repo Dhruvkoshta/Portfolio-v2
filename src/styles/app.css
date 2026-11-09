@@ -247,10 +247,10 @@ kbd {
 .appbar-left {
 	display: flex;
 	align-items: center;
+	justify-content: center;
+	flex: 1;
 	position: relative;
 	z-index: 2;
-	transform: translate3d(calc(var(--ed3-dock-travel, 0px) * var(--dock-progress, 0)), 0, 0);
-	will-change: transform;
 }
 
 .appbar-right {
@@ -258,7 +258,7 @@ kbd {
 	align-items: center;
 	gap: 6px;
 	position: relative;
-	z-index: 1;
+	z-index: 20;
 	border: 1px solid var(--ed3-glass-border);
 	border-radius: 9999px;
 	background: var(--ed3-glass-fill);
@@ -295,56 +295,17 @@ kbd {
 }
 
 .appbar {
-	display: flex;
+	display: inline-flex;
 	max-width: 100%;
 	align-items: center;
 	gap: 2px;
 	position: relative;
-	border: 1px solid var(--ed3-glass-border);
 	border-radius: 9999px;
-	background: var(--ed3-glass-fill);
-	box-shadow: var(--ed3-glass-shadow);
-	padding: 4px 6px;
-	-webkit-backdrop-filter: var(--ed3-glass-blur);
-	backdrop-filter: var(--ed3-glass-blur);
-	overflow: hidden;
 	pointer-events: auto;
-	transition:
-		gap 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-		padding 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-		box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-		background-color 0.28s ease,
-		border-color 0.28s ease;
-}
-
-.appbar::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 0;
-	border-radius: inherit;
-	background: var(--ed3-glass-frost-source);
-	opacity: 0.55;
-	pointer-events: none;
-}
-
-.appbar > * {
-	position: relative;
-	z-index: 1;
+	overflow: visible;
 }
 
 @media (hover: hover) and (pointer: fine) {
-	.appbar:hover {
-		gap: 6px;
-		padding: 4px 8px;
-		background: color-mix(in srgb, var(--ed3-glass-fill) 85%, #fff 15%);
-		border-color: color-mix(in srgb, var(--ed3-glass-border) 80%, #fff 20%);
-		box-shadow:
-			0 1px 0 rgba(255, 255, 255, 0.9) inset,
-			0 14px 40px rgba(0, 0, 0, 0.08),
-			0 2px 6px rgba(0, 0, 0, 0.03);
-	}
-
 	.appbar-right:hover {
 		background: color-mix(in srgb, var(--ed3-glass-fill) 85%, #fff 15%);
 		border-color: color-mix(in srgb, var(--ed3-glass-border) 80%, #fff 20%);
@@ -353,19 +314,9 @@ kbd {
 			0 12px 32px rgba(0, 0, 0, 0.07);
 	}
 
-	.appbar:hover .appbar__link {
-		padding: 5px 10px;
-	}
-
-	.appbar:hover .appbar__rule {
-		margin: 0 4px;
-	}
-
 	.appbar:hover .appbar__kbd {
-		opacity: 0.9;
-		transform: scale(1);
+		opacity: 0.95;
 		border-color: color-mix(in srgb, var(--line-strong) 85%, transparent);
-		background: #fff;
 	}
 }
 
@@ -384,26 +335,19 @@ kbd {
 	line-height: 1.4;
 	text-decoration: none;
 	white-space: nowrap;
-	will-change: transform;
-	transform-origin: center center;
-	transition:
-		padding 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-		transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-		background-color 0.15s ease,
-		box-shadow 0.22s ease,
-		color 0.15s ease;
+	position: relative;
+	z-index: 10;
+	cursor: pointer;
+	transition: color 0.15s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
 	.appbar__link:hover {
-		background: color-mix(in srgb, var(--ink) 6%, transparent);
 		color: var(--ink);
-		transform: translateY(-2.5px) scale(1.04);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
 	}
 
 	.appbar__link:active {
-		transform: translateY(0) scale(0.96);
+		transform: scale(0.97);
 		transition-duration: 0.08s;
 	}
 }
@@ -3617,8 +3561,9 @@ kbd {
 }
 
 @media (max-width: 720px) {
-	.appbar {
-		display: none;
+	.appbar,
+	.appbar-right {
+		display: none !important;
 	}
 
 	.appbar__mobile {

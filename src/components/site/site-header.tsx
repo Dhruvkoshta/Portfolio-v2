@@ -3,18 +3,23 @@ import {
 	useEffect,
 	useRef,
 	useState,
-	type ComponentType,
 } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-	ArrowUpIcon,
 	ArrowUpRightIcon,
-	CommandIcon,
+	CursorIcon,
+	DiscordIcon,
 	GitHubIcon,
+	HeartIcon,
+	InstagramIcon,
 	LinkedInIcon,
 	MailIcon,
 	MenuIcon,
-	NotebookPenIcon,
+	MessageSquareIcon,
+	MousePointerClickIcon,
+	PawIcon,
+	RssIcon,
 	SparklesIcon,
 	SpeakerIcon,
 	SpeakerMuteIcon,
@@ -22,48 +27,14 @@ import {
 } from "./icons";
 import { sound } from "~/lib/sound";
 import { usePresence } from "~/lib/use-presence";
-import { primaryNav, site } from "~/lib/site";
+import { site } from "~/lib/site";
 import { ShortcutsDialog, SiteMenuDialog } from "./site-menu";
 
-type Panel = "socials" | "misc" | "ask" | null;
-type SocialIcon = ComponentType<{ "aria-hidden"?: boolean; className?: string }>;
-
-const socialLinks: readonly {
-	label: string;
-	href: string;
-	icon: SocialIcon;
-	external: boolean;
-}[] = [
-	{
-		label: "GitHub",
-		href: site.socials.github,
-		icon: GitHubIcon,
-		external: true,
-	},
-	{
-		label: "LinkedIn",
-		href: site.socials.linkedin,
-		icon: LinkedInIcon,
-		external: true,
-	},
-	{ label: "X", href: site.socials.x, icon: XIcon, external: true },
-	{
-		label: "Resume (PDF)",
-		href: site.resumeUrl,
-		icon: NotebookPenIcon,
-		external: true,
-	},
-	{
-		label: "Notes",
-		href: site.socials.notes,
-		icon: NotebookPenIcon,
-		external: true,
-	},
-	{ label: "Email", href: `mailto:${site.email}`, icon: MailIcon, external: false },
-];
+type NavItemId = "home" | "blog" | "resume" | "socials" | "misc" | "mattgpt";
+type DropdownId = "socials" | "misc" | "mattgpt";
 
 function prefersReducedMotion() {
-	return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function scrollToTop() {
@@ -82,62 +53,83 @@ function scrollToId(id: string) {
 	});
 }
 
-function focusTrigger(panel: Exclude<Panel, null>) {
-	document
-		.querySelector<HTMLElement>(`[data-panel-trigger="${panel}"]`)
-		?.focus();
+function ToggleSwitch({
+	enabled,
+	onToggle,
+	label,
+}: {
+	enabled: boolean;
+	onToggle: () => void;
+	label: string;
+}) {
+	return (
+		<div className="flex items-center gap-1.5">
+			<span className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 select-none">
+				{enabled ? "on" : "off"}
+			</span>
+			<button
+				type="button"
+				role="switch"
+				aria-checked={enabled}
+				aria-label={label}
+				onClick={(e) => {
+					e.stopPropagation();
+					onToggle();
+				}}
+				className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer items-center rounded-full p-0.5 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 ${
+					enabled
+						? "bg-neutral-900 dark:bg-white"
+						: "bg-neutral-200 dark:bg-neutral-700"
+				}`}
+			>
+				<motion.span
+					layout
+					transition={{ type: "spring", stiffness: 500, damping: 30 }}
+					className={`pointer-events-none block h-3 w-3 rounded-full shadow-sm ${
+						enabled
+							? "bg-white dark:bg-neutral-900 translate-x-3"
+							: "bg-white dark:bg-neutral-300 translate-x-0"
+					}`}
+				/>
+			</button>
+		</div>
+	);
 }
 
 export function SiteHeader() {
 	const pathname = useRouterState({
 		select: (state) => state.location.pathname,
 	});
-	const [openPanel, setOpenPanel] = useState<Panel>(null);
+
+	const [hoveredNavId, setHoveredNavId] = useState<NavItemId | null>(null);
+	const [activeDropdown, setActiveDropdown] = useState<DropdownId | null>(null);
+	const [openOnHover, setOpenOnHover] = useState(true);
+	const [showPet, setShowPet] = useState(true);
+	const [showLiveCursors, setShowLiveCursors] = useState(true);
+	const [soundActive, setSoundActive] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
-	const [soundActive, setSoundActive] = useState(false);
 	const [blrTime, setBlrTime] = useState("");
 	const { count: presenceCount } = usePresence();
-	const panelRef = useRef<HTMLDivElement>(null);
-	const focusTriggerAfterClose = useRef<Panel>(null);
-	const shellRef = useRef<HTMLDivElement>(null);
-	const leftRef = useRef<HTMLDivElement>(null);
-	const [dockTravel, setDockTravel] = useState(0);
-	const [scrollProgress, setScrollProgress] = useState(0);
 
-	useEffect(() => {
-		const updateTravel = () => {
-			if (shellRef.current && leftRef.current) {
-				const style = window.getComputedStyle(shellRef.current);
-				const padLeft = Number.parseFloat(style.paddingLeft) || 0;
-				const padRight = Number.parseFloat(style.paddingRight) || 0;
-				const available = shellRef.current.clientWidth - padLeft - padRight;
-				const travel = Math.max(
-					0,
-					(available - leftRef.current.clientWidth) / 2,
-				);
-				setDockTravel(travel);
-			}
-		};
-		updateTravel();
-		window.addEventListener("resize", updateTravel);
-
-		const handleScroll = () => {
-			const scrollY = window.scrollY || window.pageYOffset;
-			const progress = Math.min(1, Math.max(0, scrollY / 140));
-			setScrollProgress(progress);
-		};
-		handleScroll();
-		window.addEventListener("scroll", handleScroll, { passive: true });
-
-		return () => {
-			window.removeEventListener("resize", updateTravel);
-			window.removeEventListener("scroll", handleScroll);
-		};
-	}, []);
+	const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const navRef = useRef<HTMLElement>(null);
+	const socialsTriggerRef = useRef<HTMLButtonElement>(null);
+	const miscTriggerRef = useRef<HTMLButtonElement>(null);
+	const mattGptTriggerRef = useRef<HTMLButtonElement>(null);
+	const openedByHoverTimeRef = useRef<number>(0);
 
 	useEffect(() => {
 		setSoundActive(sound.isEnabled());
+
+		try {
+			const savedPet = localStorage.getItem("show-pet");
+			if (savedPet === "false") setShowPet(false);
+			const savedHover = localStorage.getItem("open-on-hover");
+			if (savedHover === "false") setOpenOnHover(false);
+		} catch {
+			// ignore localStorage error
+		}
 
 		const updateTime = () => {
 			try {
@@ -162,66 +154,110 @@ export function SiteHeader() {
 		setSoundActive(next);
 	}, []);
 
+	const handleTogglePet = useCallback(() => {
+		sound.play("click");
+		setShowPet((prev) => {
+			const next = !prev;
+			try {
+				localStorage.setItem("show-pet", String(next));
+			} catch {
+				// ignore localStorage error
+			}
+			window.dispatchEvent(
+				new CustomEvent("toggle-pixel-pet", { detail: { visible: next } }),
+			);
+			return next;
+		});
+	}, []);
+
+	const handleToggleLiveCursors = useCallback(() => {
+		sound.play("click");
+		setShowLiveCursors((prev) => !prev);
+	}, []);
+
+	const handleToggleOpenOnHover = useCallback(() => {
+		sound.play("click");
+		setOpenOnHover((prev) => {
+			const next = !prev;
+			try {
+				localStorage.setItem("open-on-hover", String(next));
+			} catch {
+				// ignore localStorage error
+			}
+			return next;
+		});
+	}, []);
+
 	const handleLinkHover = useCallback(() => {
 		if (sound.isEnabled()) {
 			sound.play("click");
 		}
 	}, []);
 
-	const togglePanel = useCallback((panel: Exclude<Panel, null>) => {
-		sound.play("click");
-		setOpenPanel((current) => {
-			if (current === panel) {
-				focusTriggerAfterClose.current = panel;
-				return null;
+	const handleNavHover = useCallback(
+		(id: NavItemId) => {
+			setHoveredNavId(id);
+			handleLinkHover();
+
+			if (openOnHover) {
+				if (hoverTimeoutRef.current) {
+					clearTimeout(hoverTimeoutRef.current);
+					hoverTimeoutRef.current = null;
+				}
+				if (id === "socials" || id === "misc" || id === "mattgpt") {
+					openedByHoverTimeRef.current = Date.now();
+					setActiveDropdown(id);
+				} else {
+					setActiveDropdown(null);
+				}
 			}
-			return panel;
-		});
+		},
+		[openOnHover, handleLinkHover],
+	);
+
+	const handleNavMouseLeave = useCallback(() => {
+		setHoveredNavId(null);
+		if (openOnHover) {
+			if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+			hoverTimeoutRef.current = setTimeout(() => {
+				setActiveDropdown(null);
+			}, 180);
+		}
+	}, [openOnHover]);
+
+	const handleDropdownMouseEnter = useCallback(() => {
+		if (hoverTimeoutRef.current) {
+			clearTimeout(hoverTimeoutRef.current);
+			hoverTimeoutRef.current = null;
+		}
 	}, []);
 
-	useEffect(() => {
-		if (openPanel) {
-			panelRef.current?.querySelector<HTMLElement>("a, button")?.focus();
-			return;
+	const handleDropdownMouseLeave = useCallback(() => {
+		if (openOnHover) {
+			if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+			hoverTimeoutRef.current = setTimeout(() => {
+				setActiveDropdown(null);
+			}, 180);
 		}
+	}, [openOnHover]);
 
-		const panel = focusTriggerAfterClose.current;
-		if (panel) {
-			focusTriggerAfterClose.current = null;
-			focusTrigger(panel);
-		}
-	}, [openPanel]);
-
+	// Close on click outside
 	useEffect(() => {
-		if (!openPanel) return;
+		if (!activeDropdown) return;
 
 		const handlePointerDown = (event: PointerEvent) => {
 			const target = event.target;
-			if (target instanceof Element && target.closest("[data-appbar-menu]")) {
+			if (target instanceof Element && navRef.current?.contains(target)) {
 				return;
 			}
-			setOpenPanel(null);
+			setActiveDropdown(null);
 		};
 
 		document.addEventListener("pointerdown", handlePointerDown);
 		return () => document.removeEventListener("pointerdown", handlePointerDown);
-	}, [openPanel]);
+	}, [activeDropdown]);
 
-	useEffect(() => {
-		if (!openPanel) return;
-
-		const handleEscape = (event: KeyboardEvent) => {
-			if (event.key !== "Escape") return;
-			event.preventDefault();
-			const panel = openPanel;
-			setOpenPanel(null);
-			focusTrigger(panel);
-		};
-
-		document.addEventListener("keydown", handleEscape);
-		return () => document.removeEventListener("keydown", handleEscape);
-	}, [openPanel]);
-
+	// Keyboard shortcuts
 	useEffect(() => {
 		const handleShortcut = (event: KeyboardEvent) => {
 			if (
@@ -246,10 +282,22 @@ export function SiteHeader() {
 
 			const key = event.key.toLowerCase();
 
+			if (key === "escape") {
+				if (activeDropdown) {
+					event.preventDefault();
+					const last = activeDropdown;
+					setActiveDropdown(null);
+					if (last === "socials") socialsTriggerRef.current?.focus();
+					else if (last === "misc") miscTriggerRef.current?.focus();
+					else if (last === "mattgpt") mattGptTriggerRef.current?.focus();
+					return;
+				}
+			}
+
 			if (key === "?") {
 				event.preventDefault();
 				sound.play("click");
-				setOpenPanel(null);
+				setActiveDropdown(null);
 				setShortcutsOpen(true);
 				return;
 			}
@@ -263,13 +311,23 @@ export function SiteHeader() {
 			if (key === "h") {
 				event.preventDefault();
 				sound.play("click");
+				setActiveDropdown(null);
 				scrollToTop();
+				return;
+			}
+
+			if (key === "b") {
+				event.preventDefault();
+				sound.play("click");
+				setActiveDropdown(null);
+				scrollToId("blog");
 				return;
 			}
 
 			if (key === "p") {
 				event.preventDefault();
 				sound.play("click");
+				setActiveDropdown(null);
 				scrollToId("featured-projects");
 				return;
 			}
@@ -277,38 +335,106 @@ export function SiteHeader() {
 			if (key === "c") {
 				event.preventDefault();
 				sound.play("click");
+				setActiveDropdown(null);
 				scrollToId("contact");
 				return;
 			}
 
-			if (key === "n") {
+			if (key === "r") {
 				event.preventDefault();
 				sound.play("click");
-				window.open(site.socials.notes, "_blank", "noopener,noreferrer");
+				setActiveDropdown(null);
+				window.open(site.resumeUrl, "_blank", "noopener,noreferrer");
 				return;
 			}
 
 			if (key === "s") {
 				event.preventDefault();
-				togglePanel("socials");
+				sound.play("click");
+				setActiveDropdown((cur) => (cur === "socials" ? null : "socials"));
 				return;
 			}
 
 			if (key === "m") {
 				event.preventDefault();
-				togglePanel("misc");
+				sound.play("click");
+				setActiveDropdown((cur) => (cur === "misc" ? null : "misc"));
 				return;
 			}
 
 			if (key === "g") {
 				event.preventDefault();
-				togglePanel("ask");
+				sound.play("click");
+				setActiveDropdown((cur) => (cur === "mattgpt" ? null : "mattgpt"));
 			}
 		};
 
 		window.addEventListener("keydown", handleShortcut);
 		return () => window.removeEventListener("keydown", handleShortcut);
-	}, [togglePanel, handleToggleSound]);
+	}, [activeDropdown, handleToggleSound]);
+
+	const socialsList = [
+		{
+			id: "contact",
+			label: "Contact Form",
+			icon: MessageSquareIcon,
+			action: () => {
+				sound.play("click");
+				setActiveDropdown(null);
+				scrollToId("contact");
+			},
+			external: false,
+		},
+		{
+			id: "email",
+			label: "Email",
+			icon: MailIcon,
+			href: `mailto:${site.email}`,
+			external: false,
+		},
+		{
+			id: "linkedin",
+			label: "LinkedIn",
+			icon: LinkedInIcon,
+			href: site.socials.linkedin,
+			external: true,
+		},
+		{
+			id: "github",
+			label: "GitHub",
+			icon: GitHubIcon,
+			href: site.socials.github,
+			external: true,
+		},
+		{
+			id: "x",
+			label: "X",
+			icon: XIcon,
+			href: site.socials.x,
+			external: true,
+		},
+		{
+			id: "instagram",
+			label: "Instagram",
+			icon: InstagramIcon,
+			href: "https://instagram.com/dhruvkoshta",
+			external: true,
+		},
+		{
+			id: "discord",
+			label: "Discord",
+			icon: DiscordIcon,
+			href: "https://discord.com/users/dhruvkoshta",
+			external: true,
+		},
+		{
+			id: "rss",
+			label: "RSS",
+			icon: RssIcon,
+			href: "https://notes.dhruvkoshta.me/rss.xml",
+			external: true,
+		},
+	];
 
 	return (
 		<>
@@ -317,287 +443,546 @@ export function SiteHeader() {
 			</a>
 
 			<header className="appbar-wrap">
-				<div
-					className="appbar-shell"
-					ref={shellRef}
-					style={
-						{
-							"--ed3-dock-travel": `${dockTravel}px`,
-							"--dock-progress": scrollProgress,
-						} as React.CSSProperties
-					}
-				>
-					<div className="appbar-left" ref={leftRef}>
-						<nav aria-label="Primary" className="appbar">
-						{primaryNav.map((item) =>
-							item.external ? (
-								<a
-									aria-keyshortcuts={item.key.toUpperCase()}
-									className="appbar__link"
-									href={item.href}
-									key={item.label}
-									onMouseEnter={handleLinkHover}
-									rel="noreferrer"
-									target="_blank"
-								>
-									<span>{item.label}</span>
-									<ArrowUpRightIcon
-										aria-hidden="true"
-										className="appbar__external"
-										size={11}
-										strokeWidth={1.75}
-									/>
-									<kbd aria-hidden="true" className="appbar__kbd">
-										{item.key}
-									</kbd>
-								</a>
-							) : (
+				<div className="appbar-shell">
+					<div className="appbar-left">
+						{/* Floating Centered Pill Navbar */}
+						<nav
+							ref={navRef}
+							aria-label="Primary"
+							onMouseLeave={handleNavMouseLeave}
+							className="appbar backdrop-blur-md bg-white/70 dark:bg-neutral-900/70 border border-neutral-200/60 dark:border-neutral-800/60 rounded-full shadow-sm px-2 py-1.5"
+						>
+							{/* Item 1: Home (key 'h') */}
+							<div
+								className="relative"
+								onMouseEnter={() => handleNavHover("home")}
+							>
+								<AnimatePresence>
+									{hoveredNavId === "home" && (
+										<motion.div
+											layoutId="active-nav-pill"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ type: "spring", stiffness: 400, damping: 28 }}
+										/>
+									)}
+								</AnimatePresence>
 								<Link
-									aria-current={
-										item.label === "Home" && pathname === "/"
-											? "page"
-											: undefined
-									}
-									aria-keyshortcuts={item.key.toUpperCase()}
+									to="/"
+									aria-label="Home Projects"
+									aria-current={pathname === "/" ? "page" : undefined}
+									aria-keyshortcuts="H"
 									className={[
 										"appbar__link",
-										item.label === "Home" && pathname === "/"
-											? "appbar__link--current"
-											: "",
+										pathname === "/" ? "appbar__link--current" : "",
 									]
 										.filter(Boolean)
 										.join(" ")}
-									hash={item.hash}
-									key={item.label}
-									onMouseEnter={handleLinkHover}
-									to={item.to}
+									onClick={() => {
+										sound.play("click");
+										scrollToTop();
+									}}
 								>
-									<span>{item.label}</span>
+									<span>Home</span>
 									<kbd aria-hidden="true" className="appbar__kbd">
-										{item.key}
+										h
 									</kbd>
 								</Link>
-							),
-						)}
-						<span aria-hidden="true" className="appbar__rule" />
+							</div>
 
-						<div className="appbar__menu" data-appbar-menu>
-							<button
-								aria-controls="appbar-socials-panel"
-								aria-expanded={openPanel === "socials"}
-								aria-haspopup="true"
-								aria-keyshortcuts="S"
-								className="appbar__link"
-								data-panel-trigger="socials"
-								onClick={() => togglePanel("socials")}
-								onMouseEnter={handleLinkHover}
-								type="button"
+							{/* Item 2: Blog (key 'b') */}
+							<div
+								className="relative"
+								onMouseEnter={() => handleNavHover("blog")}
 							>
-								<span>Socials</span>
-								<kbd aria-hidden="true" className="appbar__kbd">
-									s
-								</kbd>
-							</button>
-							{openPanel === "socials" ? (
-								<div
-									aria-label="Social links"
-									className="appbar__panel"
-									id="appbar-socials-panel"
-									ref={panelRef}
-									role="group"
+								<AnimatePresence>
+									{hoveredNavId === "blog" && (
+										<motion.div
+											layoutId="active-nav-pill"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ type: "spring", stiffness: 400, damping: 28 }}
+										/>
+									)}
+								</AnimatePresence>
+								<a
+									href="https://notes.dhruvkoshta.me"
+									target="_blank"
+									rel="noreferrer"
+									aria-label="Blog Notes"
+									aria-keyshortcuts="B"
+									className="appbar__link"
+									onClick={() => sound.play("click")}
 								>
-									{socialLinks.map((social) => {
-										const Icon = social.icon;
-										return (
-											<a
-												className="appbar__panel-row"
-												href={social.href}
-												key={social.label}
-												onClick={() => setOpenPanel(null)}
-												onMouseEnter={handleLinkHover}
-												{...(social.external
-													? { rel: "noreferrer", target: "_blank" }
-													: {})}
-											>
-												<Icon aria-hidden />
-												<span>{social.label}</span>
-												{social.external ? (
-													<ArrowUpRightIcon
-														aria-hidden="true"
-														className="appbar__panel-arrow"
-														size={11}
-														strokeWidth={1.75}
+									<span>Blog</span>
+									<kbd aria-hidden="true" className="appbar__kbd">
+										b
+									</kbd>
+								</a>
+							</div>
+
+							{/* Item 3: Résumé (key 'r') with Upward Spring Micro-Interaction */}
+							<div
+								className="relative"
+								onMouseEnter={() => handleNavHover("resume")}
+							>
+								<AnimatePresence>
+									{hoveredNavId === "resume" && (
+										<motion.div
+											layoutId="active-nav-pill"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ type: "spring", stiffness: 400, damping: 28 }}
+										/>
+									)}
+								</AnimatePresence>
+								<a
+									href={site.resumeUrl}
+									target="_blank"
+									rel="noreferrer"
+									aria-label="Résumé"
+									aria-keyshortcuts="R"
+									className="appbar__link"
+									onClick={() => sound.play("click")}
+								>
+									<motion.span
+										animate={{ y: hoveredNavId === "resume" ? -3.5 : 0 }}
+										transition={{ type: "spring", stiffness: 400, damping: 25 }}
+										className="inline-flex items-center gap-1"
+									>
+										<span>Résumé</span>
+										<motion.span
+											animate={{
+												y: hoveredNavId === "resume" ? -5.5 : 0,
+												x: hoveredNavId === "resume" ? 1.5 : 0,
+											}}
+											transition={{ type: "spring", stiffness: 400, damping: 25 }}
+											className="inline-block text-neutral-400 dark:text-neutral-500"
+										>
+											<ArrowUpRightIcon size={11} strokeWidth={1.75} />
+										</motion.span>
+									</motion.span>
+									<kbd aria-hidden="true" className="appbar__kbd">
+										r
+									</kbd>
+								</a>
+							</div>
+
+							{/* Item 4: Socials (key 's') with Hover Dropdown Card */}
+							<div
+								className="relative"
+								onMouseEnter={() => handleNavHover("socials")}
+							>
+								<AnimatePresence>
+									{hoveredNavId === "socials" && (
+										<motion.div
+											layoutId="active-nav-pill"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ type: "spring", stiffness: 400, damping: 28 }}
+										/>
+									)}
+								</AnimatePresence>
+								<button
+									ref={socialsTriggerRef}
+									type="button"
+									aria-controls="appbar-socials-panel"
+									aria-expanded={activeDropdown === "socials"}
+									aria-haspopup="true"
+									aria-keyshortcuts="S"
+									data-panel-trigger="socials"
+									className="appbar__link"
+									onClick={() => {
+										sound.play("click");
+										setActiveDropdown((cur) => {
+											if (
+												Date.now() - (openedByHoverTimeRef.current ?? 0) < 600
+											) {
+												return "socials";
+											}
+											return cur === "socials" ? null : "socials";
+										});
+									}}
+								>
+									<span>Socials</span>
+									<kbd aria-hidden="true" className="appbar__kbd">
+										s
+									</kbd>
+								</button>
+
+								{/* Socials Floating Card */}
+								<AnimatePresence>
+									{activeDropdown === "socials" && (
+										<motion.div
+											id="appbar-socials-panel"
+											role="group"
+											aria-label="Social links"
+											initial={{ opacity: 0, y: -8, scale: 0.96 }}
+											animate={{ opacity: 1, y: 0, scale: 1 }}
+											exit={{ opacity: 0, y: -8, scale: 0.96 }}
+											transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+											className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 min-w-[210px]"
+											onMouseEnter={handleDropdownMouseEnter}
+											onMouseLeave={handleDropdownMouseLeave}
+										>
+											<div className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 dark:border-neutral-800/80 p-1.5 space-y-0.5">
+												{socialsList.map((item) => {
+													const Icon = item.icon;
+													const content = (
+														<>
+															<div className="flex items-center gap-2">
+																<Icon
+																	size={14}
+																	className="text-neutral-500 dark:text-neutral-400"
+																/>
+																<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+																	{item.label}
+																</span>
+															</div>
+															{item.external ? (
+																<ArrowUpRightIcon
+																	size={11}
+																	strokeWidth={1.75}
+																	className="text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors"
+																/>
+															) : (
+																<span className="text-neutral-400 text-[11px] group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
+																	&gt;
+																</span>
+															)}
+														</>
+													);
+
+													if ("href" in item && item.href) {
+														return (
+															<a
+																key={item.id}
+																href={item.href}
+																{...(item.external
+																	? { target: "_blank", rel: "noreferrer" }
+																	: {})}
+																onClick={() => {
+																	sound.play("click");
+																	setActiveDropdown(null);
+																}}
+																onMouseEnter={handleLinkHover}
+																className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors cursor-pointer text-left w-full"
+															>
+																{content}
+															</a>
+														);
+													}
+
+													return (
+														<button
+															key={item.id}
+															type="button"
+															onClick={item.action}
+															onMouseEnter={handleLinkHover}
+															className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors cursor-pointer text-left w-full"
+														>
+															{content}
+														</button>
+													);
+												})}
+											</div>
+										</motion.div>
+									)}
+								</AnimatePresence>
+							</div>
+
+							{/* Item 5: Misc (key 'm') with Interactive Toggles */}
+							<div
+								className="relative"
+								onMouseEnter={() => handleNavHover("misc")}
+							>
+								<AnimatePresence>
+									{hoveredNavId === "misc" && (
+										<motion.div
+											layoutId="active-nav-pill"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ type: "spring", stiffness: 400, damping: 28 }}
+										/>
+									)}
+								</AnimatePresence>
+								<button
+									ref={miscTriggerRef}
+									type="button"
+									aria-controls="appbar-misc-panel"
+									aria-expanded={activeDropdown === "misc"}
+									aria-haspopup="true"
+									aria-keyshortcuts="M"
+									data-panel-trigger="misc"
+									className="appbar__link"
+									onClick={() => {
+										sound.play("click");
+										setActiveDropdown((cur) => {
+											if (
+												Date.now() - (openedByHoverTimeRef.current ?? 0) < 600
+											) {
+												return "misc";
+											}
+											return cur === "misc" ? null : "misc";
+										});
+									}}
+								>
+									<span>Misc</span>
+									<kbd aria-hidden="true" className="appbar__kbd">
+										m
+									</kbd>
+								</button>
+
+								{/* Misc Floating Card */}
+								<AnimatePresence>
+									{activeDropdown === "misc" && (
+										<motion.div
+											id="appbar-misc-panel"
+											role="group"
+											aria-label="Misc options"
+											initial={{ opacity: 0, y: -8, scale: 0.96 }}
+											animate={{ opacity: 1, y: 0, scale: 1 }}
+											exit={{ opacity: 0, y: -8, scale: 0.96 }}
+											transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+											className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 min-w-[230px]"
+											onMouseEnter={handleDropdownMouseEnter}
+											onMouseLeave={handleDropdownMouseLeave}
+										>
+											<div className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 dark:border-neutral-800/80 p-2 space-y-1">
+												{/* Toggle 1: Show Pet */}
+												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors">
+													<div className="flex items-center gap-2">
+														<PawIcon
+															size={14}
+															className="text-neutral-500 dark:text-neutral-400"
+														/>
+														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+															Show Pet
+														</span>
+													</div>
+													<ToggleSwitch
+														enabled={showPet}
+														onToggle={handleTogglePet}
+														label="Toggle Byte pet visibility"
 													/>
-												) : null}
-											</a>
-										);
-									})}
-								</div>
-							) : null}
-						</div>
+												</div>
 
-						<div className="appbar__menu" data-appbar-menu>
-							<button
-								aria-controls="appbar-misc-panel"
-								aria-expanded={openPanel === "misc"}
-								aria-haspopup="true"
-								aria-keyshortcuts="M"
-								className="appbar__link"
-								data-panel-trigger="misc"
-								onClick={() => togglePanel("misc")}
-								onMouseEnter={handleLinkHover}
-								type="button"
+												{/* Toggle 2: Show Live Cursors */}
+												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors">
+													<div className="flex items-center gap-2">
+														<CursorIcon
+															size={14}
+															className="text-neutral-500 dark:text-neutral-400"
+														/>
+														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+															Show Live Cursors
+														</span>
+													</div>
+													<ToggleSwitch
+														enabled={showLiveCursors}
+														onToggle={handleToggleLiveCursors}
+														label="Toggle live cursors"
+													/>
+												</div>
+
+												{/* Toggle 3: Open on Hover */}
+												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors">
+													<div className="flex items-center gap-2">
+														<MousePointerClickIcon
+															size={14}
+															className="text-neutral-500 dark:text-neutral-400"
+														/>
+														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+															Open on Hover
+														</span>
+													</div>
+													<ToggleSwitch
+														enabled={openOnHover}
+														onToggle={handleToggleOpenOnHover}
+														label="Toggle opening menus on hover"
+													/>
+												</div>
+
+												{/* Toggle 4: Sound Effects */}
+												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors">
+													<div className="flex items-center gap-2">
+														<SpeakerIcon
+															size={14}
+															className="text-neutral-500 dark:text-neutral-400"
+														/>
+														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+															Sound Effects
+														</span>
+													</div>
+													<ToggleSwitch
+														enabled={soundActive}
+														onToggle={() => {
+															handleToggleSound();
+														}}
+														label="Toggle interface sound effects"
+													/>
+												</div>
+
+												{/* Divider */}
+												<div className="h-px bg-neutral-200/80 dark:bg-neutral-800/80 my-1" />
+
+												{/* Credits Button */}
+												<button
+													type="button"
+													onClick={() => {
+														sound.play("click");
+														setActiveDropdown(null);
+														setMenuOpen(true);
+													}}
+													onMouseEnter={handleLinkHover}
+													className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors cursor-pointer text-left w-full"
+												>
+													<div className="flex items-center gap-2">
+														<HeartIcon
+															size={14}
+															className="text-neutral-500 dark:text-neutral-400"
+														/>
+														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+															Credits
+														</span>
+													</div>
+													<span className="text-neutral-400 text-[11px] group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
+														&gt;
+													</span>
+												</button>
+											</div>
+										</motion.div>
+									)}
+								</AnimatePresence>
+							</div>
+
+							{/* Item 6: MattGPT (key 'g') */}
+							<div
+								className="relative"
+								onMouseEnter={() => handleNavHover("mattgpt")}
 							>
-								<span>Misc.</span>
-								<kbd aria-hidden="true" className="appbar__kbd">
-									m
-								</kbd>
-							</button>
-							{openPanel === "misc" ? (
-								<div
-									aria-label="Site menu"
-									className="appbar__panel"
-									id="appbar-misc-panel"
-									ref={panelRef}
-									role="group"
+								<AnimatePresence>
+									{hoveredNavId === "mattgpt" && (
+										<motion.div
+											layoutId="active-nav-pill"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ type: "spring", stiffness: 400, damping: 28 }}
+										/>
+									)}
+								</AnimatePresence>
+								<button
+									ref={mattGptTriggerRef}
+									type="button"
+									aria-controls="appbar-ask-panel"
+									aria-expanded={activeDropdown === "mattgpt"}
+									aria-haspopup="true"
+									aria-keyshortcuts="G"
+									data-panel-trigger="ask"
+									className="appbar__link"
+									onClick={() => {
+										sound.play("click");
+										setActiveDropdown((cur) => {
+											if (
+												Date.now() - (openedByHoverTimeRef.current ?? 0) < 600
+											) {
+												return "mattgpt";
+											}
+											return cur === "mattgpt" ? null : "mattgpt";
+										});
+									}}
 								>
-									<button
-										className="appbar__panel-row"
-										onClick={() => {
-											setOpenPanel(null);
-											scrollToTop();
-										}}
-										onMouseEnter={handleLinkHover}
-										type="button"
-									>
-										<ArrowUpIcon aria-hidden="true" size={14} strokeWidth={1.75} />
-										<span>Back to top</span>
-										<kbd aria-hidden="true">H</kbd>
-									</button>
-									<button
-										className="appbar__panel-row"
-										onClick={() => {
-											setOpenPanel(null);
-											setShortcutsOpen(true);
-										}}
-										onMouseEnter={handleLinkHover}
-										type="button"
-									>
-										<CommandIcon
-											aria-hidden="true"
-											size={14}
-											strokeWidth={1.75}
-										/>
-										<span>Keyboard shortcuts</span>
-										<kbd aria-hidden="true">?</kbd>
-									</button>
-									<button
-										className="appbar__panel-row"
-										onClick={() => {
-											setOpenPanel(null);
-											setMenuOpen(true);
-										}}
-										onMouseEnter={handleLinkHover}
-										type="button"
-									>
-										<MenuIcon
-											aria-hidden="true"
-											size={14}
-											strokeWidth={1.75}
-										/>
-										<span>All sections</span>
-										<span aria-hidden="true" className="appbar__panel-arrow">
-											→
-										</span>
-									</button>
-									<a
-										className="appbar__panel-row"
-										href={`mailto:${site.email}`}
-										onClick={() => setOpenPanel(null)}
-										onMouseEnter={handleLinkHover}
-									>
-										<MailIcon aria-hidden="true" size={14} strokeWidth={1.75} />
-										<span>Email me</span>
-									</a>
-								</div>
-							) : null}
-						</div>
+									<SparklesIcon
+										size={12}
+										strokeWidth={1.75}
+										className="text-amber-500"
+									/>
+									<span>MattGPT</span>
+									<kbd aria-hidden="true" className="appbar__kbd">
+										g
+									</kbd>
+								</button>
 
-						<div className="appbar__menu" data-appbar-menu>
-							<button
-								aria-controls="appbar-ask-panel"
-								aria-expanded={openPanel === "ask"}
-								aria-haspopup="true"
-								aria-keyshortcuts="G"
-								className="appbar__link appbar__link--ask"
-								data-panel-trigger="ask"
-								onClick={() => togglePanel("ask")}
-								onMouseEnter={handleLinkHover}
-								type="button"
-							>
-								<SparklesIcon
-									aria-hidden="true"
-									className="appbar__ask-icon"
-									size={12}
-									strokeWidth={1.75}
-								/>
-								<span>Ask Dhruv</span>
-								<kbd aria-hidden="true" className="appbar__kbd">
-									g
-								</kbd>
-							</button>
-							{openPanel === "ask" ? (
-								<div
-									aria-label="Ask Dhruv"
-									className="appbar__panel appbar__panel--ask"
-									id="appbar-ask-panel"
-									ref={panelRef}
-									role="group"
-								>
-									<p className="eyebrow">Phase 6 / AI guide</p>
-									<p className="appbar__ask-title">Ask Dhruv</p>
-									<p className="appbar__ask-copy">
-										A small guide trained on this site. It ships in Phase 6.
-										Email works today.
-									</p>
-									<a
-										className="appbar__ask-link"
-										href={`mailto:${site.email}`}
-										onClick={() => setOpenPanel(null)}
-										onMouseEnter={handleLinkHover}
-									>
-										Email Dhruv
-										<ArrowUpRightIcon
-											aria-hidden="true"
-											size={12}
-											strokeWidth={1.75}
-										/>
-									</a>
-								</div>
-							) : null}
-						</div>
+								{/* MattGPT Floating Card */}
+								<AnimatePresence>
+									{activeDropdown === "mattgpt" && (
+										<motion.div
+											id="appbar-ask-panel"
+											role="group"
+											aria-label="MattGPT AI Guide"
+											initial={{ opacity: 0, y: -8, scale: 0.96 }}
+											animate={{ opacity: 1, y: 0, scale: 1 }}
+											exit={{ opacity: 0, y: -8, scale: 0.96 }}
+											transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+											className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 min-w-[260px]"
+											onMouseEnter={handleDropdownMouseEnter}
+											onMouseLeave={handleDropdownMouseLeave}
+										>
+											<div className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 dark:border-neutral-800/80 p-3 space-y-2 text-left">
+												<div className="flex items-center gap-1.5">
+													<SparklesIcon size={13} className="text-amber-500" />
+													<span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">
+														Phase 6 / AI Guide
+													</span>
+												</div>
+												<p className="text-xs font-semibold text-neutral-900 dark:text-white">
+													MattGPT Assistant
+												</p>
+												<p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+													A contextual AI guide trained on project telemetry, IoT
+													patents, and systems architecture.
+												</p>
+												<a
+													href={`mailto:${site.email}`}
+													onClick={() => {
+														sound.play("click");
+														setActiveDropdown(null);
+													}}
+													className="inline-flex items-center gap-1 text-xs text-neutral-800 dark:text-neutral-200 font-medium underline underline-offset-2 hover:text-black dark:hover:text-white pt-1"
+												>
+													<span>Email directly</span>
+													<ArrowUpRightIcon size={11} strokeWidth={1.75} />
+												</a>
+											</div>
+										</motion.div>
+									)}
+								</AnimatePresence>
+							</div>
+						</nav>
+					</div>
 
-						<span aria-hidden="true" className="appbar__rule" />
-
-						{/* Sound Toggle Button */}
+					{/* Right status & presence capsule */}
+					<div className="appbar-right">
 						<button
+							type="button"
 							aria-keyshortcuts="U"
 							aria-label={
 								soundActive
 									? "Mute interface sounds"
 									: "Enable interface sounds"
 							}
-							className={`appbar__link appbar__link--sound ${
-								soundActive ? "appbar__link--sound-active" : ""
-							}`}
-							onClick={handleToggleSound}
-							onMouseEnter={handleLinkHover}
 							title={
 								soundActive
 									? "Sound ON (Press U to mute)"
 									: "Sound OFF (Press U to enable)"
 							}
-							type="button"
+							className={`appbar__link appbar__link--sound ${
+								soundActive ? "appbar__link--sound-active" : ""
+							}`}
+							onClick={handleToggleSound}
+							onMouseEnter={handleLinkHover}
 						>
 							{soundActive ? (
 								<SpeakerIcon aria-hidden="true" size={13} strokeWidth={1.75} />
@@ -612,36 +997,31 @@ export function SiteHeader() {
 								u
 							</kbd>
 						</button>
-					</nav>
-				</div>
 
-				{/* Right status & presence capsule */}
-				<div className="appbar-right">
-					{/* Live Presence Room */}
-					<div
-						aria-label={`${presenceCount} live ${presenceCount === 1 ? "reader" : "readers"}`}
-						className="appbar__presence"
-						role="status"
-						title={`${presenceCount} ${presenceCount === 1 ? "reader" : "readers"} browsing dhruvkoshta.me right now`}
-					>
-						<span aria-hidden="true" className="appbar__presence-dot" />
-						<span className="appbar__presence-count">{presenceCount}</span>
-						<span className="appbar__presence-label">live</span>
+						<div
+							aria-label={`${presenceCount} live ${presenceCount === 1 ? "reader" : "readers"}`}
+							className="appbar__presence"
+							role="status"
+							title={`${presenceCount} ${presenceCount === 1 ? "reader" : "readers"} browsing dhruvkoshta.me right now`}
+						>
+							<span aria-hidden="true" className="appbar__presence-dot" />
+							<span className="appbar__presence-count">{presenceCount}</span>
+							<span className="appbar__presence-label">live</span>
+						</div>
+
+						{blrTime ? (
+							<div
+								className="appbar__clock"
+								title={`Bengaluru local time: ${blrTime}`}
+							>
+								<span aria-hidden="true" className="appbar__clock-dot" />
+								<span className="appbar__clock-city">BLR</span>
+								<span className="appbar__clock-time">{blrTime}</span>
+							</div>
+						) : null}
 					</div>
 
-					{/* Live Bengaluru Clock */}
-					{blrTime ? (
-						<div
-							className="appbar__clock"
-							title={`Bengaluru local time: ${blrTime}`}
-						>
-							<span aria-hidden="true" className="appbar__clock-dot" />
-							<span className="appbar__clock-city">BLR</span>
-							<span className="appbar__clock-time">{blrTime}</span>
-						</div>
-					) : null}
-				</div>
-
+					{/* Mobile drawer menu button */}
 					<button
 						aria-expanded={menuOpen}
 						aria-haspopup="dialog"
@@ -656,6 +1036,7 @@ export function SiteHeader() {
 						<MenuIcon aria-hidden="true" size={16} strokeWidth={1.75} />
 					</button>
 
+					{/* Mobile home mark */}
 					<Link
 						aria-label="DK, Dhruv Koshta, home"
 						className="appbar__home-mark"
