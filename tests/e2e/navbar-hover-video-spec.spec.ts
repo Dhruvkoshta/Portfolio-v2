@@ -164,4 +164,42 @@ test.describe("Navbar Hover Interaction Matching Video Reference", () => {
 			clip: { x: 500, y: 0, width: 600, height: 320 },
 		});
 	});
+
+	test("navbar stays light under OS dark color-scheme and clock time is not squished", async ({
+		page,
+	}) => {
+		await page.emulateMedia({ colorScheme: "dark" });
+		await page.setViewportSize({ width: 1440, height: 900 });
+		await page.goto("/");
+		await page.waitForFunction(
+			() => document.documentElement.dataset.hydrated === "true",
+		);
+
+		const nav = page.getByRole("navigation", { name: "Primary" });
+		await expect(nav).toBeVisible();
+
+		// Check clock elements
+		const clockCity = page.locator(".appbar__clock-city");
+		const clockTime = page.locator(".appbar__clock-time");
+		await expect(clockCity).toBeVisible();
+		await expect(clockTime).toBeVisible();
+
+		// Verify clock city and time are horizontally adjacent (not stacked vertically)
+		const cityBox = await clockCity.boundingBox();
+		const timeBox = await clockTime.boundingBox();
+		expect(cityBox).not.toBeNull();
+		expect(timeBox).not.toBeNull();
+		if (cityBox && timeBox) {
+			// City and time must share roughly the same vertical center line
+			expect(Math.abs(cityBox.y - timeBox.y)).toBeLessThan(5);
+			// Time must be positioned to the right of city
+			expect(timeBox.x).toBeGreaterThan(cityBox.x);
+		}
+
+		// Capture full header screenshot showing centered light frosted navbar and right capsule with unsquished time
+		await page.screenshot({
+			path: "/home/dhruv/.t3/userdata/providers/antigravity/ac0a3dfd6dddb20962cecff6ee5fe65e19d3923be20e52c5ab52ff877f7e4c32/antigravity-acp/brain/bf0baa6d-55ac-4d9f-b7e6-43e9a0e41734/navbar_fixed_header.png",
+			clip: { x: 0, y: 0, width: 1440, height: 180 },
+		});
+	});
 });

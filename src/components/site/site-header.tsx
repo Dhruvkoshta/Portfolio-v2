@@ -64,7 +64,7 @@ function ToggleSwitch({
 }) {
 	return (
 		<div className="flex items-center gap-1.5">
-			<span className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 select-none">
+			<span className="text-[10px] font-mono text-neutral-400 select-none">
 				{enabled ? "on" : "off"}
 			</span>
 			<button
@@ -78,8 +78,8 @@ function ToggleSwitch({
 				}}
 				className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer items-center rounded-full p-0.5 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 ${
 					enabled
-						? "bg-neutral-900 dark:bg-white"
-						: "bg-neutral-200 dark:bg-neutral-700"
+						? "bg-neutral-900"
+						: "bg-neutral-200"
 				}`}
 			>
 				<motion.span
@@ -87,8 +87,8 @@ function ToggleSwitch({
 					transition={{ type: "spring", stiffness: 500, damping: 30 }}
 					className={`pointer-events-none block h-3 w-3 rounded-full shadow-sm ${
 						enabled
-							? "bg-white dark:bg-neutral-900 translate-x-3"
-							: "bg-white dark:bg-neutral-300 translate-x-0"
+							? "bg-white translate-x-3"
+							: "bg-white translate-x-0"
 					}`}
 				/>
 			</button>
@@ -450,7 +450,7 @@ export function SiteHeader() {
 							ref={navRef}
 							aria-label="Primary"
 							onMouseLeave={handleNavMouseLeave}
-							className="appbar backdrop-blur-md bg-white/70 dark:bg-neutral-900/70 border border-neutral-200/60 dark:border-neutral-800/60 rounded-full shadow-sm px-2 py-1.5"
+							className="appbar"
 						>
 							{/* Item 1: Home (key 'h') */}
 							<div
@@ -461,7 +461,7 @@ export function SiteHeader() {
 									{hoveredNavId === "home" && (
 										<motion.div
 											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
 											initial={{ opacity: 0 }}
 											animate={{ opacity: 1 }}
 											exit={{ opacity: 0 }}
@@ -501,7 +501,7 @@ export function SiteHeader() {
 									{hoveredNavId === "blog" && (
 										<motion.div
 											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
 											initial={{ opacity: 0 }}
 											animate={{ opacity: 1 }}
 											exit={{ opacity: 0 }}
@@ -534,7 +534,7 @@ export function SiteHeader() {
 									{hoveredNavId === "resume" && (
 										<motion.div
 											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
 											initial={{ opacity: 0 }}
 											animate={{ opacity: 1 }}
 											exit={{ opacity: 0 }}
@@ -563,7 +563,7 @@ export function SiteHeader() {
 												x: hoveredNavId === "resume" ? 1.5 : 0,
 											}}
 											transition={{ type: "spring", stiffness: 400, damping: 25 }}
-											className="inline-block text-neutral-400 dark:text-neutral-500"
+											className="inline-block text-neutral-400"
 										>
 											<ArrowUpRightIcon size={11} strokeWidth={1.75} />
 										</motion.span>
@@ -583,7 +583,7 @@ export function SiteHeader() {
 									{hoveredNavId === "socials" && (
 										<motion.div
 											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
 											initial={{ opacity: 0 }}
 											animate={{ opacity: 1 }}
 											exit={{ opacity: 0 }}
@@ -633,7 +633,7 @@ export function SiteHeader() {
 											onMouseEnter={handleDropdownMouseEnter}
 											onMouseLeave={handleDropdownMouseLeave}
 										>
-											<div className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 dark:border-neutral-800/80 p-1.5 space-y-0.5">
+											<div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 p-1.5 space-y-0.5">
 												{socialsList.map((item) => {
 													const Icon = item.icon;
 													const content = (
@@ -641,9 +641,9 @@ export function SiteHeader() {
 															<div className="flex items-center gap-2">
 																<Icon
 																	size={14}
-																	className="text-neutral-500 dark:text-neutral-400"
+																	className="text-neutral-500"
 																/>
-																<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+																<span className="text-xs text-neutral-800 font-medium">
 																	{item.label}
 																</span>
 															</div>
@@ -651,10 +651,10 @@ export function SiteHeader() {
 																<ArrowUpRightIcon
 																	size={11}
 																	strokeWidth={1.75}
-																	className="text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors"
+																	className="text-neutral-400 group-hover:text-neutral-700 transition-colors"
 																/>
 															) : (
-																<span className="text-neutral-400 text-[11px] group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
+																<span className="text-neutral-400 text-[11px] group-hover:text-neutral-700 transition-colors">
 																	&gt;
 																</span>
 															)}
@@ -674,7 +674,7 @@ export function SiteHeader() {
 																	setActiveDropdown(null);
 																}}
 																onMouseEnter={handleLinkHover}
-																className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors cursor-pointer text-left w-full"
+																className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer text-left w-full"
 															>
 																{content}
 															</a>
@@ -687,7 +687,7 @@ export function SiteHeader() {
 															type="button"
 															onClick={item.action}
 															onMouseEnter={handleLinkHover}
-															className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors cursor-pointer text-left w-full"
+															className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer text-left w-full"
 														>
 															{content}
 														</button>
@@ -708,7 +708,7 @@ export function SiteHeader() {
 									{hoveredNavId === "misc" && (
 										<motion.div
 											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
 											initial={{ opacity: 0 }}
 											animate={{ opacity: 1 }}
 											exit={{ opacity: 0 }}
@@ -758,15 +758,15 @@ export function SiteHeader() {
 											onMouseEnter={handleDropdownMouseEnter}
 											onMouseLeave={handleDropdownMouseLeave}
 										>
-											<div className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 dark:border-neutral-800/80 p-2 space-y-1">
+											<div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 p-2 space-y-1">
 												{/* Toggle 1: Show Pet */}
-												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors">
+												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 transition-colors">
 													<div className="flex items-center gap-2">
 														<PawIcon
 															size={14}
-															className="text-neutral-500 dark:text-neutral-400"
+															className="text-neutral-500"
 														/>
-														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+														<span className="text-xs text-neutral-800 font-medium">
 															Show Pet
 														</span>
 													</div>
@@ -778,13 +778,13 @@ export function SiteHeader() {
 												</div>
 
 												{/* Toggle 2: Show Live Cursors */}
-												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors">
+												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 transition-colors">
 													<div className="flex items-center gap-2">
 														<CursorIcon
 															size={14}
-															className="text-neutral-500 dark:text-neutral-400"
+															className="text-neutral-500"
 														/>
-														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+														<span className="text-xs text-neutral-800 font-medium">
 															Show Live Cursors
 														</span>
 													</div>
@@ -796,13 +796,13 @@ export function SiteHeader() {
 												</div>
 
 												{/* Toggle 3: Open on Hover */}
-												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors">
+												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 transition-colors">
 													<div className="flex items-center gap-2">
 														<MousePointerClickIcon
 															size={14}
-															className="text-neutral-500 dark:text-neutral-400"
+															className="text-neutral-500"
 														/>
-														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+														<span className="text-xs text-neutral-800 font-medium">
 															Open on Hover
 														</span>
 													</div>
@@ -814,13 +814,13 @@ export function SiteHeader() {
 												</div>
 
 												{/* Toggle 4: Sound Effects */}
-												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors">
+												<div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100/70 transition-colors">
 													<div className="flex items-center gap-2">
 														<SpeakerIcon
 															size={14}
-															className="text-neutral-500 dark:text-neutral-400"
+															className="text-neutral-500"
 														/>
-														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+														<span className="text-xs text-neutral-800 font-medium">
 															Sound Effects
 														</span>
 													</div>
@@ -834,7 +834,7 @@ export function SiteHeader() {
 												</div>
 
 												{/* Divider */}
-												<div className="h-px bg-neutral-200/80 dark:bg-neutral-800/80 my-1" />
+												<div className="h-px bg-neutral-200/80 my-1" />
 
 												{/* Credits Button */}
 												<button
@@ -845,18 +845,18 @@ export function SiteHeader() {
 														setMenuOpen(true);
 													}}
 													onMouseEnter={handleLinkHover}
-													className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors cursor-pointer text-left w-full"
+													className="group flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer text-left w-full"
 												>
 													<div className="flex items-center gap-2">
 														<HeartIcon
 															size={14}
-															className="text-neutral-500 dark:text-neutral-400"
+															className="text-neutral-500"
 														/>
-														<span className="text-xs text-neutral-800 dark:text-neutral-200 font-medium">
+														<span className="text-xs text-neutral-800 font-medium">
 															Credits
 														</span>
 													</div>
-													<span className="text-neutral-400 text-[11px] group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
+													<span className="text-neutral-400 text-[11px] group-hover:text-neutral-700 transition-colors">
 														&gt;
 													</span>
 												</button>
@@ -875,7 +875,7 @@ export function SiteHeader() {
 									{hoveredNavId === "mattgpt" && (
 										<motion.div
 											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 dark:bg-neutral-800/60 z-0 pointer-events-none"
+											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
 											initial={{ opacity: 0 }}
 											animate={{ opacity: 1 }}
 											exit={{ opacity: 0 }}
@@ -930,17 +930,17 @@ export function SiteHeader() {
 											onMouseEnter={handleDropdownMouseEnter}
 											onMouseLeave={handleDropdownMouseLeave}
 										>
-											<div className="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 dark:border-neutral-800/80 p-3 space-y-2 text-left">
+											<div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-neutral-200/80 p-3 space-y-2 text-left">
 												<div className="flex items-center gap-1.5">
 													<SparklesIcon size={13} className="text-amber-500" />
 													<span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">
 														Phase 6 / AI Guide
 													</span>
 												</div>
-												<p className="text-xs font-semibold text-neutral-900 dark:text-white">
+												<p className="text-xs font-semibold text-neutral-900">
 													MattGPT Assistant
 												</p>
-												<p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+												<p className="text-[11px] text-neutral-500 leading-relaxed">
 													A contextual AI guide trained on project telemetry, IoT
 													patents, and systems architecture.
 												</p>
@@ -950,7 +950,7 @@ export function SiteHeader() {
 														sound.play("click");
 														setActiveDropdown(null);
 													}}
-													className="inline-flex items-center gap-1 text-xs text-neutral-800 dark:text-neutral-200 font-medium underline underline-offset-2 hover:text-black dark:hover:text-white pt-1"
+													className="inline-flex items-center gap-1 text-xs text-neutral-800 font-medium underline underline-offset-2 hover:text-black pt-1"
 												>
 													<span>Email directly</span>
 													<ArrowUpRightIcon size={11} strokeWidth={1.75} />
