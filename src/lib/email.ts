@@ -83,6 +83,7 @@ export async function sendReceiptEmail({
 			headers: {
 				Authorization: `Bearer ${apiKey}`,
 				"Content-Type": "application/json",
+				"User-Agent": "DhruvKoshtaPortfolio/1.0",
 			},
 			body: JSON.stringify({
 				from: "Dhruv Koshta Portfolio <onboarding@resend.dev>",
