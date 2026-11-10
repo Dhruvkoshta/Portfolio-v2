@@ -86,7 +86,7 @@ export async function sendReceiptEmail({
 				"User-Agent": "DhruvKoshtaPortfolio/1.0",
 			},
 			body: JSON.stringify({
-				from: "Dhruv Koshta Portfolio <onboarding@resend.dev>",
+				from: "Dhruv Koshta Portfolio <contact@dhruvkoshta.me>",
 				to: [targetEmail],
 				reply_to: replyTo || undefined,
 				subject: `🧾 Portfolio Receipt #${orderNumber} from ${replyTo || "Visitor"}`,

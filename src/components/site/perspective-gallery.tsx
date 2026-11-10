@@ -1,7 +1,6 @@
 import {
 	AnimatePresence,
 	motion,
-	useMotionTemplate,
 	useMotionValue,
 	useSpring,
 } from "framer-motion";
@@ -141,18 +140,6 @@ function PolaroidCard({
 	const ref = useRef<HTMLDivElement>(null);
 	const [isHovered, setIsHovered] = useState(false);
 
-	const rotateX = useMotionValue(0);
-	const rotateY = useMotionValue(0);
-	const lift = useMotionValue(0);
-	const scale = useMotionValue(1);
-
-	const rotateXSpring = useSpring(rotateX, { stiffness: 280, damping: 24, mass: 0.6 });
-	const rotateYSpring = useSpring(rotateY, { stiffness: 280, damping: 24, mass: 0.6 });
-	const liftSpring = useSpring(lift, { stiffness: 220, damping: 20, mass: 0.6 });
-	const scaleSpring = useSpring(scale, { stiffness: 280, damping: 24, mass: 0.6 });
-
-	const transform = useMotionTemplate`perspective(900px) translateY(${liftSpring}px) rotateX(${rotateXSpring}deg) rotateY(${rotateYSpring}deg) rotate(${card.rot}deg) scale(${scaleSpring})`;
-
 	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
 		if (reduced || isDragging) return;
 		const el = ref.current;
@@ -162,31 +149,37 @@ function PolaroidCard({
 
 		const px = (e.clientX - rect.left) / rect.width;
 		const py = (e.clientY - rect.top) / rect.height;
-		rotateY.set((px - 0.5) * 16);
-		rotateX.set((0.5 - py) * 14);
-		lift.set(-10);
-		scale.set(1.06);
+		el.style.setProperty("--rx", `${(0.5 - py) * 14}deg`);
+		el.style.setProperty("--ry", `${(px - 0.5) * 16}deg`);
+		el.style.setProperty("--lift", "-10px");
+		el.style.setProperty("--scale", "1.06");
 	};
 
 	const handlePointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {
 		setIsHovered(true);
 		onHoverChange(true);
 		if (reduced || isDragging || e.pointerType === "touch") return;
-		lift.set(-10);
-		scale.set(1.06);
+		const el = ref.current;
+		if (el) {
+			el.style.setProperty("--lift", "-10px");
+			el.style.setProperty("--scale", "1.06");
+		}
 	};
 
 	const handlePointerLeave = () => {
 		setIsHovered(false);
 		onHoverChange(false);
-		rotateX.set(0);
-		rotateY.set(0);
-		lift.set(0);
-		scale.set(1);
+		const el = ref.current;
+		if (el) {
+			el.style.setProperty("--rx", "0deg");
+			el.style.setProperty("--ry", "0deg");
+			el.style.setProperty("--lift", "0px");
+			el.style.setProperty("--scale", "1");
+		}
 	};
 
 	return (
-		<motion.div
+		<div
 			className={`absolute bg-white p-2.5 pb-4 shadow-md border border-neutral-200/80 w-56 cursor-zoom-in transition-[opacity,box-shadow] duration-200 hover:shadow-xl ${
 				isDimmed ? "opacity-20 pointer-events-none" : "opacity-100"
 			}`}
@@ -206,7 +199,10 @@ function PolaroidCard({
 			style={{
 				left: card.x,
 				top: card.y,
-				transform,
+				transform: `perspective(900px) translateY(var(--lift, 0px)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotate(${card.rot}deg) scale(var(--scale, 1))`,
+				transition: reduced
+					? "opacity 0.2s ease"
+					: "transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, opacity 0.2s ease",
 				zIndex: isActive || isHovered ? 20 : card.zIndex ?? 1,
 			}}
 			tabIndex={0}
@@ -226,7 +222,7 @@ function PolaroidCard({
 			<p className="text-[11px] text-neutral-700 font-medium font-mono text-center truncate px-1 pt-2.5 pointer-events-none">
 				{card.label}
 			</p>
-		</motion.div>
+		</div>
 	);
 }
 
@@ -345,13 +341,30 @@ export function PerspectiveGallery() {
 		let velocityY = 0;
 		let nextTurnAt = 0;
 
+		const startLoop = () => {
+			if (!rafId) {
+				lastFrame = performance.now();
+				rafId = requestAnimationFrame(tick);
+			}
+		};
+
+		const stopLoop = () => {
+			if (rafId) {
+				cancelAnimationFrame(rafId);
+				rafId = 0;
+			}
+		};
+
 		const tick = (now: number) => {
+			if (!isVisibleRef.current || document.hidden) {
+				rafId = 0;
+				return;
+			}
+
 			const dt = Math.min((now - lastFrame) / 1000, 0.05);
 			lastFrame = now;
 
 			const isIdle =
-				isVisibleRef.current &&
-				!document.hidden &&
 				!activeCardIdRef.current &&
 				Date.now() - lastInteractionRef.current >= IDLE_DELAY_MS;
 
@@ -391,22 +404,37 @@ export function PerspectiveGallery() {
 			rafId = requestAnimationFrame(tick);
 		};
 
-		rafId = requestAnimationFrame(tick);
-
 		let observer: IntersectionObserver | null = null;
 		if (typeof IntersectionObserver !== "undefined") {
 			observer = new IntersectionObserver(
 				([entry]) => {
 					isVisibleRef.current = entry.isIntersecting;
+					if (entry.isIntersecting) {
+						startLoop();
+					} else {
+						stopLoop();
+					}
 				},
 				{ threshold: 0.05 },
 			);
 			observer.observe(el);
+		} else {
+			startLoop();
 		}
 
+		const handleVisibilityChange = () => {
+			if (document.hidden) {
+				stopLoop();
+			} else if (isVisibleRef.current) {
+				startLoop();
+			}
+		};
+		document.addEventListener("visibilitychange", handleVisibilityChange);
+
 		return () => {
-			cancelAnimationFrame(rafId);
+			stopLoop();
 			observer?.disconnect();
+			document.removeEventListener("visibilitychange", handleVisibilityChange);
 		};
 	}, [reduced, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY]);
 

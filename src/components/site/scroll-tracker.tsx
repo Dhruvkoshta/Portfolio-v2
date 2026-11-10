@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { sections } from "~/lib/sections";
 
 type TrackerItem = {
@@ -20,12 +20,26 @@ const TRACKER_ITEMS: readonly TrackerItem[] = [
 
 export function ScrollTracker() {
 	const [activeId, setActiveId] = useState<string>("me");
-	const [scrollProgress, setScrollProgress] = useState(0);
+	const activeIdRef = useRef<string>("me");
+	const navRef = useRef<HTMLElement>(null);
 
 	useEffect(() => {
 		if (typeof window === "undefined") return;
 
 		let rafId: number | null = null;
+
+		const applyProgress = (progress: number) => {
+			if (navRef.current) {
+				navRef.current.style.setProperty("--tracker-progress", String(progress));
+			}
+		};
+
+		const applyActiveId = (id: string) => {
+			if (activeIdRef.current !== id) {
+				activeIdRef.current = id;
+				setActiveId(id);
+			}
+		};
 
 		const updateActiveSection = () => {
 			const scrollY = window.scrollY;
@@ -36,16 +50,16 @@ export function ScrollTracker() {
 
 			// 1. If at the very top of the page
 			if (scrollY < 40) {
-				setActiveId("me");
+				applyActiveId("me");
 				const topFraction = Math.max(0, scrollY / 40);
-				setScrollProgress((topFraction * 12) / listHeight);
+				applyProgress((topFraction * 12) / listHeight);
 				return;
 			}
 
 			// 2. If at the very bottom of the document
 			if (docHeight > 0 && scrollY + window.innerHeight >= document.documentElement.scrollHeight - 40) {
-				setActiveId(TRACKER_ITEMS[count - 1].id);
-				setScrollProgress(1);
+				applyActiveId(TRACKER_ITEMS[count - 1].id);
+				applyProgress(1);
 				return;
 			}
 
@@ -60,7 +74,7 @@ export function ScrollTracker() {
 				}
 			}
 
-			setActiveId(TRACKER_ITEMS[activeIdx].id);
+			applyActiveId(TRACKER_ITEMS[activeIdx].id);
 
 			// 4. Calculate progress within the current active section
 			const currentEl = document.getElementById(TRACKER_ITEMS[activeIdx].id);
@@ -94,7 +108,7 @@ export function ScrollTracker() {
 			const notchCenterY = 12 + continuousIndex * 30;
 			const normalizedProgress = Math.max(0, Math.min(1, notchCenterY / listHeight));
 
-			setScrollProgress(normalizedProgress);
+			applyProgress(normalizedProgress);
 		};
 
 		const onScroll = () => {
@@ -133,7 +147,8 @@ export function ScrollTracker() {
 		<nav
 			aria-label="Page sections progress"
 			className="scroll-tracker"
-			style={{ "--tracker-progress": scrollProgress } as React.CSSProperties}
+			ref={navRef}
+			style={{ "--tracker-progress": 0 } as React.CSSProperties}
 		>
 			<div aria-hidden="true" className="scroll-tracker__rail" />
 			<div aria-hidden="true" className="scroll-tracker__progress" />
