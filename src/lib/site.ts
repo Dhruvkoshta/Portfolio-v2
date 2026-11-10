@@ -11,7 +11,8 @@ export const site = {
 		"Dhruv Kumar Koshta is a Full-Stack & Systems Engineer based in Bengaluru, India. Software intern at Dell Technologies, patent holder for an IoT hazard telemetry platform, and 5-star rated freelancer.",
 	socials: {
 		github: "https://github.com/DhruvKoshta",
-		linkedin: "https://www.linkedin.com/in/dhruvkoshta",
+		linkedin: "https://www.linkedin.com/in/dhruv-koshta-15252b296/",
+		instagram: "https://www.instagram.com/dhruv_k13/",
 		x: "https://x.com/dhruvkoshta04",
 		notes: "https://notes.dhruvkoshta.me",
 	},

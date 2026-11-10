@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
 	CheckIcon,
 	GitHubIcon,
+	InstagramIcon,
 	LinkedInIcon,
 	MailIcon,
 	NotebookPenIcon,
@@ -123,6 +124,15 @@ export function SiteFooter() {
 								>
 									<XIcon size={14} />
 								</a>
+								<a
+									aria-label="Instagram profile"
+									className="ed3-footer__channel"
+									href={site.socials.instagram}
+									rel="noreferrer"
+									target="_blank"
+								>
+									<InstagramIcon size={14} />
+								</a>
 							</div>
 						</div>
 					</div>
@@ -142,6 +152,9 @@ export function SiteFooter() {
 						</a>
 						<a href={site.socials.linkedin} rel="noreferrer" target="_blank">
 							LinkedIn
+						</a>
+						<a href={site.socials.instagram} rel="noreferrer" target="_blank">
+							Instagram
 						</a>
 						<a href={site.socials.x} rel="noreferrer" target="_blank">
 							X

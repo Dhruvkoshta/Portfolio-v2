@@ -465,7 +465,7 @@ export function SiteHeader() {
 			id: "instagram",
 			label: "Instagram",
 			icon: InstagramIcon,
-			href: "https://instagram.com/dhruvkoshta",
+			href: site.socials.instagram,
 			external: true,
 		},
 		{

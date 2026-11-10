@@ -1,6 +1,6 @@
 import { useEffect, useRef, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRightIcon, CloseIcon, GitHubIcon, LinkedInIcon, XIcon } from "./icons";
+import { ArrowUpRightIcon, CloseIcon, GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from "./icons";
 import { sections } from "~/lib/sections";
 import { site } from "~/lib/site";
 
@@ -149,6 +149,15 @@ export function SiteMenuDialog({ open, onClose }: DialogProps) {
 					>
 						<LinkedInIcon />
 						<span>LinkedIn</span>
+					</a>
+					<a
+						aria-label="Instagram"
+						href={site.socials.instagram}
+						rel="noreferrer"
+						target="_blank"
+					>
+						<InstagramIcon />
+						<span>Instagram</span>
 					</a>
 					<a
 						aria-label="X"
