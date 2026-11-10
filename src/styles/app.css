@@ -230,7 +230,7 @@ kbd {
 	position: sticky;
 	top: 0;
 	z-index: 60;
-	padding: 10px 16px 0;
+	padding: 22px 16px 0;
 	pointer-events: none;
 }
 
