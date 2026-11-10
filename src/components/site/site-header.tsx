@@ -5,7 +5,7 @@ import {
 	useState,
 } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
+import { animate, AnimatePresence, motion, useMotionValue } from "framer-motion";
 import {
 	ArrowUpRightIcon,
 	CursorIcon,
@@ -118,6 +118,14 @@ export function SiteHeader() {
 	const miscTriggerRef = useRef<HTMLButtonElement>(null);
 	const mattGptTriggerRef = useRef<HTMLButtonElement>(null);
 	const openedByHoverTimeRef = useRef<number>(0);
+
+	// Single sliding hover pill, measured against the hovered item so the
+	// highlight can never lag behind or land on the wrong item.
+	const pillX = useMotionValue(0);
+	const pillY = useMotionValue(0);
+	const pillWidth = useMotionValue(0);
+	const pillHeight = useMotionValue(0);
+	const pillOpacity = useMotionValue(0);
 
 	useEffect(() => {
 		setSoundActive(sound.isEnabled());
@@ -240,6 +248,46 @@ export function SiteHeader() {
 			}, 280);
 		}
 	}, [openOnHover]);
+
+	// Move the shared hover pill to whichever item is currently hovered.
+	useEffect(() => {
+		const nav = navRef.current;
+		if (!nav) return;
+
+		const controls: { stop: () => void }[] = [];
+		const measure = () => {
+			controls.forEach((control) => control.stop());
+			controls.length = 0;
+
+			if (!hoveredNavId) {
+				controls.push(animate(pillOpacity, 0, { duration: 0.16, ease: "easeOut" }));
+				return;
+			}
+
+			const item = nav.querySelector<HTMLElement>(`[data-nav-item="${hoveredNavId}"]`);
+			if (!item) return;
+
+			const navRect = nav.getBoundingClientRect();
+			const itemRect = item.getBoundingClientRect();
+			const spring = { type: "spring", stiffness: 520, damping: 34, mass: 0.9 } as const;
+
+			controls.push(
+				animate(pillX, itemRect.left - navRect.left - nav.clientLeft, spring),
+				animate(pillY, itemRect.top - navRect.top - nav.clientTop, spring),
+				animate(pillWidth, itemRect.width, spring),
+				animate(pillHeight, itemRect.height, spring),
+				animate(pillOpacity, 1, { duration: 0.12 }),
+			);
+		};
+
+		measure();
+		window.addEventListener("resize", measure);
+
+		return () => {
+			window.removeEventListener("resize", measure);
+			controls.forEach((control) => control.stop());
+		};
+	}, [hoveredNavId, pillX, pillY, pillWidth, pillHeight, pillOpacity]);
 
 	// Close on click outside
 	useEffect(() => {
@@ -452,23 +500,26 @@ export function SiteHeader() {
 							onMouseLeave={handleNavMouseLeave}
 							className="appbar"
 						>
+							{/* Shared sliding hover pill (positioned by JS measurement) */}
+							<motion.div
+								aria-hidden="true"
+								className="rounded-full bg-neutral-200/60 pointer-events-none"
+								data-pill=""
+								style={{
+									x: pillX,
+									y: pillY,
+									width: pillWidth,
+									height: pillHeight,
+									opacity: pillOpacity,
+								}}
+							/>
+
 							{/* Item 1: Home (key 'h') */}
 							<div
 								className="relative"
+								data-nav-item="home"
 								onMouseEnter={() => handleNavHover("home")}
 							>
-								<AnimatePresence>
-									{hoveredNavId === "home" && (
-										<motion.div
-											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-											transition={{ type: "spring", stiffness: 400, damping: 28 }}
-										/>
-									)}
-								</AnimatePresence>
 								<Link
 									to="/"
 									aria-label="Home Projects"
@@ -495,20 +546,9 @@ export function SiteHeader() {
 							{/* Item 2: Blog (key 'b') */}
 							<div
 								className="relative"
+								data-nav-item="blog"
 								onMouseEnter={() => handleNavHover("blog")}
 							>
-								<AnimatePresence>
-									{hoveredNavId === "blog" && (
-										<motion.div
-											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-											transition={{ type: "spring", stiffness: 400, damping: 28 }}
-										/>
-									)}
-								</AnimatePresence>
 								<a
 									href="https://notes.dhruvkoshta.me"
 									target="_blank"
@@ -528,20 +568,9 @@ export function SiteHeader() {
 							{/* Item 3: Résumé (key 'r') with Upward Spring Micro-Interaction */}
 							<div
 								className="relative"
+								data-nav-item="resume"
 								onMouseEnter={() => handleNavHover("resume")}
 							>
-								<AnimatePresence>
-									{hoveredNavId === "resume" && (
-										<motion.div
-											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-											transition={{ type: "spring", stiffness: 400, damping: 28 }}
-										/>
-									)}
-								</AnimatePresence>
 								<a
 									href={site.resumeUrl}
 									target="_blank"
@@ -577,20 +606,9 @@ export function SiteHeader() {
 							{/* Item 4: Socials (key 's') with Hover Dropdown Card */}
 							<div
 								className="relative"
+								data-nav-item="socials"
 								onMouseEnter={() => handleNavHover("socials")}
 							>
-								<AnimatePresence>
-									{hoveredNavId === "socials" && (
-										<motion.div
-											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-											transition={{ type: "spring", stiffness: 400, damping: 28 }}
-										/>
-									)}
-								</AnimatePresence>
 								<button
 									ref={socialsTriggerRef}
 									type="button"
@@ -600,6 +618,7 @@ export function SiteHeader() {
 									aria-keyshortcuts="S"
 									data-panel-trigger="socials"
 									className="appbar__link"
+									onMouseEnter={handleDropdownMouseEnter}
 									onClick={() => {
 										sound.play("click");
 										setActiveDropdown((cur) => {
@@ -702,20 +721,9 @@ export function SiteHeader() {
 							{/* Item 5: Misc (key 'm') with Interactive Toggles */}
 							<div
 								className="relative"
+								data-nav-item="misc"
 								onMouseEnter={() => handleNavHover("misc")}
 							>
-								<AnimatePresence>
-									{hoveredNavId === "misc" && (
-										<motion.div
-											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-											transition={{ type: "spring", stiffness: 400, damping: 28 }}
-										/>
-									)}
-								</AnimatePresence>
 								<button
 									ref={miscTriggerRef}
 									type="button"
@@ -725,6 +733,7 @@ export function SiteHeader() {
 									aria-keyshortcuts="M"
 									data-panel-trigger="misc"
 									className="appbar__link"
+									onMouseEnter={handleDropdownMouseEnter}
 									onClick={() => {
 										sound.play("click");
 										setActiveDropdown((cur) => {
@@ -869,20 +878,9 @@ export function SiteHeader() {
 							{/* Item 6: MattGPT (key 'g') */}
 							<div
 								className="relative"
+								data-nav-item="mattgpt"
 								onMouseEnter={() => handleNavHover("mattgpt")}
 							>
-								<AnimatePresence>
-									{hoveredNavId === "mattgpt" && (
-										<motion.div
-											layoutId="active-nav-pill"
-											className="absolute inset-0 rounded-full bg-neutral-200/60 z-0 pointer-events-none"
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-											transition={{ type: "spring", stiffness: 400, damping: 28 }}
-										/>
-									)}
-								</AnimatePresence>
 								<button
 									ref={mattGptTriggerRef}
 									type="button"
@@ -892,6 +890,7 @@ export function SiteHeader() {
 									aria-keyshortcuts="G"
 									data-panel-trigger="ask"
 									className="appbar__link"
+									onMouseEnter={handleDropdownMouseEnter}
 									onClick={() => {
 										sound.play("click");
 										setActiveDropdown((cur) => {

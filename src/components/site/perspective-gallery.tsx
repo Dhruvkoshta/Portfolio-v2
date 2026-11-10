@@ -1,4 +1,10 @@
-import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import {
+	AnimatePresence,
+	motion,
+	useMotionTemplate,
+	useMotionValue,
+	useSpring,
+} from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "~/lib/use-reduced-motion";
 
@@ -115,6 +121,115 @@ function playShutterSound(isOpen: boolean) {
 	}
 }
 
+function PolaroidCard({
+	card,
+	isActive,
+	isDimmed,
+	isDragging,
+	reduced,
+	onActivate,
+	onHoverChange,
+}: {
+	card: PolaroidItem;
+	isActive: boolean;
+	isDimmed: boolean;
+	isDragging: boolean;
+	reduced: boolean;
+	onActivate: (cardId: string, e: React.MouseEvent) => void;
+	onHoverChange: (hovered: boolean) => void;
+}) {
+	const ref = useRef<HTMLDivElement>(null);
+	const [isHovered, setIsHovered] = useState(false);
+
+	const rotateX = useMotionValue(0);
+	const rotateY = useMotionValue(0);
+	const lift = useMotionValue(0);
+	const scale = useMotionValue(1);
+
+	const rotateXSpring = useSpring(rotateX, { stiffness: 280, damping: 24, mass: 0.6 });
+	const rotateYSpring = useSpring(rotateY, { stiffness: 280, damping: 24, mass: 0.6 });
+	const liftSpring = useSpring(lift, { stiffness: 220, damping: 20, mass: 0.6 });
+	const scaleSpring = useSpring(scale, { stiffness: 280, damping: 24, mass: 0.6 });
+
+	const transform = useMotionTemplate`perspective(900px) translateY(${liftSpring}px) rotateX(${rotateXSpring}deg) rotateY(${rotateYSpring}deg) rotate(${card.rot}deg) scale(${scaleSpring})`;
+
+	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (reduced || isDragging) return;
+		const el = ref.current;
+		if (!el) return;
+		const rect = el.getBoundingClientRect();
+		if (rect.width === 0 || rect.height === 0) return;
+
+		const px = (e.clientX - rect.left) / rect.width;
+		const py = (e.clientY - rect.top) / rect.height;
+		rotateY.set((px - 0.5) * 16);
+		rotateX.set((0.5 - py) * 14);
+		lift.set(-10);
+		scale.set(1.06);
+	};
+
+	const handlePointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {
+		setIsHovered(true);
+		onHoverChange(true);
+		if (reduced || isDragging || e.pointerType === "touch") return;
+		lift.set(-10);
+		scale.set(1.06);
+	};
+
+	const handlePointerLeave = () => {
+		setIsHovered(false);
+		onHoverChange(false);
+		rotateX.set(0);
+		rotateY.set(0);
+		lift.set(0);
+		scale.set(1);
+	};
+
+	return (
+		<motion.div
+			className={`absolute bg-white p-2.5 pb-4 shadow-md border border-neutral-200/80 w-56 cursor-zoom-in transition-[opacity,box-shadow] duration-200 hover:shadow-xl ${
+				isDimmed ? "opacity-20 pointer-events-none" : "opacity-100"
+			}`}
+			data-testid="polaroid-card"
+			onClick={(e) => onActivate(card.id, e)}
+			onKeyDown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					onActivate(card.id, e as unknown as React.MouseEvent);
+				}
+			}}
+			onPointerEnter={handlePointerEnter}
+			onPointerLeave={handlePointerLeave}
+			onPointerMove={handlePointerMove}
+			ref={ref}
+			role="button"
+			style={{
+				left: card.x,
+				top: card.y,
+				transform,
+				zIndex: isActive || isHovered ? 20 : card.zIndex ?? 1,
+			}}
+			tabIndex={0}
+		>
+			{/* Polaroid Image */}
+			<div className="w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-none pointer-events-none">
+				<img
+					alt={card.label}
+					className="w-full h-full object-cover"
+					draggable={false}
+					loading="lazy"
+					src={card.img}
+				/>
+			</div>
+
+			{/* Polaroid Caption */}
+			<p className="text-[11px] text-neutral-700 font-medium font-mono text-center truncate px-1 pt-2.5 pointer-events-none">
+				{card.label}
+			</p>
+		</motion.div>
+	);
+}
+
 export function PerspectiveGallery() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const reduced = useReducedMotion();
@@ -150,15 +265,14 @@ export function PerspectiveGallery() {
 	const velocityHistoryRef = useRef<{ time: number; x: number; y: number }[]>([]);
 	const hasInitializedRef = useRef(false);
 
-	// User activity tracking for auto-scrolling
-	const lastUserInteractionTimeRef = useRef<number>(performance.now());
-	const isPointerInsideRef = useRef(false);
-	const wanderVelocityRef = useRef<{ vx: number; vy: number }>({ vx: 0.25, vy: 0.15 });
-	const wanderChangeTimeRef = useRef<number>(0);
+	// Idle auto-drift state
+	const lastInteractionRef = useRef<number>(Date.now());
+	const isVisibleRef = useRef(true);
+	const activeCardIdRef = useRef<string | null>(null);
 
-	const registerUserActivity = useCallback(() => {
-		lastUserInteractionTimeRef.current = performance.now();
-	}, []);
+	useEffect(() => {
+		activeCardIdRef.current = activeCardId;
+	}, [activeCardId]);
 
 	// Calculate bounds
 	const minPanX = Math.min(0, viewportWidth - CANVAS_WIDTH);
@@ -200,97 +314,105 @@ export function PerspectiveGallery() {
 		return undefined;
 	}, [rawPanX, rawPanY]);
 
-	// Auto-scrolling in random directions if untouched for > 1500ms
-	useEffect(() => {
-		if (reduced) return;
-
-		let animId: number;
-		let lastFrameTime = performance.now();
-
-		const pickNewDirection = () => {
-			// Choose a random heading angle in radians
-			const angle = Math.random() * Math.PI * 2;
-			// Speed between 0.35 and 0.75 px/frame (~20-45px/sec)
-			const speed = 0.35 + Math.random() * 0.4;
-			return {
-				vx: Math.cos(angle) * speed,
-				vy: Math.sin(angle) * speed,
-			};
-		};
-
-		const step = (now: number) => {
-			const dt = Math.min(now - lastFrameTime, 64);
-			lastFrameTime = now;
-
-			const timeSinceInteraction = now - lastUserInteractionTimeRef.current;
-			const canAutoScroll =
-				!isDragging &&
-				!activeCardId &&
-				!isPointerInsideRef.current &&
-				timeSinceInteraction > 1400;
-
-			if (canAutoScroll) {
-				// Periodically change wandering direction every 4-8 seconds
-				if (now - wanderChangeTimeRef.current > 4000 + Math.random() * 3500) {
-					wanderChangeTimeRef.current = now;
-					wanderVelocityRef.current = pickNewDirection();
-				}
-
-				const curX = rawPanX.get();
-				const curY = rawPanY.get();
-				const factor = dt / 16.67; // Normalize to 60fps frame delta
-
-				let nextX = curX + wanderVelocityRef.current.vx * factor;
-				let nextY = curY + wanderVelocityRef.current.vy * factor;
-
-				// Bounce off boundaries with slight random deflection
-				if (nextX <= minPanX) {
-					nextX = minPanX;
-					wanderVelocityRef.current.vx = Math.abs(wanderVelocityRef.current.vx) * (0.8 + Math.random() * 0.4);
-					wanderVelocityRef.current.vy += (Math.random() - 0.5) * 0.3;
-				} else if (nextX >= maxPanX) {
-					nextX = maxPanX;
-					wanderVelocityRef.current.vx = -Math.abs(wanderVelocityRef.current.vx) * (0.8 + Math.random() * 0.4);
-					wanderVelocityRef.current.vy += (Math.random() - 0.5) * 0.3;
-				}
-
-				if (nextY <= minPanY) {
-					nextY = minPanY;
-					wanderVelocityRef.current.vy = Math.abs(wanderVelocityRef.current.vy) * (0.8 + Math.random() * 0.4);
-					wanderVelocityRef.current.vx += (Math.random() - 0.5) * 0.3;
-				} else if (nextY >= maxPanY) {
-					nextY = maxPanY;
-					wanderVelocityRef.current.vy = -Math.abs(wanderVelocityRef.current.vy) * (0.8 + Math.random() * 0.4);
-					wanderVelocityRef.current.vx += (Math.random() - 0.5) * 0.3;
-				}
-
-				rawPanX.set(nextX);
-				rawPanY.set(nextY);
-			}
-
-			animId = requestAnimationFrame(step);
-		};
-
-		animId = requestAnimationFrame(step);
-		return () => cancelAnimationFrame(animId);
-	}, [reduced, isDragging, activeCardId, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY]);
-
 	// Close on Escape key
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape" && activeCardId) {
 				playShutterSound(false);
 				setActiveCardId(null);
-				registerUserActivity();
 			}
 		};
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [activeCardId, registerUserActivity]);
+	}, [activeCardId]);
+
+	// Idle auto-drift: when the gallery has not been touched for a moment,
+	// wander it smoothly through the pannable area in random directions.
+	useEffect(() => {
+		if (reduced) return;
+		const el = containerRef.current;
+		if (!el) return;
+
+		const IDLE_DELAY_MS = 2600;
+		const MIN_TURN_MS = 1400;
+		const MAX_TURN_MS = 3200;
+		const MIN_SPEED = 45;
+		const MAX_SPEED = 105;
+
+		let rafId = 0;
+		let lastFrame = performance.now();
+		let velocityX = 0;
+		let velocityY = 0;
+		let nextTurnAt = 0;
+
+		const tick = (now: number) => {
+			const dt = Math.min((now - lastFrame) / 1000, 0.05);
+			lastFrame = now;
+
+			const isIdle =
+				isVisibleRef.current &&
+				!document.hidden &&
+				!activeCardIdRef.current &&
+				Date.now() - lastInteractionRef.current >= IDLE_DELAY_MS;
+
+			if (isIdle) {
+				if (now >= nextTurnAt) {
+					const angle = Math.random() * Math.PI * 2;
+					const speed = MIN_SPEED + Math.random() * (MAX_SPEED - MIN_SPEED);
+					velocityX = Math.cos(angle) * speed;
+					velocityY = Math.sin(angle) * speed * 0.55;
+					nextTurnAt = now + MIN_TURN_MS + Math.random() * (MAX_TURN_MS - MIN_TURN_MS);
+				}
+
+				let nextX = rawPanX.get() + velocityX * dt;
+				let nextY = rawPanY.get() + velocityY * dt;
+
+				// Bounce off the pannable bounds so the drift never gets stuck.
+				if (nextX <= minPanX) {
+					nextX = minPanX;
+					velocityX = Math.abs(velocityX);
+				} else if (nextX >= maxPanX) {
+					nextX = maxPanX;
+					velocityX = -Math.abs(velocityX);
+				}
+
+				if (nextY <= minPanY) {
+					nextY = minPanY;
+					velocityY = Math.abs(velocityY);
+				} else if (nextY >= maxPanY) {
+					nextY = maxPanY;
+					velocityY = -Math.abs(velocityY);
+				}
+
+				rawPanX.set(nextX);
+				rawPanY.set(nextY);
+			}
+
+			rafId = requestAnimationFrame(tick);
+		};
+
+		rafId = requestAnimationFrame(tick);
+
+		let observer: IntersectionObserver | null = null;
+		if (typeof IntersectionObserver !== "undefined") {
+			observer = new IntersectionObserver(
+				([entry]) => {
+					isVisibleRef.current = entry.isIntersecting;
+				},
+				{ threshold: 0.05 },
+			);
+			observer.observe(el);
+		}
+
+		return () => {
+			cancelAnimationFrame(rafId);
+			observer?.disconnect();
+		};
+	}, [reduced, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY]);
 
 	const applyPanDelta = useCallback(
 		(deltaX: number, deltaY: number, deltaMode = 0) => {
-			registerUserActivity();
+			lastInteractionRef.current = Date.now();
 			let dx = Number.isFinite(deltaX) ? deltaX : 0;
 			let dy = Number.isFinite(deltaY) ? deltaY : 0;
 
@@ -319,7 +441,7 @@ export function PerspectiveGallery() {
 			rawPanX.set(nextX);
 			rawPanY.set(nextY);
 		},
-		[minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY, registerUserActivity],
+		[minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY],
 	);
 
 	// Native wheel listener for 2D trackpad / wheel panning with e.preventDefault()
@@ -341,7 +463,6 @@ export function PerspectiveGallery() {
 		if (!isDragging) return;
 
 		const handlePointerMove = (e: PointerEvent) => {
-			registerUserActivity();
 			if (!pointerDownRef.current) return;
 			const dx = e.clientX - pointerDownRef.current.x;
 			const dy = e.clientY - pointerDownRef.current.y;
@@ -366,7 +487,7 @@ export function PerspectiveGallery() {
 
 		const handlePointerUp = () => {
 			setIsDragging(false);
-			registerUserActivity();
+			lastInteractionRef.current = Date.now();
 
 			const isTouch = pointerDownRef.current?.isTouch;
 			const history = velocityHistoryRef.current;
@@ -424,13 +545,13 @@ export function PerspectiveGallery() {
 			window.removeEventListener("pointerup", handlePointerUp);
 			window.removeEventListener("pointercancel", handlePointerUp);
 		};
-	}, [isDragging, clampX, clampY, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY, registerUserActivity]);
+	}, [isDragging, clampX, clampY, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY]);
 
 	// Pointer drag handlers
 	const handlePointerDown = (e: React.PointerEvent) => {
 		// Only primary click
 		if (e.button !== 0) return;
-		registerUserActivity();
+		lastInteractionRef.current = Date.now();
 		const isTouch =
 			e.pointerType === "touch" ||
 			(typeof window !== "undefined" && window.innerWidth <= 768);
@@ -450,7 +571,7 @@ export function PerspectiveGallery() {
 
 	const handleCardClick = (cardId: string, e: React.MouseEvent) => {
 		e.stopPropagation();
-		registerUserActivity();
+		lastInteractionRef.current = Date.now();
 		// Distinguish between drag (> 5px) and click (< 5px)
 		if (pointerDownRef.current) {
 			const dist = Math.hypot(
@@ -470,13 +591,16 @@ export function PerspectiveGallery() {
 	};
 
 	const handleBackdropClick = () => {
-		registerUserActivity();
+		lastInteractionRef.current = Date.now();
 		playShutterSound(false);
 		setActiveCardId(null);
 	};
 
+	const handleCardHover = useCallback(() => {
+		lastInteractionRef.current = Date.now();
+	}, []);
+
 	const handleContainerKeyDown = (e: React.KeyboardEvent) => {
-		registerUserActivity();
 		if (e.key === "ArrowRight") {
 			e.preventDefault();
 			applyPanDelta(200, 0);
@@ -505,14 +629,6 @@ export function PerspectiveGallery() {
 				id="gallery"
 				onKeyDown={handleContainerKeyDown}
 				onPointerDown={handlePointerDown}
-				onPointerEnter={() => {
-					isPointerInsideRef.current = true;
-					registerUserActivity();
-				}}
-				onPointerLeave={() => {
-					isPointerInsideRef.current = false;
-				}}
-				onPointerMove={registerUserActivity}
 				ref={containerRef}
 				role="region"
 				style={{ touchAction: "pan-y" }}
@@ -549,66 +665,16 @@ export function PerspectiveGallery() {
 						const isCardActive = activeCardId === card.id;
 
 						return (
-							<motion.div
-								className={`absolute bg-white p-2.5 pb-4 shadow-md border border-neutral-200/80 w-56 cursor-zoom-in ${
-									activeCardId && !isCardActive ? "opacity-20 pointer-events-none" : "opacity-100"
-								}`}
-								data-testid="polaroid-card"
+							<PolaroidCard
+								card={card}
+								isActive={isCardActive}
+								isDimmed={activeCardId !== null && !isCardActive}
+								isDragging={isDragging}
 								key={card.id}
-								initial={false}
-								whileHover={
-									reduced || activeCardId
-										? undefined
-										: {
-												y: -10,
-												scale: 1.06,
-												rotate: 0,
-												zIndex: 30,
-												boxShadow:
-													"0 20px 30px -10px rgba(0, 0, 0, 0.18), 0 10px 14px -6px rgba(0, 0, 0, 0.12)",
-												transition: { type: "spring", stiffness: 420, damping: 22 },
-										  }
-								}
-								whileTap={
-									reduced || activeCardId
-										? undefined
-										: {
-												scale: 0.98,
-												transition: { duration: 0.08 },
-										  }
-								}
-								onClick={(e) => handleCardClick(card.id, e)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ") {
-										e.preventDefault();
-										handleCardClick(card.id, e as unknown as React.MouseEvent);
-									}
-								}}
-								role="button"
-								style={{
-									left: card.x,
-									top: card.y,
-									rotate: `${card.rot}deg`,
-									zIndex: card.zIndex ?? 1,
-								}}
-								tabIndex={0}
-							>
-								{/* Polaroid Image */}
-								<div className="w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-none pointer-events-none">
-									<img
-										alt={card.label}
-										className="w-full h-full object-cover"
-										draggable={false}
-										loading="lazy"
-										src={card.img}
-									/>
-								</div>
-
-								{/* Polaroid Caption */}
-								<p className="text-[11px] text-neutral-700 font-medium font-mono text-center truncate px-1 pt-2.5 pointer-events-none">
-									{card.label}
-								</p>
-							</motion.div>
+								onActivate={handleCardClick}
+								onHoverChange={handleCardHover}
+								reduced={reduced}
+							/>
 						);
 					})}
 				</motion.div>
