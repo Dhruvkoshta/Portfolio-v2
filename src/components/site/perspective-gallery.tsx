@@ -18,7 +18,7 @@ export interface PolaroidItem {
 	zIndex?: number;
 }
 
-export const POLAROID_DATA: PolaroidItem[] = [
+const POLAROID_DATA: PolaroidItem[] = [
 	// Tier 1 (top row)
 	{ id: "p1", x: 80, y: 70, rot: -3.5, label: "2025 + top-of-mountain dinner", img: "https://picsum.photos/id/10/600/750" },
 	{ id: "p2", x: 340, y: 110, rot: 2.2, label: "2023 + cotton candy clouds", img: "https://picsum.photos/id/15/600/750" },
