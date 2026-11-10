@@ -37,6 +37,10 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 				apiKey: resendApiKey,
 			});
 
+			const emailStatus = emailResult.sent
+				? "emailed"
+				: `email_failed: ${emailResult.reason ? emailResult.reason.slice(0, 100) : "unknown"}`;
+
 			// 2. Persist in D1 database if available
 			if (db) {
 				await db
@@ -48,7 +52,7 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 						timestamp,
 						data.message,
 						data.replyTo || "",
-						"unread",
+						emailStatus,
 					)
 					.run();
 
@@ -57,6 +61,7 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 					id: messageId,
 					fallback: false,
 					emailed: emailResult.sent,
+					emailReason: emailResult.reason,
 				};
 			}
 
@@ -66,6 +71,7 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 				id: messageId,
 				fallback: true,
 				emailed: emailResult.sent,
+				emailReason: emailResult.reason,
 			};
 		} catch (err) {
 			const errorMessage =
