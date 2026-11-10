@@ -150,6 +150,16 @@ export function PerspectiveGallery() {
 	const velocityHistoryRef = useRef<{ time: number; x: number; y: number }[]>([]);
 	const hasInitializedRef = useRef(false);
 
+	// User activity tracking for auto-scrolling
+	const lastUserInteractionTimeRef = useRef<number>(performance.now());
+	const isPointerInsideRef = useRef(false);
+	const wanderVelocityRef = useRef<{ vx: number; vy: number }>({ vx: 0.25, vy: 0.15 });
+	const wanderChangeTimeRef = useRef<number>(0);
+
+	const registerUserActivity = useCallback(() => {
+		lastUserInteractionTimeRef.current = performance.now();
+	}, []);
+
 	// Calculate bounds
 	const minPanX = Math.min(0, viewportWidth - CANVAS_WIDTH);
 	const maxPanX = 0;
@@ -190,20 +200,97 @@ export function PerspectiveGallery() {
 		return undefined;
 	}, [rawPanX, rawPanY]);
 
+	// Auto-scrolling in random directions if untouched for > 1500ms
+	useEffect(() => {
+		if (reduced) return;
+
+		let animId: number;
+		let lastFrameTime = performance.now();
+
+		const pickNewDirection = () => {
+			// Choose a random heading angle in radians
+			const angle = Math.random() * Math.PI * 2;
+			// Speed between 0.35 and 0.75 px/frame (~20-45px/sec)
+			const speed = 0.35 + Math.random() * 0.4;
+			return {
+				vx: Math.cos(angle) * speed,
+				vy: Math.sin(angle) * speed,
+			};
+		};
+
+		const step = (now: number) => {
+			const dt = Math.min(now - lastFrameTime, 64);
+			lastFrameTime = now;
+
+			const timeSinceInteraction = now - lastUserInteractionTimeRef.current;
+			const canAutoScroll =
+				!isDragging &&
+				!activeCardId &&
+				!isPointerInsideRef.current &&
+				timeSinceInteraction > 1400;
+
+			if (canAutoScroll) {
+				// Periodically change wandering direction every 4-8 seconds
+				if (now - wanderChangeTimeRef.current > 4000 + Math.random() * 3500) {
+					wanderChangeTimeRef.current = now;
+					wanderVelocityRef.current = pickNewDirection();
+				}
+
+				const curX = rawPanX.get();
+				const curY = rawPanY.get();
+				const factor = dt / 16.67; // Normalize to 60fps frame delta
+
+				let nextX = curX + wanderVelocityRef.current.vx * factor;
+				let nextY = curY + wanderVelocityRef.current.vy * factor;
+
+				// Bounce off boundaries with slight random deflection
+				if (nextX <= minPanX) {
+					nextX = minPanX;
+					wanderVelocityRef.current.vx = Math.abs(wanderVelocityRef.current.vx) * (0.8 + Math.random() * 0.4);
+					wanderVelocityRef.current.vy += (Math.random() - 0.5) * 0.3;
+				} else if (nextX >= maxPanX) {
+					nextX = maxPanX;
+					wanderVelocityRef.current.vx = -Math.abs(wanderVelocityRef.current.vx) * (0.8 + Math.random() * 0.4);
+					wanderVelocityRef.current.vy += (Math.random() - 0.5) * 0.3;
+				}
+
+				if (nextY <= minPanY) {
+					nextY = minPanY;
+					wanderVelocityRef.current.vy = Math.abs(wanderVelocityRef.current.vy) * (0.8 + Math.random() * 0.4);
+					wanderVelocityRef.current.vx += (Math.random() - 0.5) * 0.3;
+				} else if (nextY >= maxPanY) {
+					nextY = maxPanY;
+					wanderVelocityRef.current.vy = -Math.abs(wanderVelocityRef.current.vy) * (0.8 + Math.random() * 0.4);
+					wanderVelocityRef.current.vx += (Math.random() - 0.5) * 0.3;
+				}
+
+				rawPanX.set(nextX);
+				rawPanY.set(nextY);
+			}
+
+			animId = requestAnimationFrame(step);
+		};
+
+		animId = requestAnimationFrame(step);
+		return () => cancelAnimationFrame(animId);
+	}, [reduced, isDragging, activeCardId, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY]);
+
 	// Close on Escape key
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape" && activeCardId) {
 				playShutterSound(false);
 				setActiveCardId(null);
+				registerUserActivity();
 			}
 		};
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [activeCardId]);
+	}, [activeCardId, registerUserActivity]);
 
 	const applyPanDelta = useCallback(
 		(deltaX: number, deltaY: number, deltaMode = 0) => {
+			registerUserActivity();
 			let dx = Number.isFinite(deltaX) ? deltaX : 0;
 			let dy = Number.isFinite(deltaY) ? deltaY : 0;
 
@@ -232,7 +319,7 @@ export function PerspectiveGallery() {
 			rawPanX.set(nextX);
 			rawPanY.set(nextY);
 		},
-		[minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY],
+		[minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY, registerUserActivity],
 	);
 
 	// Native wheel listener for 2D trackpad / wheel panning with e.preventDefault()
@@ -254,6 +341,7 @@ export function PerspectiveGallery() {
 		if (!isDragging) return;
 
 		const handlePointerMove = (e: PointerEvent) => {
+			registerUserActivity();
 			if (!pointerDownRef.current) return;
 			const dx = e.clientX - pointerDownRef.current.x;
 			const dy = e.clientY - pointerDownRef.current.y;
@@ -278,6 +366,7 @@ export function PerspectiveGallery() {
 
 		const handlePointerUp = () => {
 			setIsDragging(false);
+			registerUserActivity();
 
 			const isTouch = pointerDownRef.current?.isTouch;
 			const history = velocityHistoryRef.current;
@@ -335,12 +424,13 @@ export function PerspectiveGallery() {
 			window.removeEventListener("pointerup", handlePointerUp);
 			window.removeEventListener("pointercancel", handlePointerUp);
 		};
-	}, [isDragging, clampX, clampY, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY]);
+	}, [isDragging, clampX, clampY, minPanX, maxPanX, minPanY, maxPanY, rawPanX, rawPanY, registerUserActivity]);
 
 	// Pointer drag handlers
 	const handlePointerDown = (e: React.PointerEvent) => {
 		// Only primary click
 		if (e.button !== 0) return;
+		registerUserActivity();
 		const isTouch =
 			e.pointerType === "touch" ||
 			(typeof window !== "undefined" && window.innerWidth <= 768);
@@ -360,6 +450,7 @@ export function PerspectiveGallery() {
 
 	const handleCardClick = (cardId: string, e: React.MouseEvent) => {
 		e.stopPropagation();
+		registerUserActivity();
 		// Distinguish between drag (> 5px) and click (< 5px)
 		if (pointerDownRef.current) {
 			const dist = Math.hypot(
@@ -379,11 +470,13 @@ export function PerspectiveGallery() {
 	};
 
 	const handleBackdropClick = () => {
+		registerUserActivity();
 		playShutterSound(false);
 		setActiveCardId(null);
 	};
 
 	const handleContainerKeyDown = (e: React.KeyboardEvent) => {
+		registerUserActivity();
 		if (e.key === "ArrowRight") {
 			e.preventDefault();
 			applyPanDelta(200, 0);
@@ -412,6 +505,14 @@ export function PerspectiveGallery() {
 				id="gallery"
 				onKeyDown={handleContainerKeyDown}
 				onPointerDown={handlePointerDown}
+				onPointerEnter={() => {
+					isPointerInsideRef.current = true;
+					registerUserActivity();
+				}}
+				onPointerLeave={() => {
+					isPointerInsideRef.current = false;
+				}}
+				onPointerMove={registerUserActivity}
 				ref={containerRef}
 				role="region"
 				style={{ touchAction: "pan-y" }}
@@ -448,12 +549,34 @@ export function PerspectiveGallery() {
 						const isCardActive = activeCardId === card.id;
 
 						return (
-							<div
-								className={`absolute bg-white p-2.5 pb-4 shadow-md border border-neutral-200/80 w-56 cursor-zoom-in transition-[transform,opacity] duration-200 hover:scale-[1.04] hover:!rotate-0 hover:z-20 ${
+							<motion.div
+								className={`absolute bg-white p-2.5 pb-4 shadow-md border border-neutral-200/80 w-56 cursor-zoom-in ${
 									activeCardId && !isCardActive ? "opacity-20 pointer-events-none" : "opacity-100"
 								}`}
 								data-testid="polaroid-card"
 								key={card.id}
+								initial={false}
+								whileHover={
+									reduced || activeCardId
+										? undefined
+										: {
+												y: -10,
+												scale: 1.06,
+												rotate: 0,
+												zIndex: 30,
+												boxShadow:
+													"0 20px 30px -10px rgba(0, 0, 0, 0.18), 0 10px 14px -6px rgba(0, 0, 0, 0.12)",
+												transition: { type: "spring", stiffness: 420, damping: 22 },
+										  }
+								}
+								whileTap={
+									reduced || activeCardId
+										? undefined
+										: {
+												scale: 0.98,
+												transition: { duration: 0.08 },
+										  }
+								}
 								onClick={(e) => handleCardClick(card.id, e)}
 								onKeyDown={(e) => {
 									if (e.key === "Enter" || e.key === " ") {
@@ -465,7 +588,7 @@ export function PerspectiveGallery() {
 								style={{
 									left: card.x,
 									top: card.y,
-									transform: `rotate(${card.rot}deg)`,
+									rotate: `${card.rot}deg`,
 									zIndex: card.zIndex ?? 1,
 								}}
 								tabIndex={0}
@@ -485,7 +608,7 @@ export function PerspectiveGallery() {
 								<p className="text-[11px] text-neutral-700 font-medium font-mono text-center truncate px-1 pt-2.5 pointer-events-none">
 									{card.label}
 								</p>
-							</div>
+							</motion.div>
 						);
 					})}
 				</motion.div>

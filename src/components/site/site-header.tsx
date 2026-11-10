@@ -221,7 +221,7 @@ export function SiteHeader() {
 			if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
 			hoverTimeoutRef.current = setTimeout(() => {
 				setActiveDropdown(null);
-			}, 180);
+			}, 280);
 		}
 	}, [openOnHover]);
 
@@ -237,7 +237,7 @@ export function SiteHeader() {
 			if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
 			hoverTimeoutRef.current = setTimeout(() => {
 				setActiveDropdown(null);
-			}, 180);
+			}, 280);
 		}
 	}, [openOnHover]);
 
@@ -625,11 +625,11 @@ export function SiteHeader() {
 											id="appbar-socials-panel"
 											role="group"
 											aria-label="Social links"
-											initial={{ opacity: 0, y: -8, scale: 0.96 }}
+											initial={{ opacity: 0, y: -4, scale: 0.97 }}
 											animate={{ opacity: 1, y: 0, scale: 1 }}
-											exit={{ opacity: 0, y: -8, scale: 0.96 }}
+											exit={{ opacity: 0, y: -4, scale: 0.97 }}
 											transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-											className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 min-w-[210px]"
+											className="absolute top-full left-1/2 -translate-x-1/2 pt-1.5 z-50 min-w-[210px] before:absolute before:-top-3 before:left-0 before:right-0 before:h-4 before:content-['']"
 											onMouseEnter={handleDropdownMouseEnter}
 											onMouseLeave={handleDropdownMouseLeave}
 										>
@@ -750,11 +750,11 @@ export function SiteHeader() {
 											id="appbar-misc-panel"
 											role="group"
 											aria-label="Misc options"
-											initial={{ opacity: 0, y: -8, scale: 0.96 }}
+											initial={{ opacity: 0, y: -4, scale: 0.97 }}
 											animate={{ opacity: 1, y: 0, scale: 1 }}
-											exit={{ opacity: 0, y: -8, scale: 0.96 }}
+											exit={{ opacity: 0, y: -4, scale: 0.97 }}
 											transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-											className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 min-w-[230px]"
+											className="absolute top-full left-1/2 -translate-x-1/2 pt-1.5 z-50 min-w-[230px] before:absolute before:-top-3 before:left-0 before:right-0 before:h-4 before:content-['']"
 											onMouseEnter={handleDropdownMouseEnter}
 											onMouseLeave={handleDropdownMouseLeave}
 										>
@@ -922,11 +922,11 @@ export function SiteHeader() {
 											id="appbar-ask-panel"
 											role="group"
 											aria-label="MattGPT AI Guide"
-											initial={{ opacity: 0, y: -8, scale: 0.96 }}
+											initial={{ opacity: 0, y: -4, scale: 0.97 }}
 											animate={{ opacity: 1, y: 0, scale: 1 }}
-											exit={{ opacity: 0, y: -8, scale: 0.96 }}
+											exit={{ opacity: 0, y: -4, scale: 0.97 }}
 											transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-											className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 min-w-[260px]"
+											className="absolute top-full left-1/2 -translate-x-1/2 pt-1.5 z-50 min-w-[260px] before:absolute before:-top-3 before:left-0 before:right-0 before:h-4 before:content-['']"
 											onMouseEnter={handleDropdownMouseEnter}
 											onMouseLeave={handleDropdownMouseLeave}
 										>
