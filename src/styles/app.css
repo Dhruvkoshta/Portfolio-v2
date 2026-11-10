@@ -336,6 +336,12 @@ kbd {
 	z-index: 1;
 }
 
+/* Shared sliding hover pill sits behind the nav links */
+.appbar > [data-pill] {
+	position: absolute;
+	z-index: 0;
+}
+
 @media (hover: hover) and (pointer: fine) {
 	.appbar-right:hover {
 		background: color-mix(in srgb, var(--ed3-glass-fill) 85%, #fff 15%);
